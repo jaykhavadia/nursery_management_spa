@@ -59,14 +59,12 @@ const Login = () => {
       password: password,
     };
 
-
     try {
       const result = await login(loginData); // Call getSomeData function from the API service
       if (result.token) {
         toast.success("Login Successfully!");
         updateUserToken(result.token);
-        setPassword("");
-        setEmail("");
+        resetFields();
         checkLogin("/login");
         return;
       }
@@ -75,6 +73,13 @@ const Login = () => {
       // Handle errors
       console.error("Error while Login:", error);
     }
+  };
+
+  const resetFields = () => {
+    setPassword("");
+    setEmail("");
+    setEmailError("");
+    setPasswordError("");
   };
 
   useEffect(() => {
@@ -179,6 +184,7 @@ const Login = () => {
             <p className='mt-10 text-center text-sm text-gray-500'>
               Not a member?
               <a
+                onClick={resetFields()}
                 href='/sign-up'
                 className='ml-2 font-semibold leading-6 text-indigo-600 hover:text-indigo-500'
               >

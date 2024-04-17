@@ -82,7 +82,6 @@ const SignUp = () => {
       confirmPassword: confirmPassword,
     };
 
-
     try {
       const result = await registerUser(signUpData); // Call getSomeData function from the API service
       if (result.saveUser) {
@@ -270,6 +269,7 @@ const SignUp = () => {
             <p className='mt-10 text-center text-sm text-gray-500'>
               already a member
               <a
+                onClick={resetFields}
                 href='/login'
                 className='ml-2 font-semibold leading-6 text-indigo-600 hover:text-indigo-500'
               >
