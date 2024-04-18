@@ -241,7 +241,7 @@ const SignUp = () => {
                   <input
                     id='confirmPassword'
                     name='confirmPassword'
-                    type='text'
+                    type='password'
                     value={confirmPassword}
                     autoComplete='current-password'
                     required
