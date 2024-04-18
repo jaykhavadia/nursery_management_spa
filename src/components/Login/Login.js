@@ -83,7 +83,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    checkLogin("/login");
+    checkLogin("");
     setTimeout(() => {
       setZoom("scale-100");
     }, 500); // Adjust the delay as needed

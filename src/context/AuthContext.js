@@ -13,10 +13,12 @@ export const AuthContextProvider = ({ children }) => {
     if (token) {
       updateUserToken(token);
       navigate("/dashboard");
-      return
+      return;
     }
-    updateUserToken('');
-    navigate(path);
+    updateUserToken("");
+    if (path === "/login") {
+      navigate(path);
+    }
   };
 
   const updateUserData = (info) => {
@@ -29,7 +31,13 @@ export const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ userData, userToken, updateUserToken, updateUserData, checkLogin }}
+      value={{
+        userData,
+        userToken,
+        updateUserToken,
+        updateUserData,
+        checkLogin,
+      }}
     >
       {children}
     </AuthContext.Provider>
