@@ -43,6 +43,7 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
+    resetFields("error");
     if (!userName || userName.length < 3) {
       setUserNameError("Please enter valid user name");
     }
@@ -86,7 +87,7 @@ const SignUp = () => {
       const result = await registerUser(signUpData); // Call getSomeData function from the API service
       if (result.saveUser) {
         toast.success("Signup Successful!");
-        resetFields();
+        resetFields("all");
         navigate("/login");
         return;
       }
@@ -97,15 +98,18 @@ const SignUp = () => {
     }
   };
 
-  const resetFields = () => {
+  const resetFields = (section) => {
+    if (section === "error" || section === "all") {
+      setConfirmPasswordError("");
+      setEmailError("");
+      setUserNameError("");
+      setPasswordError("");
+      return;
+    }
     setConfirmPassword("");
     setPassword("");
     setEmail("");
     setUserName("");
-    setConfirmPasswordError("");
-    setEmailError("");
-    setUserNameError("");
-    setPasswordError("");
   };
 
   useEffect(() => {
