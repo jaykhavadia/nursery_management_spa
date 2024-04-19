@@ -9,6 +9,15 @@ import axios from "axios";
 import Dashboard from "./components/Dashboard/Dashboard";
 import { AuthContextProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
+import EmailVerification from "./components/EmailVerification/EmailVerification";
+
+// import the library
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+// import your icons
+import { fab } from "@fortawesome/free-brands-svg-icons";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
 
 const token = localStorage.getItem("token");
 
@@ -41,13 +50,14 @@ root.render(
           <Route path='login' element={<Login />} />
           <Route path='sign-up' element={<SignUp />} />
           <Route path='dashboard' element={<Dashboard />} />
+          <Route path='email-verification' element={<EmailVerification />} />
           {/* <Route path='contact' element={<Contact />} /> */}
         </Routes>
         <Toaster
-        position='top-right'
-        reverseOrder={false}
-        toastOptions={{ duration: 3000 }}
-      />
+          position='top-right'
+          reverseOrder={false}
+          toastOptions={{ duration: 3000 }}
+        />
       </div>
     </AuthContextProvider>
   </BrowserRouter>
@@ -57,3 +67,4 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+library.add(fab, fas, far);

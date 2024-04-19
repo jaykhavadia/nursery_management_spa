@@ -10,7 +10,7 @@ const Dashboard = () => {
   const { checkLogin } = useContext(AuthContext);
 
   useEffect(() => {
-    checkLogin("/login");
+    checkLogin();
   }, []);
 
   const Logout = () => {

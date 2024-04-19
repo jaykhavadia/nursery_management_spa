@@ -20,7 +20,7 @@ const Login = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const { updateUserToken, checkLogin } = useContext(AuthContext);
+  const { updateUserEmail, checkLogin } = useContext(AuthContext);
 
   const handleEmailChange = (e) => {
     setEmailError();
@@ -63,9 +63,9 @@ const Login = () => {
       const result = await login(loginData); // Call getSomeData function from the API service
       if (result.token) {
         toast.success("Login Successfully!");
-        updateUserToken(result.token);
+        localStorage.setItem("userEmail", email);
         resetFields();
-        checkLogin("/login");
+        checkLogin();
         return;
       }
       toast.error(result.message);
@@ -83,7 +83,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    checkLogin("");
+    checkLogin();
     setTimeout(() => {
       setZoom("scale-100");
     }, 500); // Adjust the delay as needed

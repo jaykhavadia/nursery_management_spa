@@ -113,7 +113,7 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    checkLogin("");
+    checkLogin();
     // Zoom in after a delay
     setTimeout(() => {
       setZoom("scale-100");

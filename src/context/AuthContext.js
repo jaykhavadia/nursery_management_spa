@@ -6,27 +6,35 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [userToken, setUserToken] = useState("");
   const [userData, setUserData] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
 
-  const checkLogin = (path) => {
+  const checkLogin = () => {
     const token = localStorage.getItem("token");
+    const verifyEmail = localStorage.getItem("verifyEmail");
     if (token) {
       updateUserToken(token);
       navigate("/dashboard");
       return;
     }
-    updateUserToken("");
-    if (path === "/login") {
-      navigate(path);
+    if (verifyEmail) {
+      navigate("/email-verification");
+      return;
     }
+    updateUserToken("");
+    navigate("/login");
   };
 
   const updateUserData = (info) => {
-    setUserData(userData);
+    setUserData(info);
   };
 
   const updateUserToken = (info) => {
-    setUserToken(userData);
+    setUserToken(info);
+  };
+
+  const updateUserEmail = (info) => {
+    setUserEmail(info);
   };
 
   return (
@@ -34,9 +42,11 @@ export const AuthContextProvider = ({ children }) => {
       value={{
         userData,
         userToken,
+        userEmail,
         updateUserToken,
         updateUserData,
         checkLogin,
+        updateUserEmail,
       }}
     >
       {children}
