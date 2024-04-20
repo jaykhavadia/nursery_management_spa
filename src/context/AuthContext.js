@@ -9,8 +9,8 @@ export const AuthContextProvider = ({ children }) => {
   const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
 
-  const checkLogin = () => {
-    const token = localStorage.getItem("token");
+  const checkLogin = (path) => {
+    const token = localStorage.getItem("accessToken");
     const verifyEmail = localStorage.getItem("verifyEmail");
     if (token) {
       updateUserToken(token);
@@ -22,7 +22,9 @@ export const AuthContextProvider = ({ children }) => {
       return;
     }
     updateUserToken("");
-    navigate("/login");
+    if (path) {
+      navigate(path);
+    }
   };
 
   const updateUserData = (info) => {

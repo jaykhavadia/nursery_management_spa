@@ -87,8 +87,10 @@ const SignUp = () => {
       const result = await registerUser(signUpData); // Call getSomeData function from the API service
       if (result.saveUser) {
         toast.success("Signup Successful!");
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userName", userName);
+        checkLogin();
         resetFields("all");
-        navigate("/login");
         return;
       }
       toast.error(result.message);

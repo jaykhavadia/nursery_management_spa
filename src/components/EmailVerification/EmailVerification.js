@@ -1,25 +1,59 @@
 import { useContext, useEffect, useState } from "react";
 import bgImage from "../../assets/img/backgroundImage.png";
 import emailImage from "../../assets/img/emailVerification.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { Button } from "@material-tailwind/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
+import {
+  ME,
+  resendVerificationEmail,
+  verifyEmail,
+} from "../../service/api_service";
+import toast from "react-hot-toast";
 const EmailVerification = () => {
   const [zoom, setZoom] = useState("scale-0");
   const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
   const { checkLogin } = useContext(AuthContext);
-  const { token } = useParams();
+  const location = useLocation();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
   useEffect(() => {
-    if (token) {
-      // call me api verify user
-      localStorage.setItem("token", token);
-      navigate("/dashboard");
+    async function emailVerification(token) {
+      try {
+        const response = await verifyEmail(token);
+        console.log("response->>>", response);
+        if (response === "User already verified") {
+          // add tost
+          localStorage.clear();
+          navigate("/login");
+        }
+        if (response === "jwt expired") {
+          toast.error("Verified link Expired!");
+        }
+        if (response.isVerified) {
+          // const user = await ME(token);
+          // console.log("user", user);
+          localStorage.removeItem("verifyEmail");
+          toast.success("Email Verified Successfully!");
+          navigate("/login");
+        }
+      } catch (error) {}
     }
+
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    if (token) {
+      console.log("token", token);
+      emailVerification(token);
+    }
+  }, []);
+
+  useEffect(() => {
     const email = localStorage.getItem("userEmail");
     setUserEmail(email);
     checkLogin();
@@ -29,8 +63,28 @@ const EmailVerification = () => {
   }, []);
 
   const resetFields = async () => {
-    localStorage.removeItem("verifyEmail");
-    navigate("/login");
+    localStorage.clear();
+    navigate("/sign-up");
+  };
+
+  const resendEmail = async () => {
+    const userEmail = localStorage.getItem("userEmail");
+    await resendVerificationEmail(userEmail);
+    toast.success("Verification Email Sent!");
+
+    setIsButtonDisabled(true);
+    localStorage.setItem("buttonClickTimestamp", Date.now().toString());
+    const twoMinutesInMillis = 2 * 60 * 1000;
+    setCountdown(120);
+    const timer = setInterval(() => {
+      setCountdown((prevCountdown) => prevCountdown - 1);
+    }, 1000);
+    setTimeout(() => {
+      clearInterval(timer);
+      setIsButtonDisabled(false);
+      localStorage.removeItem("buttonClickTimestamp");
+      setCountdown(0);
+    }, twoMinutesInMillis);
   };
 
   return (
@@ -76,7 +130,12 @@ const EmailVerification = () => {
               </div>
             </div>
             <div className=' sm:mx-auto sm:w-full sm:max flex justify-center mt-4'>
-              <Button color='green' className='flex items-center gap-3'>
+              <Button
+                onClick={resendEmail}
+                color='green'
+                className='flex items-center gap-3'
+                disabled={isButtonDisabled}
+              >
                 <FontAwesomeIcon icon={faEnvelope} />
                 Verify your email
               </Button>
@@ -85,12 +144,17 @@ const EmailVerification = () => {
             {/* <span>{userEmail}</span> */}
             {/* </div> */}
             <p className='mt-2 text-center  text-sm text-gray-500'>
+              <span>
+                {isButtonDisabled ? `Wait for (${countdown}s) for resending the email` : ""}
+              </span>
+            </p>
+            <p className='mt-2 text-center  text-sm text-gray-500'>
               <span>{userEmail} Not your email ?</span>
               <span
                 onClick={resetFields}
                 className='ml-2 font-semibold leading-6 text-indigo-600 hover:text-indigo-500 cursor-pointer'
               >
-                Login
+                Signup
               </span>
             </p>
           </div>

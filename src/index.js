@@ -19,7 +19,7 @@ import { fab } from "@fortawesome/free-brands-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 
-const token = localStorage.getItem("token");
+const token = localStorage.getItem("accessToken");
 
 axios.interceptors.request.use(
   function (config) {

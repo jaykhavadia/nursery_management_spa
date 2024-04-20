@@ -63,7 +63,6 @@ const Login = () => {
       const result = await login(loginData); // Call getSomeData function from the API service
       if (result.token) {
         toast.success("Login Successfully!");
-        localStorage.setItem("userEmail", email);
         resetFields();
         checkLogin();
         return;
@@ -143,14 +142,14 @@ const Login = () => {
                   <label className='block text-sm font-medium leading-6 text-gray-900'>
                     Password
                   </label>
-                  <div className='text-sm'>
+                  {/* <div className='text-sm'>
                     <a
                       href='#'
                       className='font-semibold text-indigo-600 hover:text-indigo-500'
                     >
                       Forgot password?
                     </a>
-                  </div>
+                  </div> */}
                 </div>
                 <div className='mt-2'>
                   <input

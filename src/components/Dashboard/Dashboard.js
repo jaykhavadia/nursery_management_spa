@@ -15,7 +15,7 @@ const Dashboard = () => {
 
   const Logout = () => {
     toast.success("Logout Successful!");
-    localStorage.removeItem("token");
+    localStorage.clear();
     navigate("/login");
   };
 
