@@ -56,7 +56,7 @@ const EmailVerification = () => {
   useEffect(() => {
     const email = localStorage.getItem("userEmail");
     setUserEmail(email);
-    checkLogin();
+    checkLogin('/login');
     setTimeout(() => {
       setZoom("scale-100");
     }, 500); // Adjust the delay as needed

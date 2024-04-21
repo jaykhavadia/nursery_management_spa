@@ -10,7 +10,10 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import { AuthContextProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import EmailVerification from "./components/EmailVerification/EmailVerification";
-
+import "./assets/style/style.css";
+import "./assets/scss/bootstrap.scss";
+import "./assets/style/bootstrap.min.css";
+import $ from 'jquery';
 // import the library
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -18,6 +21,9 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
+import Home from "./components/Home/Home";
+
+import "animate.css/animate.min.css";
 
 const token = localStorage.getItem("accessToken");
 
@@ -44,9 +50,10 @@ root.render(
           <Route
             path='*'
             element={
-              <Navigate replace to={`${token ? "/dashboard" : "/login"}`} />
+              <Navigate replace to={`${token ? "/dashboard" : "/home"}`} />
             }
           />
+          <Route path='home' element={<Home />} />
           <Route path='login' element={<Login />} />
           <Route path='sign-up' element={<SignUp />} />
           <Route path='dashboard' element={<Dashboard />} />
