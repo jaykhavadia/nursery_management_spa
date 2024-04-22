@@ -35,13 +35,13 @@ const Navbar = () => {
           <a href='/about' className='nav-item nav-link'>
             About
           </a>
-          <a href='/service' className='nav-item nav-link'>
+          <a href='/login' className='nav-item nav-link'>
             Services
           </a>
-          <a href='/project' className='nav-item nav-link'>
+          <a href='/projects' className='nav-item nav-link'>
             Projects
           </a>
-          <div className='nav-item dropdown'>
+          {/* <div className='nav-item dropdown'>
             <a
               href='#'
               className='nav-link dropdown-toggle'
@@ -66,7 +66,7 @@ const Navbar = () => {
                 404 Page
               </a>
             </div>
-          </div>
+          </div> */}
           <a href='/contact' className='nav-item nav-link'>
             Contact
           </a>

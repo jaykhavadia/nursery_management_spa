@@ -560,73 +560,78 @@ const Home = () => {
         data-parallax='scroll'
         data-image-src={img2}
       >
-        <div class='container py-5'>
-          <div class='row justify-content-center'>
-            <div class='col-lg-7'>
+        <div className='container py-5'>
+          <div className='row justify-content-center'>
+            <div className='col-lg-7'>
               <ScrollAnimation animateIn='animate__fadeInUp'>
                 <div
-                  class='bg-white rounded p-4 p-sm-5 wow fadeIn'
+                  className='bg-white rounded p-4 p-sm-5 wow fadeIn'
                   data-wow-delay='0.5s'
                 >
-                  <h1 class='display-5 text-center mb-5'>Get A Free Quote</h1>
-                  <div class='row g-3'>
-                    <div class='col-sm-6'>
-                      <div class='form-floating'>
+                  <h1 className='display-5 text-center mb-5'>
+                    Get A Free Quote
+                  </h1>
+                  <div className='row g-3'>
+                    <div className='col-sm-6'>
+                      <div className='form-floating'>
                         <input
                           type='text'
-                          class='form-control bg-light border-0'
+                          className='form-control bg-light border-0'
                           id='gname'
                           placeholder='Gurdian Name'
                         />
-                        <label for='gname'>Your Name</label>
+                        <label>Your Name</label>
                       </div>
                     </div>
-                    <div class='col-sm-6'>
-                      <div class='form-floating'>
+                    <div className='col-sm-6'>
+                      <div className='form-floating'>
                         <input
                           type='email'
-                          class='form-control bg-light border-0'
+                          className='form-control bg-light border-0'
                           id='gmail'
                           placeholder='Gurdian Email'
                         />
-                        <label for='gmail'>Your Email</label>
+                        <label>Your Email</label>
                       </div>
                     </div>
-                    <div class='col-sm-6'>
-                      <div class='form-floating'>
+                    <div className='col-sm-6'>
+                      <div className='form-floating'>
                         <input
                           type='text'
-                          class='form-control bg-light border-0'
+                          className='form-control bg-light border-0'
                           id='cname'
                           placeholder='Child Name'
                         />
-                        <label for='cname'>Your Mobile</label>
+                        <label>Your Mobile</label>
                       </div>
                     </div>
-                    <div class='col-sm-6'>
-                      <div class='form-floating'>
+                    <div className='col-sm-6'>
+                      <div className='form-floating'>
                         <input
                           type='text'
-                          class='form-control bg-light border-0'
+                          className='form-control bg-light border-0'
                           id='cage'
                           placeholder='Child Age'
                         />
-                        <label for='cage'>Service Type</label>
+                        <label>Service Type</label>
                       </div>
                     </div>
-                    <div class='col-12'>
-                      <div class='form-floating'>
+                    <div className='col-12'>
+                      <div className='form-floating'>
                         <textarea
-                          class='form-control bg-light border-0'
+                          className='form-control bg-light border-0'
                           placeholder='Leave a message here'
                           id='message'
                           style={{ height: "100px" }}
                         ></textarea>
-                        <label for='message'>Message</label>
+                        <label>Message</label>
                       </div>
                     </div>
-                    <div class='col-12 text-center'>
-                      <button class='btn btn-primary py-3 px-4' type='submit'>
+                    <div className='col-12 text-center'>
+                      <button
+                        className='btn btn-primary py-3 px-4'
+                        type='submit'
+                      >
                         Submit Now
                       </button>
                     </div>
@@ -675,7 +680,7 @@ const Home = () => {
                     <h4 className='text-white mb-4'>Landscaping</h4>
                     <div className='d-flex'>
                       <a
-                        className='btn btn-lg-square rounded-circle mx-2'
+                        className='btn btn-lg-square flex justify-center items-center rounded-circle mx-2'
                         href={service1}
                         data-lightbox='portfolio'
                       >
@@ -915,30 +920,32 @@ const Home = () => {
       </ScrollAnimation>
 
       <ScrollAnimation animateIn='animate__fadeInUp'>
-        <div class='container-xxl py-5'>
-          <div class='container'>
-            <div class='row g-5'>
-              <div class='col-lg-5 wow fadeInUp' data-wow-delay='0.1s'>
-                <p class='fs-5 fw-bold text-primary'>Testimonial</p>
-                <h1 class='display-5 mb-5'>What Our Clients Say About Us!</h1>
-                <p class='mb-4'>
+        <div className='container-xxl py-5'>
+          <div className='container'>
+            <div className='row g-5'>
+              <div className='col-lg-5 wow fadeInUp' data-wow-delay='0.1s'>
+                <p className='fs-5 fw-bold text-primary'>Testimonial</p>
+                <h1 className='display-5 mb-5'>
+                  What Our Clients Say About Us!
+                </h1>
+                <p className='mb-4'>
                   Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit.
                   Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit
                   sed stet lorem sit clita duo justo.
                 </p>
-                <a class='btn btn-primary py-3 px-4' href=''>
+                <a className='btn btn-primary py-3 px-4' href=''>
                   See More
                 </a>
               </div>
-              <div class='col-lg-7 wow fadeInUp' data-wow-delay='0.5s'>
-                <div class='owl-carousel testimonial-carousel'>
-                  <div class='testimonial-item'>
+              <div className='col-lg-7 wow fadeInUp' data-wow-delay='0.5s'>
+                <div className='owl-carousel testimonial-carousel'>
+                  <div className='testimonial-item'>
                     <img
-                      class='img-fluid rounded mb-3'
+                      className='img-fluid rounded mb-3'
                       src={testimonial1}
                       alt=''
                     />
-                    <p class='fs-5'>
+                    <p className='fs-5'>
                       Dolores sed duo clita tempor justo dolor et stet lorem
                       kasd labore dolore lorem ipsum. At lorem lorem magna ut
                       et, nonumy et labore et tempor diam tempor erat.
@@ -946,13 +953,13 @@ const Home = () => {
                     <h4>Client Name</h4>
                     <span>Profession</span>
                   </div>
-                  <div class='testimonial-item'>
+                  <div className='testimonial-item'>
                     <img
-                      class='img-fluid rounded mb-3'
+                      className='img-fluid rounded mb-3'
                       src={testimonial2}
                       alt=''
                     />
-                    <p class='fs-5'>
+                    <p className='fs-5'>
                       Dolores sed duo clita tempor justo dolor et stet lorem
                       kasd labore dolore lorem ipsum. At lorem lorem magna ut
                       et, nonumy et labore et tempor diam tempor erat.

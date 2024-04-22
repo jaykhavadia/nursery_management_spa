@@ -24,6 +24,9 @@ import { far } from "@fortawesome/free-regular-svg-icons";
 import Home from "./components/Home/Home";
 
 import "animate.css/animate.min.css";
+import About from "./components/About/About";
+import Projects from "./components/Projects/Projects";
+import Contact from "./components/Contact/Contact";
 
 const token = localStorage.getItem("accessToken");
 
@@ -54,6 +57,9 @@ root.render(
             }
           />
           <Route path='home' element={<Home />} />
+          <Route path='about' element={<About />} />
+          <Route path='projects' element={<Projects />} />
+          <Route path='contact' element={<Contact />} />
           <Route path='login' element={<Login />} />
           <Route path='sign-up' element={<SignUp />} />
           <Route path='dashboard' element={<Dashboard />} />
