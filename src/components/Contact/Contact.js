@@ -1,7 +1,58 @@
+import { useState } from "react";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+
+    // Reset error message for the field
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [id]: "",
+    }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+
+    if (formData.name.trim().length < 3) {
+      errors.name = "Name should be at least 3 characters long";
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      errors.email = "Invalid email address";
+    }
+
+    if (formData.phone.length !== 10) {
+      errors.phone = "Mobile number should be 10 digits long";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    const isValid = validateForm();
+    if (isValid) {
+      // Perform form submission
+      console.log("Form submitted:", formData);
+    }
+  };
+
   return (
     <div>
       <Navbar />
@@ -43,39 +94,60 @@ const Contact = () => {
                 and paste the files, add a little code and you're done.{" "}
                 <a href='https://htmlcodex.com/contact-form'>Download Now</a>.
               </p>
-              <form>
+              <div>
                 <div className='row g-3'>
                   <div className='col-md-6'>
                     <div className='form-floating'>
                       <input
                         type='text'
-                        className='form-control'
+                        className={`form-control ${
+                          errors.name && "is-invalid"
+                        }`}
                         id='name'
                         placeholder='Your Name'
+                        value={formData.name}
+                        onChange={handleChange}
                       />
                       <label>Your Name</label>
+                      {errors.name && (
+                        <div className='invalid-feedback'>{errors.name}</div>
+                      )}
                     </div>
                   </div>
                   <div className='col-md-6'>
                     <div className='form-floating'>
                       <input
-                        type='email'
-                        className='form-control'
-                        id='email'
-                        placeholder='Your Email'
+                        type='tel'
+                        className={`form-control ${
+                          errors.phone && "is-invalid"
+                        }`}
+                        id='phone'
+                        placeholder='Your Mobile Number'
+                        value={formData.phone}
+                        onChange={handleChange}
                       />
-                      <label>Your Email</label>
+                      <label htmlFor='phone'>Your Mobile Number</label>
+                      {errors.phone && (
+                        <div className='invalid-feedback'>{errors.phone}</div>
+                      )}
                     </div>
                   </div>
                   <div className='col-12'>
                     <div className='form-floating'>
                       <input
-                        type='text'
-                        className='form-control'
-                        id='subject'
-                        placeholder='Subject'
+                        type='email'
+                        className={`form-control ${
+                          errors.email && "is-invalid"
+                        }`}
+                        id='email'
+                        placeholder='Your Email'
+                        value={formData.email}
+                        onChange={handleChange}
                       />
-                      <label>Subject</label>
+                      <label>Your Email</label>
+                      {errors.email && (
+                        <div className='invalid-feedback'>{errors.email}</div>
+                      )}
                     </div>
                   </div>
                   <div className='col-12'>
@@ -85,17 +157,23 @@ const Contact = () => {
                         placeholder='Leave a message here'
                         id='message'
                         style={{ height: "100px" }}
+                        value={formData.message}
+                        onChange={handleChange}
                       ></textarea>
                       <label>Message</label>
                     </div>
                   </div>
                   <div className='col-12'>
-                    <button className='btn btn-primary py-3 px-4' type='submit'>
+                    <button
+                      className='btn btn-primary py-3 px-4'
+                      type='button'
+                      onClick={handleSubmit}
+                    >
                       Send Message
                     </button>
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
             <div
               className='col-lg-6 wow fadeIn'
@@ -105,12 +183,12 @@ const Contact = () => {
               <div className='position-relative rounded overflow-hidden h-100'>
                 <iframe
                   className='position-relative w-100 h-100'
-                  src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3001156.4288297426!2d-78.01371936852176!3d42.72876761954724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ccc4bf0f123a5a9%3A0xddcfc6c1de189567!2sNew%20York%2C%20USA!5e0!3m2!1sen!2sbd!4v1603794290143!5m2!1sen!2sbd'
-                  frameborder='0'
+                  src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024572.936063013!2d69.24337458282552!3d22.25857801175393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39582235017a20ab%3A0xa0b326d63ff6b59c!2sGujarat!5e0!3m2!1sen!2sin!4v1650803484429!5m2!1sen!2sin'
+                  frameBorder='0'
                   style={{ minHeight: "450px", border: "0" }}
-                  allowfullscreen=''
+                  allowFullScreen=''
                   aria-hidden='false'
-                  tabindex='0'
+                  tabIndex='0'
                 ></iframe>
               </div>
             </div>
