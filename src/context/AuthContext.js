@@ -14,7 +14,7 @@ export const AuthContextProvider = ({ children }) => {
     const verifyEmail = localStorage.getItem("verifyEmail");
     if (token) {
       updateUserToken(token);
-      navigate("/dashboard");
+      navigate("/garden/registration");
       return;
     }
     if (verifyEmail) {
@@ -22,9 +22,19 @@ export const AuthContextProvider = ({ children }) => {
       return;
     }
     updateUserToken("");
-    if (path) {
-      navigate(path);
+    console.log("path", path);
+    navigate(path || "/login");
+
+    // navigate("/login");
+  };
+
+  const getUserData = () => {
+    if (userData) {
+      return userData;
     }
+    const user = localStorage.getItem('currentUser');
+    console.log('user', user);
+    return user;
   };
 
   const updateUserData = (info) => {
@@ -49,6 +59,7 @@ export const AuthContextProvider = ({ children }) => {
         updateUserData,
         checkLogin,
         updateUserEmail,
+        getUserData
       }}
     >
       {children}

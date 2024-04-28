@@ -2,9 +2,9 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:4000";
 
-export const ME = async (token) => {
+export const ME = async () => {
   try {
-    const response = await axios.post(`${BASE_URL}/me`, token);
+    const response = await axios.post(`${BASE_URL}/me`);
     console.log("response.data ME->>>", response.data);
     // localStorage.setItem("token", response.data.token);
     return response.data;
@@ -61,5 +61,31 @@ export const verifyEmail = async (token) => {
     // Handle errors
     console.error("Error posting data:", error);
     return error.response.data.message;
+  }
+};
+
+export const registerGarden = async (data) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/garden/register`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting data:", error);
+    return error.response.data;
+  }
+};
+
+export const getGardenDetails = async () => {
+  try {
+    const response = await axios.post(`${BASE_URL}/garden/details`);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting data:", error);
+    return error.response.data;
   }
 };

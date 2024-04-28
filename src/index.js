@@ -27,6 +27,7 @@ import "animate.css/animate.min.css";
 import About from "./components/About/About";
 import Projects from "./components/Projects/Projects";
 import Contact from "./components/Contact/Contact";
+import GardenRegistration from "./components/GardenRegistration/GardenRegistration";
 
 const token = localStorage.getItem("accessToken");
 
@@ -50,21 +51,23 @@ root.render(
     <AuthContextProvider>
       <div>
         <Routes>
-          <Route
-            path='*'
-            element={
-              <Navigate replace to={`${token ? "/dashboard" : "/home"}`} />
-            }
-          />
+          
           <Route path='home' element={<Home />} />
           <Route path='about' element={<About />} />
           <Route path='projects' element={<Projects />} />
           <Route path='contact' element={<Contact />} />
           <Route path='login' element={<Login />} />
           <Route path='sign-up' element={<SignUp />} />
-          <Route path='dashboard' element={<Dashboard />} />
+          {/* <Route path='dashboard' element={<Dashboard />} /> */}
           <Route path='email-verification' element={<EmailVerification />} />
-          {/* <Route path='contact' element={<Contact />} /> */}
+          <Route path='/garden/registration' element={<GardenRegistration />} />
+          {/* <Route path='/garden/maintenance' element={<EmailVerification />} /> */}
+          <Route
+            path='*'
+            element={
+              <Navigate replace to={`${token ? "" : "/home"}`} />
+            }
+          />
         </Routes>
         <Toaster
           position='top-right'

@@ -3,14 +3,14 @@ import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 
 const Contact = () => {
+  
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
   });
-
-  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -175,6 +175,7 @@ const Contact = () => {
                 </div>
               </div>
             </div>
+            
             <div
               className='col-lg-6 wow fadeIn'
               data-wow-delay='0.5s'
