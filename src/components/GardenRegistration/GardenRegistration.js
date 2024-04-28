@@ -3,14 +3,21 @@ import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { getGardenDetails, ME, registerGarden, registerUser } from "../../service/api_service";
+import {
+  getGardenDetails,
+  ME,
+  registerGarden,
+  registerUser,
+} from "../../service/api_service";
 import defaultImage from "../../assets/img/defaultImage.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { State, City } from "country-state-city";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const GardenRegistration = () => {
+  const navigate = useNavigate();
   const { checkLogin } = useContext(AuthContext);
   const [zoom, setZoom] = useState("scale-0");
   const [userData, setUserData] = useState();
@@ -71,11 +78,10 @@ const GardenRegistration = () => {
   };
 
   const handleImageChange = (e) => {
-
     const selectedImage = e.target.files[0];
-    const imageType = selectedImage.type.split('/')[1];
-    if(imageType !== 'png' && imageType !== 'jpeg'){
-      toast.error('Image not supported use png or jpeg');
+    const imageType = selectedImage.type.split("/")[1];
+    if (imageType !== "png" && imageType !== "jpeg") {
+      toast.error("Image not supported use png or jpeg");
       return;
     }
     setErrors((prevErrors) => ({
@@ -107,8 +113,8 @@ const GardenRegistration = () => {
     if (!formData.pincode) {
       errors.pincode = errorMessage;
     }
-    if(formData.pincode && formData.pincode.length <=5){
-      errors.pincode = 'Length should be of 6 digits';
+    if (formData.pincode && formData.pincode.length <= 5) {
+      errors.pincode = "Length should be of 6 digits";
     }
     if (!formData.height) {
       errors.height = errorMessage;
@@ -126,7 +132,7 @@ const GardenRegistration = () => {
       errors.contact = errorMessage;
     }
     if (formData.contact && formData.contact.length !== 10) {
-      errors.contact = 'Length should be of 10 digits';
+      errors.contact = "Length should be of 10 digits";
     }
 
     setErrors(errors);
@@ -143,18 +149,21 @@ const GardenRegistration = () => {
     const isValid = validateForm();
     if (isValid) {
       // Perform form submission
-      formData.userId = userData._id;
-      console.log("Form submitted:", formData);
+      console.log("user", userData);
+      console.log("Form submitted:", {
+        ...formData,
+        userId: userData?.user?._id,
+      });
     }
 
     try {
-        const result = await registerGarden(formData); // Call getSomeData function from the API service
-        if (result.saveUser) {
-          toast.success("Garden registered Successful!");
-          resetFields();
-          return;
-        }
-        toast.error(result.message);
+      const result = await registerGarden(formData); // Call getSomeData function from the API service
+      if (result.saveUser) {
+        toast.success("Garden registered Successful!");
+        resetFields();
+        return;
+      }
+      toast.error(result.message);
     } catch (error) {
       // Handle errors
       console.error("Error while Login:", error);
@@ -181,30 +190,36 @@ const GardenRegistration = () => {
     setErrors();
   };
 
-  useEffect(() => {
-    async function me() {
-      const { user } = await ME();
-      console.log("User data ->>", user);
-      console.log("User data", user?._id);
-      setUserData(user);
-      localStorage.setItem("currentUser", JSON.stringify(user));
-    }
-    async function getGardenData() {
-      const response= await getGardenDetails();
+  const me = async () => {
+    const user = await ME();
+    console.log("User data ->>", user);
+    console.log("User data", user?._id);
+    setUserData(user);
+    setFormData((prevData) => ({
+      ...prevData,
+      userId: userData?.user?._id,
+    }));
+    localStorage.setItem("currentUser", JSON.stringify(user));
+  };
 
-      console.log('response ', response);
+  useEffect(() => {
+    async function getGardenData() {
+      const response = await getGardenDetails();
+
+      console.log("response ", response);
+      if (response?.message === "Invalid token") {
+        toast.success(response?.message);
+        localStorage.clear();
+        navigate("/login");
+      }
       // console.log("User data ->>", user);
       // console.log("User data", user._id);
       // setUserData(user);
       // localStorage.setItem("currentUser", JSON.stringify(user));
     }
     checkLogin();
+    me();
     getGardenData();
-    const user = localStorage.getItem("currentUser");
-    if(!user){
-      me();
-    }
-    setUserData(user);
 
     // Zoom in after a delay
     setTimeout(() => {
@@ -252,7 +267,7 @@ const GardenRegistration = () => {
                           autoComplete='name'
                           placeholder='Enter your name'
                           required
-                          value={formData.name}
+                          value={formData?.name}
                           className={`form-control ${
                             errors.name && "is-invalid"
                           }`}
@@ -279,7 +294,7 @@ const GardenRegistration = () => {
                         placeholder='Enter your address'
                         id='address'
                         style={{ height: "90px" }}
-                        value={formData.address}
+                        value={formData?.address}
                         className={`form-control ${
                           errors.address && "is-invalid"
                         }`}
@@ -331,7 +346,7 @@ const GardenRegistration = () => {
                         <select
                           id='city'
                           name='city'
-                          value={formData.selectedCity}
+                          value={formData?.selectedCity}
                           onChange={handleChange}
                           className={`form-control ${
                             errors.city && "is-invalid"
@@ -340,7 +355,7 @@ const GardenRegistration = () => {
                         >
                           <option value=''>Select City</option>
                           {Cities?.map((city, index) => (
-                            <option key={index} value={formData.city.name}>
+                            <option key={index} value={city.name}>
                               {city.name}
                             </option>
                           ))}
@@ -365,7 +380,7 @@ const GardenRegistration = () => {
                           minLength={6}
                           maxLength={6}
                           placeholder='Enter your pincode'
-                          value={formData.pincode}
+                          value={formData?.pincode}
                           onChange={handleChange}
                           className={`form-control ${
                             errors.pincode && "is-invalid"
@@ -392,7 +407,7 @@ const GardenRegistration = () => {
                         placeholder='Enter your contact number'
                         minLength={10}
                         maxLength={10}
-                        value={formData.contact}
+                        value={formData?.contact}
                         onChange={handleChange}
                         className={`form-control ${
                           errors.contact && "is-invalid"
@@ -416,7 +431,7 @@ const GardenRegistration = () => {
                           name='height'
                           type='number'
                           placeholder='Enter Garden Height'
-                          value={formData.height}
+                          value={formData?.height}
                           onChange={handleChange}
                           className={`form-control ${
                             errors.height && "is-invalid"
@@ -440,7 +455,7 @@ const GardenRegistration = () => {
                           name='width'
                           type='number'
                           placeholder='Enter Garden Width'
-                          value={formData.width}
+                          value={formData?.width}
                           onChange={handleChange}
                           className={`form-control ${
                             errors.width && "is-invalid"
@@ -462,7 +477,7 @@ const GardenRegistration = () => {
                       <textarea
                         placeholder='Enter plant details'
                         id='plantDetails'
-                        value={formData.plantDetails}
+                        value={formData?.plantDetails}
                         onChange={handleChange}
                         className='form-control'
                       ></textarea>
@@ -483,7 +498,7 @@ const GardenRegistration = () => {
                               name='waterSupplyMethod'
                               value='automatic'
                               checked={
-                                formData.waterSupplyMethod === "automatic"
+                                formData?.waterSupplyMethod === "automatic"
                               }
                               onChange={handleChange}
                             />
@@ -496,7 +511,7 @@ const GardenRegistration = () => {
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='waterSupplyMethod'
                               value='manual'
-                              checked={formData.waterSupplyMethod === "manual"}
+                              checked={formData?.waterSupplyMethod === "manual"}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>Manual</span>

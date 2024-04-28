@@ -13,7 +13,6 @@ import EmailVerification from "./components/EmailVerification/EmailVerification"
 import "./assets/style/style.css";
 import "./assets/scss/bootstrap.scss";
 import "./assets/style/bootstrap.min.css";
-import $ from 'jquery';
 // import the library
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -51,7 +50,11 @@ root.render(
     <AuthContextProvider>
       <div>
         <Routes>
-          
+          <Route
+            path='*'
+            element={<Navigate replace to={`${token ? "/garden/registration" : "/home"}`} />}
+          />
+
           <Route path='home' element={<Home />} />
           <Route path='about' element={<About />} />
           <Route path='projects' element={<Projects />} />
@@ -62,12 +65,6 @@ root.render(
           <Route path='email-verification' element={<EmailVerification />} />
           <Route path='/garden/registration' element={<GardenRegistration />} />
           {/* <Route path='/garden/maintenance' element={<EmailVerification />} /> */}
-          <Route
-            path='*'
-            element={
-              <Navigate replace to={`${token ? "" : "/home"}`} />
-            }
-          />
         </Routes>
         <Toaster
           position='top-right'
