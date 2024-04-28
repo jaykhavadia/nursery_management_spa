@@ -150,23 +150,23 @@ const GardenRegistration = () => {
     if (isValid) {
       // Perform form submission
       console.log("user", userData);
-      console.log("Form submitted:", {
-        ...formData,
-        userId: userData?.user?._id,
-      });
-    }
-
-    try {
-      const result = await registerGarden(formData); // Call getSomeData function from the API service
-      if (result.saveUser) {
-        toast.success("Garden registered Successful!");
-        resetFields();
-        return;
+      if (!formData.userId) {
+        await me();
       }
-      toast.error(result.message);
-    } catch (error) {
-      // Handle errors
-      console.error("Error while Login:", error);
+      console.log("Form submitted:", formData);
+      
+      try {
+        const result = await registerGarden(formData); // Call getSomeData function from the API service
+        if (result.saveUser) {
+          toast.success("Garden registered Successful!");
+          resetFields();
+          return;
+        }
+        toast.error(result.message);
+      } catch (error) {
+        // Handle errors
+        console.error("Error while Login:", error);
+      }
     }
   };
 
