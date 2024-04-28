@@ -7,7 +7,6 @@ import {
   getGardenDetails,
   ME,
   registerGarden,
-  registerUser,
 } from "../../service/api_service";
 import defaultImage from "../../assets/img/defaultImage.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,6 +42,7 @@ const GardenRegistration = () => {
     image: "",
     userId: "",
   });
+  const [isDataAvailable, setIsDataAvailable] = useState(false);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -154,7 +154,7 @@ const GardenRegistration = () => {
         await me();
       }
       console.log("Form submitted:", formData);
-      
+
       try {
         const result = await registerGarden(formData); // Call getSomeData function from the API service
         if (result.saveUser) {
@@ -212,10 +212,11 @@ const GardenRegistration = () => {
         localStorage.clear();
         navigate("/login");
       }
-      // console.log("User data ->>", user);
-      // console.log("User data", user._id);
-      // setUserData(user);
-      // localStorage.setItem("currentUser", JSON.stringify(user));
+      setFormData(response);
+      setIsDataAvailable(true);
+      const stateObj = indianStates.find((state) => state.name === response.state);
+      setSelectedState(stateObj);
+      setCities(City.getCitiesOfState("IN", stateObj.isoCode));
     }
     checkLogin();
     me();
@@ -317,7 +318,11 @@ const GardenRegistration = () => {
                         <select
                           id='state'
                           name='state'
-                          value={selectedState ? selectedState.isoCode : ""} // Use isoCode property
+                          value={
+                            'formData.state' || selectedState
+                              ? selectedState.isoCode
+                              : ""
+                          } // Use isoCode property
                           onChange={handleStateChange}
                           className={`form-control ${
                             errors.state && "is-invalid"
@@ -346,7 +351,7 @@ const GardenRegistration = () => {
                         <select
                           id='city'
                           name='city'
-                          value={formData?.selectedCity}
+                          value={formData?.city}
                           onChange={handleChange}
                           className={`form-control ${
                             errors.city && "is-invalid"
@@ -532,7 +537,8 @@ const GardenRegistration = () => {
                       <div className='mt-2 flex flex-row justify-evenly'>
                         <div className=''>
                           <img
-                            src={image ? image : defaultImage}
+                            // src= {formData?.image || image ? image : defaultImage}
+                            src='http://localhost:4000/uploads/image-1714325613032-38313133.jpeg'
                             alt='Selected'
                             className='w-48 h-48 rounded object-fill'
                           />
@@ -570,9 +576,12 @@ const GardenRegistration = () => {
 
                     <button
                       className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                      disabled={isDataAvailable}
                       onClick={handleRegistration}
                     >
-                      Register your Garden
+                      {isDataAvailable
+                        ? "Update your data"
+                        : "Register your Garden"}
                     </button>
                   </div>
                 </div>
