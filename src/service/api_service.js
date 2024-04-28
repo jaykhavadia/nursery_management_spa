@@ -81,7 +81,7 @@ export const registerGarden = async (data) => {
 
 export const getGardenDetails = async () => {
   try {
-    const response = await axios.post(`${BASE_URL}/garden/details`);
+    const response = await axios.get(`${BASE_URL}/garden/details`);
     return response.data;
   } catch (error) {
     // Handle errors

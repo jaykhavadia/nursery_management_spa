@@ -3,7 +3,7 @@ import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { ME, registerGarden, registerUser } from "../../service/api_service";
+import { getGardenDetails, ME, registerGarden, registerUser } from "../../service/api_service";
 import defaultImage from "../../assets/img/defaultImage.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
@@ -185,17 +185,27 @@ const GardenRegistration = () => {
     async function me() {
       const { user } = await ME();
       console.log("User data ->>", user);
-      console.log("User data", user._id);
+      console.log("User data", user?._id);
       setUserData(user);
       localStorage.setItem("currentUser", JSON.stringify(user));
     }
+    async function getGardenData() {
+      const response= await getGardenDetails();
+
+      console.log('response ', response);
+      // console.log("User data ->>", user);
+      // console.log("User data", user._id);
+      // setUserData(user);
+      // localStorage.setItem("currentUser", JSON.stringify(user));
+    }
+    checkLogin();
+    getGardenData();
     const user = localStorage.getItem("currentUser");
     if(!user){
       me();
     }
     setUserData(user);
 
-    checkLogin();
     // Zoom in after a delay
     setTimeout(() => {
       setZoom("scale-100");
