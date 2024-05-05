@@ -41,15 +41,15 @@ const Navbar = () => {
           <a href='/home' className='nav-item nav-link active'>
             Home
           </a>
-          <a href='/about' className='nav-item nav-link'>
+          {/* <a href='/about' className='nav-item nav-link'>
             About
-          </a>
+          </a> */}
           {/* <a href='/login' className='nav-item nav-link'>
             Services
           </a> */}
-          <a href='/projects' className='nav-item nav-link'>
+          {/* <a href='/projects' className='nav-item nav-link'>
             Projects
-          </a>
+          </a> */}
           <div className='nav-item dropdown'>
             <a
               href='#'
@@ -66,7 +66,7 @@ const Navbar = () => {
                 Garden Registration
               </a>
               <a
-                href={token ? "/garden/maintenance" : "/login"}
+                href={token ? "/garden/maintenance/list" : "/login"}
                 className='dropdown-item'
               >
                 Garden Maintenance

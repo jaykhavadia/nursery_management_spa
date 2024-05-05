@@ -78,6 +78,20 @@ export const registerGarden = async (payload) => {
     throw error.response.data;
   }
 };
+export const updateGarden = async (payload) => {
+  try {
+    const response = await axios.patch(`${BASE_URL}/garden/update`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting data:", error);
+    throw error.response.data;
+  }
+};
 
 export const getGardenDetails = async () => {
   try {

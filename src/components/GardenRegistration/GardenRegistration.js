@@ -7,6 +7,7 @@ import {
   getGardenDetails,
   ME,
   registerGarden,
+  updateGarden,
 } from "../../service/api_service";
 import defaultImage from "../../assets/img/defaultImage.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -159,6 +160,30 @@ const GardenRegistration = () => {
         const result = await registerGarden(formData); // Call getSomeData function from the API service
         if (result) {
           toast.success("Garden registered Successful!");
+          resetFields();
+          await setGardenData();
+        }
+      } catch (error) {
+        console.error("Error while Login:", error);
+        toast.error(error.message);
+      }
+    }
+  };
+
+  const handleUpdatedRegistration = async () => {
+    const isValid = validateForm();
+    if (isValid) {
+      // Perform form submission
+      console.log("user", userData);
+      if (!formData.userId) {
+        await me();
+      }
+      console.log("Form submitted:", formData);
+
+      try {
+        const result = await updateGarden(formData); // Call getSomeData function from the API service
+        if (result) {
+          toast.success("Garden data updated Successful!");
           resetFields();
           await setGardenData();
         }
@@ -582,16 +607,21 @@ const GardenRegistration = () => {
                         </div>
                       )}
                     </div>
-
-                    <button
-                      className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                      disabled={isDataAvailable}
-                      onClick={handleRegistration}
-                    >
-                      {isDataAvailable
-                        ? "Update your data"
-                        : "Register your Garden"}
-                    </button>
+                    {isDataAvailable ? (
+                      <button
+                        className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                        onClick={handleUpdatedRegistration}
+                      >
+                        Update your data
+                      </button>
+                    ) : (
+                      <button
+                        className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                        onClick={handleRegistration}
+                      >
+                        Register your Garden
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

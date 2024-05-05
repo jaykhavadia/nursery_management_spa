@@ -44,7 +44,7 @@ const GardenMaintenanceList = () => {
               <li className='breadcrumb-item'>Home</li>
               <li className='breadcrumb-item'>Pages</li>
               <li className='breadcrumb-item' aria-current='page'>
-                garden / Maintenance
+                garden / Maintenance / list
               </li>
             </ol>
           </nav>
