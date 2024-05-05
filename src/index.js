@@ -27,6 +27,8 @@ import About from "./components/About/About";
 import Projects from "./components/Projects/Projects";
 import Contact from "./components/Contact/Contact";
 import GardenRegistration from "./components/GardenRegistration/GardenRegistration";
+import GardenMaintenance from "./components/GardenMaintenance/GardenMaintenance";
+import GardenMaintenanceList from "./components/GardenMaintenanceListing/GardenMaintenanceList";
 
 const token = localStorage.getItem("accessToken");
 
@@ -63,8 +65,9 @@ root.render(
           <Route path='sign-up' element={<SignUp />} />
           {/* <Route path='dashboard' element={<Dashboard />} /> */}
           <Route path='email-verification' element={<EmailVerification />} />
-          <Route path='/garden/registration' element={<GardenRegistration />} />
-          {/* <Route path='/garden/maintenance' element={<EmailMaintenance />} /> */}
+          <Route path='garden/registration' element={<GardenRegistration />} />
+          <Route path='garden/maintenance/list' element={<GardenMaintenanceList />} />
+          <Route path='garden/maintenance' element={<GardenMaintenance />} />
         </Routes>
         <Toaster
           position='top-right'

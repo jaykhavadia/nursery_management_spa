@@ -2,45 +2,25 @@ import toast from "react-hot-toast";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
 import {
   getGardenDetails,
   ME,
   registerGarden,
 } from "../../service/api_service";
-import defaultImage from "../../assets/img/defaultImage.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-regular-svg-icons";
-import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
-import { State, City } from "country-state-city";
-import { Navigate, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const GardenMaintenance = () => {
   const navigate = useNavigate();
   const { checkLogin } = useContext(AuthContext);
   const [zoom, setZoom] = useState("scale-0");
   const [userData, setUserData] = useState();
-  const [Cities, setCities] = useState([]);
-  const [image, setImage] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [indianStates, setIndianStates] = useState(
-    State.getStatesOfCountry("IN")
-  );
+  //   const [image, setImage] = useState("");
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    state: "",
-    city: "",
-    pincode: "",
-    contact: "",
-    height: "",
-    width: "",
-    plantDetails: "",
-    waterSupplyMethod: "",
-    image: "",
     userId: "",
+    gardenId: "",
   });
   const [isDataAvailable, setIsDataAvailable] = useState(false);
 
@@ -61,39 +41,23 @@ const GardenMaintenance = () => {
     }));
   };
 
-  const handleStateChange = (e) => {
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      state: "",
-    }));
-    const stateCode = e.target.value;
-    const stateObj = indianStates.find((state) => state?.isoCode === stateCode);
-    setSelectedState(stateObj); // Store the whole state object
-    setFormData((prevData) => ({
-      ...prevData,
-      state: stateObj.name,
-    }));
-    setCities(City.getCitiesOfState("IN", stateObj.isoCode)); // Pass stateObj instead of state
-    console.log("cities", City.getCitiesOfState("IN", stateObj?.isoCode));
-  };
-
-  const handleImageChange = (e) => {
-    const selectedImage = e.target.files[0];
-    const imageType = selectedImage.type.split("/")[1];
-    if (imageType !== "png" && imageType !== "jpeg") {
-      toast.error("Image not supported use png or jpeg");
-      return;
-    }
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      image: "",
-    }));
-    setFormData((prevData) => ({
-      ...prevData,
-      image: e.target.files[0],
-    }));
-    setImage(URL.createObjectURL(selectedImage));
-  };
+  //   const handleImageChange = (e) => {
+  //     const selectedImage = e.target.files[0];
+  //     const imageType = selectedImage.type.split("/")[1];
+  //     if (imageType !== "png" && imageType !== "jpeg") {
+  //       toast.error("Image not supported use png or jpeg");
+  //       return;
+  //     }
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       image: "",
+  //     }));
+  //     setFormData((prevData) => ({
+  //       ...prevData,
+  //       image: e.target.files[0],
+  //     }));
+  //     setImage(URL.createObjectURL(selectedImage));
+  //   };
 
   const validateForm = () => {
     const errorMessage = "is required";
@@ -101,39 +65,9 @@ const GardenMaintenance = () => {
     if (!formData.name) {
       errors.name = errorMessage;
     }
-    if (!formData.address) {
-      errors.address = errorMessage;
-    }
-    if (!formData.state) {
-      errors.state = errorMessage;
-    }
-    if (!formData.city) {
-      errors.city = errorMessage;
-    }
-    if (!formData.pincode) {
-      errors.pincode = errorMessage;
-    }
-    if (formData.pincode && formData.pincode.length <= 5) {
-      errors.pincode = "Length should be of 6 digits";
-    }
-    if (!formData.height) {
-      errors.height = errorMessage;
-    }
-    if (!formData.width) {
-      errors.width = errorMessage;
-    }
-    if (!formData.waterSupplyMethod) {
-      errors.waterSupplyMethod = errorMessage;
-    }
-    if (!formData.image) {
-      errors.image = errorMessage;
-    }
-    if (!formData.contact) {
-      errors.contact = errorMessage;
-    }
-    if (formData.contact && formData.contact.length !== 10) {
-      errors.contact = "Length should be of 10 digits";
-    }
+    // if (!formData.waterSupplyMethod) {
+    //   errors.waterSupplyMethod = errorMessage;
+    // }
 
     setErrors(errors);
     console.log("err", errors);
@@ -146,7 +80,7 @@ const GardenMaintenance = () => {
   };
 
   const handleRegistration = async () => {
-    const isValid = validateForm();
+    const isValid = true;
     if (isValid) {
       // Perform form submission
       console.log("user", userData);
@@ -156,12 +90,6 @@ const GardenMaintenance = () => {
       console.log("Form submitted:", formData);
 
       try {
-        const result = await registerGarden(formData); // Call getSomeData function from the API service
-        if (result) {
-          toast.success("Garden registered Successful!");
-          resetFields();
-          await setGardenData();
-        }
       } catch (error) {
         console.error("Error while Login:", error);
         toast.error(error.message);
@@ -171,21 +99,12 @@ const GardenMaintenance = () => {
 
   const resetFields = () => {
     setFormData({
-      name: "",
-      address: "",
-      state: "",
-      city: "",
-      pincode: "",
-      contact: "",
-      height: "",
-      width: "",
-      plantDetails: "",
-      waterSupplyMethod: "",
-      image: "",
+      // name: "",
+      //   plantDetails: "",
+      // waterSupplyMethod: "",
       userId: "",
+      gardenId: "",
     });
-    setImage("");
-    setSelectedState("");
     setErrors();
   };
 
@@ -212,17 +131,17 @@ const GardenMaintenance = () => {
       localStorage.clear();
       navigate("/login");
     }
-    setFormData(response);
-    setIsDataAvailable(true);
-    const stateObj = indianStates.find(
-      (state) => state.name === response.state
-    );
-    setSelectedState(stateObj);
-    setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+    console.log("response ", response._id);
+    // setFormData(response);
+    setFormData((prevData) => ({
+      ...prevData,
+      gardenId: response._id,
+    }));
+    // setIsDataAvailable(true);
   };
 
   useEffect(() => {
-    checkLogin();
+    checkLogin("/garden/maintenance");
     async function getGardenData() {
       await me();
       await setGardenData();
@@ -244,14 +163,14 @@ const GardenMaintenance = () => {
       >
         <div className='container text-center py-5'>
           <h1 className='display-3 text-white mb-4 animated slideInDown'>
-            Garden Registration
+            Garden Maintenance
           </h1>
           <nav aria-label='breadcrumb animated slideInDown'>
             <ol className='breadcrumb justify-content-center mb-0'>
               <li className='breadcrumb-item'>Home</li>
               <li className='breadcrumb-item'>Pages</li>
               <li className='breadcrumb-item' aria-current='page'>
-                garden / registration
+                garden / Maintenance
               </li>
             </ol>
           </nav>
@@ -264,283 +183,226 @@ const GardenMaintenance = () => {
                     <div>
                       <div className='flex justify-start'>
                         <label className='block text-sm font-medium leading-6 text-gray-900'>
-                          Name
+                          Maintenance Name
                         </label>
                       </div>
                       <div className='mt-2'>
                         <input
-                          id='name'
-                          name='name'
+                          id='maintenanceName'
+                          name='maintenanceName'
                           type='text'
-                          autoComplete='name'
-                          placeholder='Enter your name'
+                          autoComplete='maintenanceName'
+                          placeholder='Enter your maintenance name'
                           required
-                          value={formData?.name}
+                          value={formData?.maintenanceName}
                           className={`form-control ${
-                            errors?.name && "is-invalid"
+                            errors?.maintenanceName && "is-invalid"
                           }`}
                           onChange={handleChange}
                         />
                       </div>
-                      {errors?.name && (
+                      {errors?.maintenanceName && (
                         <div
                           style={{ display: "block" }}
                           className='invalid-feedback'
                         >
-                          Your Name {errors?.name}
+                          Your Maintenance Name {errors?.maintenanceName}
                         </div>
                       )}
                     </div>
 
-                    <div>
-                      <div className='flex justify-start'>
-                        <label className='block text-sm font-medium leading-6 text-gray-900'>
-                          Address
-                        </label>
-                      </div>
-                      <textarea
-                        placeholder='Enter your address'
-                        id='address'
-                        style={{ height: "90px" }}
-                        value={formData?.address}
-                        className={`form-control ${
-                          errors?.address && "is-invalid"
-                        }`}
-                        onChange={handleChange}
-                        required
-                      ></textarea>
-                      {errors?.address && (
-                        <div className='invalid-feedback'>
-                          Your address {errors?.address}
-                        </div>
-                      )}
-                    </div>
-                    <div className='flex flex-col sm:flex-row justify-between sm:items-center'>
-                      <div className='w-full mr-3'>
-                        <div className='flex justify-start'>
-                          <label className='block text-sm font-medium leading-6 text-gray-900'>
-                            State
-                          </label>
-                        </div>
-                        <select
-                          id='state'
-                          name='state'
-                          value={
-                            "formData.state" || selectedState
-                              ? selectedState?.isoCode
-                              : ""
-                          } // Use isoCode property
-                          onChange={handleStateChange}
-                          className={`form-control ${
-                            errors?.state && "is-invalid"
-                          }`}
-                        >
-                          <option value=''>Select State</option>
-                          {indianStates.map((state, index) => (
-                            <option key={index} value={state?.isoCode}>
-                              {state.name}
-                            </option>
-                          ))}
-                        </select>
-                        {errors?.state && (
-                          <div className='invalid-feedback'>
-                            Your state {errors?.state}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className='w-full mr-3'>
-                        <div className='flex justify-start'>
-                          <label className='block text-sm font-medium leading-6 text-gray-900'>
-                            City
-                          </label>
-                        </div>
-                        <select
-                          id='city'
-                          name='city'
-                          value={formData?.city}
-                          onChange={handleChange}
-                          className={`form-control ${
-                            errors?.city && "is-invalid"
-                          }`}
-                          disabled={!selectedState} // Disable if no state is selected
-                        >
-                          <option value=''>Select City</option>
-                          {Cities?.map((city, index) => (
-                            <option key={index} value={city.name}>
-                              {city.name}
-                            </option>
-                          ))}
-                        </select>
-                        {errors?.city && (
-                          <div className='invalid-feedback'>
-                            Your city {errors?.city}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className='w-full'>
-                        <div className='flex justify-start'>
-                          <label className='block text-sm font-medium leading-6 text-gray-900'>
-                            Pincode
-                          </label>
-                        </div>
-                        <input
-                          id='pincode'
-                          name='pincode'
-                          type='number'
-                          minLength={6}
-                          maxLength={6}
-                          placeholder='Enter your pincode'
-                          value={formData?.pincode}
-                          onChange={handleChange}
-                          className={`form-control ${
-                            errors?.pincode && "is-invalid"
-                          }`}
-                        />
-                        {errors?.pincode && (
-                          <div className='invalid-feedback'>
-                            Your pincode {errors?.pincode}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className='flex justify-start'>
-                        <label className='block text-sm font-medium leading-6 text-gray-900'>
-                          Contact
-                        </label>
-                      </div>
-                      <input
-                        id='contact'
-                        name='contact'
-                        type='number'
-                        placeholder='Enter your contact number'
-                        minLength={10}
-                        maxLength={10}
-                        value={formData?.contact}
-                        onChange={handleChange}
-                        className={`form-control ${
-                          errors?.contact && "is-invalid"
-                        }`}
-                      />
-                      {errors?.contact && (
-                        <div className='invalid-feedback'>
-                          Your contact {errors?.contact}
-                        </div>
-                      )}
-                    </div>
-                    <div className='flex flex-col sm:flex-row justify-between'>
-                      <div>
-                        <div className='flex justify-start'>
-                          <label className='block text-sm font-medium leading-6 text-gray-900'>
-                            Garden Height ft.
-                          </label>
-                        </div>
-                        <input
-                          id='height'
-                          name='height'
-                          type='number'
-                          placeholder='Enter Garden Height ft.'
-                          value={formData?.height}
-                          onChange={handleChange}
-                          className={`form-control ${
-                            errors?.height && "is-invalid"
-                          }`}
-                        />
-                        {errors?.height && (
-                          <div className='invalid-feedback'>
-                            Your Garden Height {errors?.height}
-                          </div>
-                        )}
-                      </div>
-
-                      <div>
-                        <div className='flex justify-start'>
-                          <label className='block text-sm font-medium leading-6 text-gray-900'>
-                            Garden Width ft.
-                          </label>
-                        </div>
-                        <input
-                          id='width'
-                          name='width'
-                          type='number'
-                          placeholder='Enter Garden Width ft.'
-                          value={formData?.width}
-                          onChange={handleChange}
-                          className={`form-control ${
-                            errors?.width && "is-invalid"
-                          }`}
-                        />
-                        {errors?.width && (
-                          <div className='invalid-feedback'>
-                            Your Garden Width {errors?.width}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <div className='flex justify-start'>
-                        <label className='block text-sm font-medium leading-6 text-gray-900'>
-                          Plant Details
-                        </label>
-                      </div>
-                      <textarea
-                        placeholder='Enter plant details'
-                        id='plantDetails'
-                        value={formData?.plantDetails}
-                        onChange={handleChange}
-                        className='form-control'
-                      ></textarea>
-                    </div>
                     <div>
                       <div className='flex flex-row justify-between items-center'>
                         <div className='flex justify-start'>
                           <label className='block text-sm font-medium leading-6 text-gray-900'>
-                            Water Supply Method
+                            Maintenance For garden
                           </label>
                         </div>
-                        <div className='mt-2'>
+                        <div className=' w-44 mt-2'>
                           <label className='inline-flex items-center'>
                             <input
                               type='radio'
-                              id='waterSupplyMethod'
+                              id='garden'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
-                              name='waterSupplyMethod'
-                              value='automatic'
-                              checked={
-                                formData?.waterSupplyMethod === "automatic"
-                              }
+                              name='garden'
+                              value='new'
+                              checked={formData?.garden === "new"}
                               onChange={handleChange}
                             />
-                            <span className='ml-2'>Automatic</span>
+                            <span className='ml-2'>New</span>
                           </label>
                           <label className='inline-flex items-center ml-6'>
                             <input
                               type='radio'
-                              id='waterSupplyMethod'
+                              id='garden'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
-                              name='waterSupplyMethod'
-                              value='manual'
-                              checked={formData?.waterSupplyMethod === "manual"}
+                              name='garden'
+                              value='same'
+                              checked={formData?.garden === "same"}
                               onChange={handleChange}
                             />
-                            <span className='ml-2'>Manual</span>
+                            <span className='ml-2'>Same</span>
                           </label>
                         </div>
                       </div>
-                      {errors?.waterSupplyMethod && (
+                      {errors?.garden && (
                         <div
                           style={{ display: "block" }}
                           className='invalid-feedback'
                         >
-                          Your water Supply Method {errors?.waterSupplyMethod}
+                          Your garden Maintenance response is required
                         </div>
                       )}
                     </div>
 
                     <div>
+                      <div className='flex flex-row justify-between items-center'>
+                        <div className='flex justify-start'>
+                          <label className='block text-sm font-medium leading-6 text-gray-900'>
+                            Pot Changing
+                          </label>
+                        </div>
+                        <div className='w-44 mt-2'>
+                          <label className='inline-flex items-center'>
+                            <input
+                              type='radio'
+                              id='potChange'
+                              className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
+                              name='potChange'
+                              value={true}
+                              checked={formData?.potChange}
+                              onChange={handleChange}
+                            />
+                            <span className='ml-2'>Yes</span>
+                          </label>
+                          <label className='inline-flex items-center ml-6'>
+                            <input
+                              type='radio'
+                              id='potChange'
+                              className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
+                              name='potChange'
+                              value={true}
+                              checked={formData?.potChange}
+                              onChange={handleChange}
+                            />
+                            <span className='ml-2'>No</span>
+                          </label>
+                        </div>
+                      </div>
+                      {errors?.potChange && (
+                        <div
+                          style={{ display: "block" }}
+                          className='invalid-feedback'
+                        >
+                          Your response for pot Change is required
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <div className='flex flex-row justify-between items-center'>
+                        <div className='flex justify-start'>
+                          <label className='block text-sm font-medium leading-6 text-gray-900'>
+                            Water supply Changing
+                          </label>
+                        </div>
+                        <div className='w-44 mt-2'>
+                          <label className='inline-flex items-center'>
+                            <input
+                              type='radio'
+                              id='waterSupply'
+                              className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
+                              name='waterSupply'
+                              value={true}
+                              checked={formData?.waterSupply}
+                              onChange={handleChange}
+                            />
+                            <span className='ml-2'>Yes</span>
+                          </label>
+                          <label className='inline-flex items-center ml-6'>
+                            <input
+                              type='radio'
+                              id='waterSupply'
+                              className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
+                              name='waterSupply'
+                              value={true}
+                              checked={formData?.waterSupply}
+                              onChange={handleChange}
+                            />
+                            <span className='ml-2'>No</span>
+                          </label>
+                        </div>
+                      </div>
+                      {errors?.waterSupply && (
+                        <div
+                          style={{ display: "block" }}
+                          className='invalid-feedback'
+                        >
+                          Your response for pot Change is required
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <div className='flex flex-row justify-between items-center'>
+                        <div className='flex justify-start'>
+                          <label className='block text-sm font-medium leading-6 text-gray-900'>
+                            Design Changing
+                          </label>
+                        </div>
+                        <div className='w-44 mt-2'>
+                          <label className='inline-flex items-center'>
+                            <input
+                              type='radio'
+                              id='designChange'
+                              className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
+                              name='designChange'
+                              value={true}
+                              checked={formData?.designChange}
+                              onChange={handleChange}
+                            />
+                            <span className='ml-2'>Yes</span>
+                          </label>
+                          <label className='inline-flex items-center ml-6'>
+                            <input
+                              type='radio'
+                              id='designChange'
+                              className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
+                              name='designChange'
+                              value={true}
+                              checked={formData?.designChange}
+                              onChange={handleChange}
+                            />
+                            <span className='ml-2'>No</span>
+                          </label>
+                        </div>
+                      </div>
+                      {errors?.designChange && (
+                        <div
+                          style={{ display: "block" }}
+                          className='invalid-feedback'
+                        >
+                          Your response for design change is required
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <div className='flex justify-start'>
+                        <label className='block text-sm font-medium leading-6 text-gray-900'>
+                          Description
+                        </label>
+                      </div>
+                      <textarea
+                        placeholder='Enter plant details'
+                        id='description'
+                        value={formData?.description}
+                        onChange={handleChange}
+                        className='form-control'
+                      ></textarea>
+                    </div>
+
+                    {/* <div>
                       <div className='mt-2 flex flex-row justify-evenly'>
                         <div className=''>
                           <img
@@ -581,7 +443,7 @@ const GardenMaintenance = () => {
                           Your Garden Image {errors?.image}
                         </div>
                       )}
-                    </div>
+                    </div> */}
 
                     <button
                       className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
@@ -605,4 +467,4 @@ const GardenMaintenance = () => {
   );
 };
 
-export default GardenMaintenance();
+export default GardenMaintenance;

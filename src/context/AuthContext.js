@@ -14,7 +14,7 @@ export const AuthContextProvider = ({ children }) => {
     const verifyEmail = localStorage.getItem("verifyEmail");
     if (token) {
       updateUserToken(token);
-      navigate("/garden/registration");
+      navigate(path || "/garden/registration");
       return;
     }
     if (verifyEmail) {
@@ -23,7 +23,9 @@ export const AuthContextProvider = ({ children }) => {
     }
     updateUserToken("");
     console.log("path", path);
-    navigate(path || "/login");
+    if (!path) {
+      navigate("/login");
+    }
 
     // navigate("/login");
   };
