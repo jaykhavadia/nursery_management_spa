@@ -3,6 +3,8 @@ import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 import { useContext, useEffect, useState } from "react";
 import {
+  createMaintenance,
+  getAllMaintenance,
   getGardenDetails,
   ME,
   registerGarden,
@@ -40,34 +42,40 @@ const GardenMaintenance = () => {
       [id]: "",
     }));
   };
-
-  //   const handleImageChange = (e) => {
-  //     const selectedImage = e.target.files[0];
-  //     const imageType = selectedImage.type.split("/")[1];
-  //     if (imageType !== "png" && imageType !== "jpeg") {
-  //       toast.error("Image not supported use png or jpeg");
-  //       return;
-  //     }
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       image: "",
-  //     }));
-  //     setFormData((prevData) => ({
-  //       ...prevData,
-  //       image: e.target.files[0],
-  //     }));
-  //     setImage(URL.createObjectURL(selectedImage));
-  //   };
+// {
+  // "userId": "6637410eaec18950a96f2782",
+  // "gardenId": "663743ead97870f521b7ff35",
+  // "maintenanceName": "testing",
+  // "garden": "new",
+  // "potChange": "true",
+  // "waterSupply": "true",
+  // "designChange": "true",
+  // "description": "testing description"
 
   const validateForm = () => {
     const errorMessage = "is required";
     const errors = {};
-    if (!formData.name) {
-      errors.name = errorMessage;
+    if (!formData.gardenId) {
+      errors.gardenId = errorMessage;
     }
-    // if (!formData.waterSupplyMethod) {
-    //   errors.waterSupplyMethod = errorMessage;
-    // }
+    if (!formData.maintenanceName) {
+      errors.maintenanceName = errorMessage;
+    }
+    if (!formData.garden) {
+      errors.garden = errorMessage;
+    }
+    if (!formData.potChange) {
+      errors.potChange = errorMessage;
+    }
+    if (!formData.waterSupply) {
+      errors.waterSupply = errorMessage;
+    }
+    if (!formData.designChange) {
+      errors.designChange = errorMessage;
+    }
+    if (!formData.description) {
+      errors.description = errorMessage;
+    }
 
     setErrors(errors);
     console.log("err", errors);
@@ -80,7 +88,7 @@ const GardenMaintenance = () => {
   };
 
   const handleRegistration = async () => {
-    const isValid = true;
+    const isValid = validateForm();
     if (isValid) {
       // Perform form submission
       console.log("user", userData);
@@ -90,22 +98,17 @@ const GardenMaintenance = () => {
       console.log("Form submitted:", formData);
 
       try {
+        const response = await createMaintenance(formData);
+        if(response) {
+          toast.success("Maintenance added Successful!");
+          navigate('/garden/maintenance/list');
+          return;
+        }
       } catch (error) {
-        console.error("Error while Login:", error);
+        console.error("Error while Maintenance:", error);
         toast.error(error.message);
       }
     }
-  };
-
-  const resetFields = () => {
-    setFormData({
-      // name: "",
-      //   plantDetails: "",
-      // waterSupplyMethod: "",
-      userId: "",
-      gardenId: "",
-    });
-    setErrors();
   };
 
   const me = async () => {
@@ -143,6 +146,11 @@ const GardenMaintenance = () => {
   useEffect(() => {
     checkLogin("/garden/maintenance");
     async function getGardenData() {
+      const maintenanceData = await getAllMaintenance();
+      if(await maintenanceData[(maintenanceData.length-1)].status !== 'pending'){
+        navigate('/garden/maintenance/list');
+        return;
+      }
       await me();
       await setGardenData();
     }
@@ -269,8 +277,8 @@ const GardenMaintenance = () => {
                               id='potChange'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='potChange'
-                              value={true}
-                              checked={formData?.potChange}
+                              value={'true'}
+                              checked={formData?.potChange === 'true'}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>Yes</span>
@@ -281,8 +289,8 @@ const GardenMaintenance = () => {
                               id='potChange'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='potChange'
-                              value={true}
-                              checked={formData?.potChange}
+                              value={'false'}
+                              checked={formData?.potChange === 'false'}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>No</span>
@@ -313,8 +321,8 @@ const GardenMaintenance = () => {
                               id='waterSupply'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='waterSupply'
-                              value={true}
-                              checked={formData?.waterSupply}
+                              value={'true'}
+                              checked={formData?.waterSupply === 'true'}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>Yes</span>
@@ -325,8 +333,8 @@ const GardenMaintenance = () => {
                               id='waterSupply'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='waterSupply'
-                              value={true}
-                              checked={formData?.waterSupply}
+                              value={'false'}
+                              checked={formData?.waterSupply === 'false'}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>No</span>
@@ -338,7 +346,7 @@ const GardenMaintenance = () => {
                           style={{ display: "block" }}
                           className='invalid-feedback'
                         >
-                          Your response for pot Change is required
+                          Your response for water Supply is required
                         </div>
                       )}
                     </div>
@@ -357,8 +365,8 @@ const GardenMaintenance = () => {
                               id='designChange'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='designChange'
-                              value={true}
-                              checked={formData?.designChange}
+                              value={'true'}
+                              checked={formData?.designChange === 'true'}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>Yes</span>
@@ -369,8 +377,8 @@ const GardenMaintenance = () => {
                               id='designChange'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='designChange'
-                              value={true}
-                              checked={formData?.designChange}
+                              value={'false'}
+                              checked={formData?.designChange === 'false'}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>No</span>
@@ -394,12 +402,20 @@ const GardenMaintenance = () => {
                         </label>
                       </div>
                       <textarea
-                        placeholder='Enter plant details'
+                        placeholder='Enter Maintenance details'
                         id='description'
                         value={formData?.description}
                         onChange={handleChange}
                         className='form-control'
                       ></textarea>
+                      {errors?.description && (
+                        <div
+                          style={{ display: "block" }}
+                          className='invalid-feedback'
+                        >
+                          Your response for description is required
+                        </div>
+                      )}
                     </div>
 
                     {/* <div>
@@ -451,7 +467,7 @@ const GardenMaintenance = () => {
                     >
                       {isDataAvailable
                         ? "Update your data"
-                        : "Register your Garden"}
+                        : "Create maintenance"}
                     </button>
                   </div>
                 </div>

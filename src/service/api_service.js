@@ -78,6 +78,31 @@ export const registerGarden = async (payload) => {
     throw error.response.data;
   }
 };
+export const createMaintenance = async (payload) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/garden/maintenance`,
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting data:", error);
+    throw error.response.data;
+  }
+};
+export const getAllMaintenance = async () => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/garden/maintenance`
+    );
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting data:", error);
+    throw error.response.data;
+  }
+};
 export const updateGarden = async (payload) => {
   try {
     const response = await axios.patch(`${BASE_URL}/garden/update`, payload, {
