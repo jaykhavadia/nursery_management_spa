@@ -4,7 +4,7 @@ import bgImage from "../../assets/img/backgroundImage.png";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../service/api_service";
 import { AuthContext } from "../../context/AuthContext";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 function validateEmail(email) {
   const re =

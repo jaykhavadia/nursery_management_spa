@@ -15,7 +15,7 @@ import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { State, City } from "country-state-city";
 import { Navigate, useNavigate } from "react-router-dom";
 
-const GardenRegistration = () => {
+const GardenMaintenance = () => {
   const navigate = useNavigate();
   const { checkLogin } = useContext(AuthContext);
   const [zoom, setZoom] = useState("scale-0");
@@ -605,4 +605,4 @@ const GardenRegistration = () => {
   );
 };
 
-export default GardenRegistration;
+export default GardenMaintenance();

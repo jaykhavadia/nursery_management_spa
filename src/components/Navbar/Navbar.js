@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 import "./Navbar.css";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+  const token = localStorage.getItem("accessToken");
+  const Logout = () => {
+    toast.success("Logout Successful!");
+    localStorage.clear();
+    navigate("/home");
   };
 
   return (
@@ -50,10 +59,16 @@ const Navbar = () => {
               Services
             </a>
             <div className='dropdown-menu bg-light m-0'>
-              <a href='/garden/registration' className='dropdown-item'>
+              <a
+                href={token ? "/garden/registration" : "/login"}
+                className='dropdown-item'
+              >
                 Garden Registration
               </a>
-              <a href='/garden/maintenance' className='dropdown-item'>
+              <a
+                href={token ? "/garden/maintenance" : "/login"}
+                className='dropdown-item'
+              >
                 Garden Maintenance
               </a>
             </div>
@@ -61,6 +76,11 @@ const Navbar = () => {
           <a href='/contact' className='nav-item nav-link'>
             Contact
           </a>
+          {token && (
+            <a onClick={Logout} className='nav-item nav-link'>
+              Logout
+            </a>
+          )}
         </div>
         <a
           href=''

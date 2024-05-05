@@ -64,7 +64,7 @@ root.render(
           {/* <Route path='dashboard' element={<Dashboard />} /> */}
           <Route path='email-verification' element={<EmailVerification />} />
           <Route path='/garden/registration' element={<GardenRegistration />} />
-          {/* <Route path='/garden/maintenance' element={<EmailVerification />} /> */}
+          {/* <Route path='/garden/maintenance' element={<EmailMaintenance />} /> */}
         </Routes>
         <Toaster
           position='top-right'

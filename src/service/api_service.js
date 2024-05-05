@@ -11,31 +11,31 @@ export const ME = async () => {
   } catch (error) {
     // Handle errors
     console.error("Error posting data:", error);
-    return error.response.data;
+    throw error.response.data;
   }
 };
-export const login = async (data) => {
+export const login = async (payload) => {
   try {
-    const response = await axios.post(`${BASE_URL}/login`, data);
+    const response = await axios.post(`${BASE_URL}/login`, payload);
     localStorage.setItem("accessToken", response.data.token);
     return response.data;
     // return {token: 'response.data'};
   } catch (error) {
     // Handle errors
     console.error("Error posting data:", error);
-    return error.response.data;
+    throw error.response.data;
   }
 };
 
-export const registerUser = async (data) => {
+export const registerUser = async (payload) => {
   try {
-    const response = await axios.post(`${BASE_URL}/register`, data);
+    const response = await axios.post(`${BASE_URL}/register`, payload);
     localStorage.setItem("verifyEmail", true);
     return response.data;
   } catch (error) {
     // Handle errors
     console.error("Error posting data:", error);
-    return error.response.data;
+    throw error.response.data;
   }
 };
 
@@ -49,7 +49,7 @@ export const resendVerificationEmail = async (userEmail) => {
   } catch (error) {
     // Handle errors
     console.error("Error posting data:", error);
-    return error.response.data;
+    throw error.response.data;
   }
 };
 
@@ -60,22 +60,22 @@ export const verifyEmail = async (token) => {
   } catch (error) {
     // Handle errors
     console.error("Error posting data:", error);
-    return error.response.data.message;
+    throw error.response.data.message;
   }
 };
 
-export const registerGarden = async (data) => {
+export const registerGarden = async (payload) => {
   try {
-    const response = await axios.post(`${BASE_URL}/garden/register`, data, {
+    const response = await axios.post(`${BASE_URL}/garden/register`, payload, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        "Content-Type": "multipart/form-data",
+      },
     });
     return response.data;
   } catch (error) {
     // Handle errors
     console.error("Error posting data:", error);
-    return error.response.data;
+    throw error.response.data;
   }
 };
 
@@ -86,6 +86,17 @@ export const getGardenDetails = async () => {
   } catch (error) {
     // Handle errors
     console.error("Error posting data:", error);
-    return error.response.data;
+    throw error.response.data;
+  }
+};
+
+export const contact = async (payload) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/contact-us`, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting data:", error);
+    throw error.response.data;
   }
 };

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
+import { contact } from "../../service/api_service";
+import toast from "react-hot-toast";
 
 const Contact = () => {
-  
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: "",
@@ -45,12 +46,33 @@ const Contact = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = () => {
-    const isValid = validateForm();
-    if (isValid) {
-      // Perform form submission
-      console.log("Form submitted:", formData);
+  const handleSubmit = async () => {
+    try {
+      const isValid = validateForm();
+      if (isValid) {
+        // Perform form submission
+        console.log("Form submitted:", formData);
+        const response = await contact(formData);
+        console.log("response", response);
+        if (response) {
+          toast.success("Form Submitted SuccessFully!");
+          resetFields();
+        }
+      }
+    } catch (error) {
+      console.error("error in contact form", error);
+      toast.error(error.message);
     }
+  };
+
+  const resetFields = () => {
+    setErrors();
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    });
   };
 
   return (
@@ -175,7 +197,7 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-            
+
             <div
               className='col-lg-6 wow fadeIn'
               data-wow-delay='0.5s'
