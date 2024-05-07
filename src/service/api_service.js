@@ -93,9 +93,7 @@ export const createMaintenance = async (payload) => {
 };
 export const getAllMaintenance = async () => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/garden/maintenance`
-    );
+    const response = await axios.get(`${BASE_URL}/garden/maintenance`);
     return response.data;
   } catch (error) {
     // Handle errors

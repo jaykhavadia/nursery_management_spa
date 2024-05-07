@@ -64,7 +64,8 @@ const Login = () => {
       if (result.token) {
         toast.success("Login Successfully!");
         resetFields();
-        checkLogin();
+        // checkLogin();
+        navigate('/garden/registration');
         return;
       }
       toast.error(result.message);

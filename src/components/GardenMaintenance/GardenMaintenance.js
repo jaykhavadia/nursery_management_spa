@@ -42,7 +42,7 @@ const GardenMaintenance = () => {
       [id]: "",
     }));
   };
-// {
+  // {
   // "userId": "6637410eaec18950a96f2782",
   // "gardenId": "663743ead97870f521b7ff35",
   // "maintenanceName": "testing",
@@ -99,9 +99,9 @@ const GardenMaintenance = () => {
 
       try {
         const response = await createMaintenance(formData);
-        if(response) {
+        if (response) {
           toast.success("Maintenance added Successful!");
-          navigate('/garden/maintenance/list');
+          navigate("/garden/maintenance/list");
           return;
         }
       } catch (error) {
@@ -147,8 +147,12 @@ const GardenMaintenance = () => {
     checkLogin("/garden/maintenance");
     async function getGardenData() {
       const maintenanceData = await getAllMaintenance();
-      if(await maintenanceData[(maintenanceData.length-1)].status !== 'pending'){
-        navigate('/garden/maintenance/list');
+      if (
+        maintenanceData.length &&
+        (await maintenanceData[maintenanceData?.length - 1]?.status) !==
+          "pending"
+      ) {
+        navigate("/garden/maintenance/list");
         return;
       }
       await me();
@@ -277,8 +281,8 @@ const GardenMaintenance = () => {
                               id='potChange'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='potChange'
-                              value={'true'}
-                              checked={formData?.potChange === 'true'}
+                              value={"true"}
+                              checked={formData?.potChange === "true"}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>Yes</span>
@@ -289,8 +293,8 @@ const GardenMaintenance = () => {
                               id='potChange'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='potChange'
-                              value={'false'}
-                              checked={formData?.potChange === 'false'}
+                              value={"false"}
+                              checked={formData?.potChange === "false"}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>No</span>
@@ -321,8 +325,8 @@ const GardenMaintenance = () => {
                               id='waterSupply'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='waterSupply'
-                              value={'true'}
-                              checked={formData?.waterSupply === 'true'}
+                              value={"true"}
+                              checked={formData?.waterSupply === "true"}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>Yes</span>
@@ -333,8 +337,8 @@ const GardenMaintenance = () => {
                               id='waterSupply'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='waterSupply'
-                              value={'false'}
-                              checked={formData?.waterSupply === 'false'}
+                              value={"false"}
+                              checked={formData?.waterSupply === "false"}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>No</span>
@@ -365,8 +369,8 @@ const GardenMaintenance = () => {
                               id='designChange'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='designChange'
-                              value={'true'}
-                              checked={formData?.designChange === 'true'}
+                              value={"true"}
+                              checked={formData?.designChange === "true"}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>Yes</span>
@@ -377,8 +381,8 @@ const GardenMaintenance = () => {
                               id='designChange'
                               className='form-radio h-4 w-4 text-green-600 transition duration-150 ease-in-out'
                               name='designChange'
-                              value={'false'}
-                              checked={formData?.designChange === 'false'}
+                              value={"false"}
+                              checked={formData?.designChange === "false"}
                               onChange={handleChange}
                             />
                             <span className='ml-2'>No</span>

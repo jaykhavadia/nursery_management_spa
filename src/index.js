@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
@@ -7,7 +7,7 @@ import Login from "./components/Login/Login";
 import SignUp from "./components/SignUp/Signup";
 import axios from "axios";
 import Dashboard from "./components/Dashboard/Dashboard";
-import { AuthContextProvider } from "./context/AuthContext";
+import { AuthContext, AuthContextProvider } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 import EmailVerification from "./components/EmailVerification/EmailVerification";
 import "./assets/style/style.css";
@@ -30,12 +30,14 @@ import GardenRegistration from "./components/GardenRegistration/GardenRegistrati
 import GardenMaintenance from "./components/GardenMaintenance/GardenMaintenance";
 import GardenMaintenanceList from "./components/GardenMaintenanceListing/GardenMaintenanceList";
 
-const token = localStorage.getItem("accessToken");
-
+let token = localStorage.getItem("accessToken");
 axios.interceptors.request.use(
   function (config) {
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    token = localStorage.getItem("accessToken");
+    console.log("im in ", token);
+    console.log("im in ", AuthContext.userToken);
+    if (token || AuthContext.userToken) {
+      config.headers.Authorization = `Bearer ${token || AuthContext.userToken}`;
     }
 
     return config;
@@ -54,7 +56,12 @@ root.render(
         <Routes>
           <Route
             path='*'
-            element={<Navigate replace to={`${token ? "/garden/registration" : "/home"}`} />}
+            element={
+              <Navigate
+                replace
+                to={`${token ? "/garden/registration" : "/home"}`}
+              />
+            }
           />
 
           <Route path='home' element={<Home />} />
@@ -66,7 +73,10 @@ root.render(
           {/* <Route path='dashboard' element={<Dashboard />} /> */}
           <Route path='email-verification' element={<EmailVerification />} />
           <Route path='garden/registration' element={<GardenRegistration />} />
-          <Route path='garden/maintenance/list' element={<GardenMaintenanceList />} />
+          <Route
+            path='garden/maintenance/list'
+            element={<GardenMaintenanceList />}
+          />
           <Route path='garden/maintenance' element={<GardenMaintenance />} />
         </Routes>
         <Toaster

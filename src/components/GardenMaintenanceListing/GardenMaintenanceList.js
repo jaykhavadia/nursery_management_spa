@@ -56,16 +56,18 @@ const GardenMaintenanceList = () => {
                 <div className='sm:mx-auto sm:w-full '>
                   <div className='space-y-6'>
                     <div className='flex justify-end mr-5 '>
-                      {maintenanceList.length &&
-                        maintenanceList[maintenanceList.length - 1].status !==
-                          "pending" && (
-                          <button
-                            className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center'
-                            onClick={() => navigate("/garden/maintenance")}
-                          >
-                            Create Maintenance
-                          </button>
-                        )}
+                      {maintenanceList?.length === 0 ||
+                      maintenanceList[maintenanceList.length - 1].status !==
+                        "pending" ? (
+                        <button
+                          className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center'
+                          onClick={() => navigate("/garden/maintenance")}
+                        >
+                          Create Maintenance
+                        </button>
+                      ) : (
+                        ""
+                      )}
                     </div>
                     <table className='table table-hover'>
                       <thead>
@@ -91,7 +93,13 @@ const GardenMaintenanceList = () => {
                                 />
                               </td>
                               <td>
-                                <span className={`py-2 px-4 badge ${maintenanceData.status === 'completed' ? 'bg-success' : 'bg-warning' }`}>
+                                <span
+                                  className={`py-2 px-4 badge ${
+                                    maintenanceData.status === "completed"
+                                      ? "bg-success"
+                                      : "bg-warning"
+                                  }`}
+                                >
                                   {maintenanceData.status}
                                 </span>
                               </td>

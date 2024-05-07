@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
@@ -13,6 +14,7 @@ export const AuthContextProvider = ({ children }) => {
     const token = localStorage.getItem("accessToken");
     const verifyEmail = localStorage.getItem("verifyEmail");
     if (token) {
+      console.log('token in auth context', token);
       updateUserToken(token);
       navigate(path || "/garden/registration");
       return;
@@ -26,8 +28,12 @@ export const AuthContextProvider = ({ children }) => {
     if (!path) {
       navigate("/login");
     }
+  };
 
-    // navigate("/login");
+  const Logout = () => {
+    toast.success("Logout Successful!");
+    localStorage.clear();
+    navigate("/home");
   };
 
   const getUserData = () => {
@@ -61,7 +67,8 @@ export const AuthContextProvider = ({ children }) => {
         updateUserData,
         checkLogin,
         updateUserEmail,
-        getUserData
+        getUserData,
+        Logout
       }}
     >
       {children}

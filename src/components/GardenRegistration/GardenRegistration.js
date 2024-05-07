@@ -18,7 +18,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const GardenRegistration = () => {
   const navigate = useNavigate();
-  const { checkLogin } = useContext(AuthContext);
+  const { checkLogin, Logout } = useContext(AuthContext);
   const [zoom, setZoom] = useState("scale-0");
   const [userData, setUserData] = useState();
   const [Cities, setCities] = useState([]);
@@ -215,15 +215,23 @@ const GardenRegistration = () => {
   };
 
   const me = async () => {
-    const user = await ME();
-    console.log("User data ->>", user);
-    console.log("User data", user.user?._id);
-    setUserData(user);
-    setFormData((prevData) => ({
-      ...prevData,
-      userId: user.user?._id,
-    }));
-    localStorage.setItem("currentUser", JSON.stringify(user));
+    try {
+      const user = await ME();
+      console.log("User data ->>", user);
+      console.log("User data", user.user?._id);
+      setUserData(user);
+      setFormData((prevData) => ({
+        ...prevData,
+        userId: user.user?._id,
+      }));
+      localStorage.setItem("currentUser", JSON.stringify(user));
+    } catch (error) {
+      console.log("error in Me", error);
+      if (error.message === "jwt expired") {
+        Logout();
+      }
+      throw new Error(error);
+    }
   };
 
   const setGardenData = async () => {
@@ -249,8 +257,13 @@ const GardenRegistration = () => {
   useEffect(() => {
     checkLogin();
     async function getGardenData() {
-      await me();
-      await setGardenData();
+      try {
+        await me();
+        await setGardenData();
+      } catch (error) {
+        console.log("get Garden Data", error);
+        throw error;
+      }
     }
     getGardenData();
 
