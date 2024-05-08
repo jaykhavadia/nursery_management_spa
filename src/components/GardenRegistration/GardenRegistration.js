@@ -247,7 +247,11 @@ const GardenRegistration = () => {
   };
 
   useEffect(() => {
-    checkLogin();
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     async function getGardenData() {
       try {
         await me();

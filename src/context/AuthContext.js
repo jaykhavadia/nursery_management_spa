@@ -11,8 +11,12 @@ export const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const checkLogin = (path) => {
-    const token = localStorage.getItem("accessToken");
     const verifyEmail = localStorage.getItem("verifyEmail");
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate('/login');
+      return;
+    }
     if (token) {
       updateUserToken(token);
       navigate(path || "/garden/registration");
@@ -23,9 +27,7 @@ export const AuthContextProvider = ({ children }) => {
       return;
     }
     updateUserToken("");
-    if (!path) {
-      navigate("/login");
-    }
+    navigate("/login");
   };
 
   const Logout = () => {
@@ -38,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
     if (userData) {
       return userData;
     }
-    const user = localStorage.getItem('currentUser');
+    const user = localStorage.getItem("currentUser");
     return user;
   };
 
@@ -65,7 +67,7 @@ export const AuthContextProvider = ({ children }) => {
         checkLogin,
         updateUserEmail,
         getUserData,
-        Logout
+        Logout,
       }}
     >
       {children}

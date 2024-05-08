@@ -134,7 +134,11 @@ const GardenMaintenance = () => {
   };
 
   useEffect(() => {
-    checkLogin("/garden/maintenance");
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate('/login');
+      return;
+    }
     async function getGardenData() {
       await setGardenData();
       const maintenanceData = await getAllMaintenance();

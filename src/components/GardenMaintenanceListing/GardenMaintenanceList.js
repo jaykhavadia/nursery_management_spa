@@ -29,7 +29,11 @@ const GardenMaintenanceList = () => {
   };
 
   useEffect(() => {
-    checkLogin("/garden/maintenance/list");
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate('/login');
+      return;
+    }
     async function getMaintenanceData() {
       await setGardenData();
       const maintenanceData = await getAllMaintenance();
@@ -131,7 +135,7 @@ const GardenMaintenanceList = () => {
                           ))
                         ) : (
                           <tr>
-                            <td colspan='5'>No Data Found </td>
+                            <td colSpan='5'>No Data Found </td>
                           </tr>
                         )}
                       </tbody>
