@@ -14,7 +14,6 @@ export const AuthContextProvider = ({ children }) => {
     const token = localStorage.getItem("accessToken");
     const verifyEmail = localStorage.getItem("verifyEmail");
     if (token) {
-      console.log('token in auth context', token);
       updateUserToken(token);
       navigate(path || "/garden/registration");
       return;
@@ -24,7 +23,6 @@ export const AuthContextProvider = ({ children }) => {
       return;
     }
     updateUserToken("");
-    console.log("path", path);
     if (!path) {
       navigate("/login");
     }
@@ -41,7 +39,6 @@ export const AuthContextProvider = ({ children }) => {
       return userData;
     }
     const user = localStorage.getItem('currentUser');
-    console.log('user', user);
     return user;
   };
 

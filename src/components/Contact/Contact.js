@@ -51,9 +51,7 @@ const Contact = () => {
       const isValid = validateForm();
       if (isValid) {
         // Perform form submission
-        console.log("Form submitted:", formData);
         const response = await contact(formData);
-        console.log("response", response);
         if (response) {
           toast.success("Form Submitted SuccessFully!");
           resetFields();
@@ -123,16 +121,16 @@ const Contact = () => {
                       <input
                         type='text'
                         className={`form-control ${
-                          errors.name && "is-invalid"
+                          errors?.name && "is-invalid"
                         }`}
                         id='name'
                         placeholder='Your Name'
-                        value={formData.name}
+                        value={formData?.name}
                         onChange={handleChange}
                       />
                       <label>Your Name</label>
-                      {errors.name && (
-                        <div className='invalid-feedback'>{errors.name}</div>
+                      {errors?.name && (
+                        <div className='invalid-feedback'>{errors?.name}</div>
                       )}
                     </div>
                   </div>
@@ -141,16 +139,16 @@ const Contact = () => {
                       <input
                         type='tel'
                         className={`form-control ${
-                          errors.phone && "is-invalid"
+                          errors?.phone && "is-invalid"
                         }`}
                         id='phone'
                         placeholder='Your Mobile Number'
-                        value={formData.phone}
+                        value={formData?.phone}
                         onChange={handleChange}
                       />
                       <label htmlFor='phone'>Your Mobile Number</label>
-                      {errors.phone && (
-                        <div className='invalid-feedback'>{errors.phone}</div>
+                      {errors?.phone && (
+                        <div className='invalid-feedback'>{errors?.phone}</div>
                       )}
                     </div>
                   </div>
@@ -159,16 +157,16 @@ const Contact = () => {
                       <input
                         type='email'
                         className={`form-control ${
-                          errors.email && "is-invalid"
+                          errors?.email && "is-invalid"
                         }`}
                         id='email'
                         placeholder='Your Email'
-                        value={formData.email}
+                        value={formData?.email}
                         onChange={handleChange}
                       />
                       <label>Your Email</label>
-                      {errors.email && (
-                        <div className='invalid-feedback'>{errors.email}</div>
+                      {errors?.email && (
+                        <div className='invalid-feedback'>{errors?.email}</div>
                       )}
                     </div>
                   </div>
@@ -179,7 +177,7 @@ const Contact = () => {
                         placeholder='Leave a message here'
                         id='message'
                         style={{ height: "100px" }}
-                        value={formData.message}
+                        value={formData?.message}
                         onChange={handleChange}
                       ></textarea>
                       <label>Message</label>

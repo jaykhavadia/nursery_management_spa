@@ -34,8 +34,6 @@ let token = localStorage.getItem("accessToken");
 axios.interceptors.request.use(
   function (config) {
     token = localStorage.getItem("accessToken");
-    console.log("im in ", token);
-    console.log("im in ", AuthContext.userToken);
     if (token || AuthContext.userToken) {
       config.headers.Authorization = `Bearer ${token || AuthContext.userToken}`;
     }

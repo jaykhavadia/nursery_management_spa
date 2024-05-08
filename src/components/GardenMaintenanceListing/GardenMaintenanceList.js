@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 import { useContext, useEffect, useState } from "react";
-import { getAllMaintenance } from "../../service/api_service";
+import { getAllMaintenance, getGardenDetails } from "../../service/api_service";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Moment from "react-moment";
@@ -14,16 +14,29 @@ const GardenMaintenanceList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedList, setSelectedList] = useState();
 
+  const setGardenData = async () => {
+    const response = await getGardenDetails();
+    if (response === null) {
+      toast.error('Please Register a garden first');
+      navigate("/garden/registration");
+      return;
+    }
+    if (response?.message === "Invalid token") {
+      toast.success(response?.message);
+      localStorage.clear();
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
     checkLogin("/garden/maintenance/list");
     async function getMaintenanceData() {
+      await setGardenData();
       const maintenanceData = await getAllMaintenance();
-      console.log("main", maintenanceData);
       setMaintenanceList(maintenanceData);
     }
     getMaintenanceData();
 
-    // Zoom in after a delay
     setTimeout(() => {
       //   setZoom("scale-100");
     }, 500); // Adjust the delay as needed

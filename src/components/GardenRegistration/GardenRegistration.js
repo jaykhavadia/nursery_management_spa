@@ -75,7 +75,6 @@ const GardenRegistration = () => {
       state: stateObj.name,
     }));
     setCities(City.getCitiesOfState("IN", stateObj.isoCode)); // Pass stateObj instead of state
-    console.log("cities", City.getCitiesOfState("IN", stateObj?.isoCode));
   };
 
   const handleImageChange = (e) => {
@@ -137,7 +136,7 @@ const GardenRegistration = () => {
     }
 
     setErrors(errors);
-    console.log("err", errors);
+    console.error("err", errors);
 
     // If errors exist, prevent form submission
     if (Object.keys(errors).length > 0) {
@@ -150,11 +149,9 @@ const GardenRegistration = () => {
     const isValid = validateForm();
     if (isValid) {
       // Perform form submission
-      console.log("user", userData);
       if (!formData.userId) {
         await me();
       }
-      console.log("Form submitted:", formData);
 
       try {
         const result = await registerGarden(formData); // Call getSomeData function from the API service
@@ -174,11 +171,9 @@ const GardenRegistration = () => {
     const isValid = validateForm();
     if (isValid) {
       // Perform form submission
-      console.log("user", userData);
       if (!formData.userId) {
         await me();
       }
-      console.log("Form submitted:", formData);
 
       try {
         const result = await updateGarden(formData); // Call getSomeData function from the API service
@@ -217,8 +212,6 @@ const GardenRegistration = () => {
   const me = async () => {
     try {
       const user = await ME();
-      console.log("User data ->>", user);
-      console.log("User data", user.user?._id);
       setUserData(user);
       setFormData((prevData) => ({
         ...prevData,
@@ -226,7 +219,6 @@ const GardenRegistration = () => {
       }));
       localStorage.setItem("currentUser", JSON.stringify(user));
     } catch (error) {
-      console.log("error in Me", error);
       if (error.message === "jwt expired") {
         Logout();
       }
@@ -261,7 +253,7 @@ const GardenRegistration = () => {
         await me();
         await setGardenData();
       } catch (error) {
-        console.log("get Garden Data", error);
+        console.error("get Garden Data", error);
         throw error;
       }
     }

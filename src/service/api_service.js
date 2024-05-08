@@ -5,8 +5,6 @@ const BASE_URL = "http://localhost:4000";
 export const ME = async () => {
   try {
     const response = await axios.post(`${BASE_URL}/me`);
-    console.log("response.data ME->>>", response.data);
-    // localStorage.setItem("token", response.data.token);
     return response.data;
   } catch (error) {
     // Handle errors

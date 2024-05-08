@@ -78,7 +78,7 @@ const GardenMaintenance = () => {
     }
 
     setErrors(errors);
-    console.log("err", errors);
+    console.error("err", errors);
 
     // If errors exist, prevent form submission
     if (Object.keys(errors).length > 0) {
@@ -91,11 +91,9 @@ const GardenMaintenance = () => {
     const isValid = validateForm();
     if (isValid) {
       // Perform form submission
-      console.log("user", userData);
       if (!formData.userId) {
         await me();
       }
-      console.log("Form submitted:", formData);
 
       try {
         const response = await createMaintenance(formData);
@@ -113,8 +111,6 @@ const GardenMaintenance = () => {
 
   const me = async () => {
     const user = await ME();
-    console.log("User data ->>", user);
-    console.log("User data", user.user?._id);
     setUserData(user);
     setFormData((prevData) => ({
       ...prevData,
@@ -125,8 +121,9 @@ const GardenMaintenance = () => {
 
   const setGardenData = async () => {
     const response = await getGardenDetails();
-
     if (response === null) {
+      toast.error('Please Register a garden first');
+      navigate("/garden/registration");
       return;
     }
     if (response?.message === "Invalid token") {
@@ -134,29 +131,21 @@ const GardenMaintenance = () => {
       localStorage.clear();
       navigate("/login");
     }
-    console.log("response ", response._id);
-    // setFormData(response);
-    setFormData((prevData) => ({
-      ...prevData,
-      gardenId: response._id,
-    }));
-    // setIsDataAvailable(true);
   };
 
   useEffect(() => {
     checkLogin("/garden/maintenance");
     async function getGardenData() {
+      await setGardenData();
       const maintenanceData = await getAllMaintenance();
       if (
         maintenanceData.length &&
-        (await maintenanceData[maintenanceData?.length - 1]?.status) !==
-          "pending"
+        maintenanceData[maintenanceData?.length - 1]?.status !== "pending"
       ) {
         navigate("/garden/maintenance/list");
         return;
       }
       await me();
-      await setGardenData();
     }
     getGardenData();
 

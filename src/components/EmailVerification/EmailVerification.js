@@ -26,7 +26,6 @@ const EmailVerification = () => {
     async function emailVerification(token) {
       try {
         const response = await verifyEmail(token);
-        console.log("response->>>", response);
         if (response === "User already verified") {
           // add tost
           localStorage.clear();
@@ -48,7 +47,6 @@ const EmailVerification = () => {
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
     if (token) {
-      console.log("token", token);
       emailVerification(token);
     }
   }, []);
