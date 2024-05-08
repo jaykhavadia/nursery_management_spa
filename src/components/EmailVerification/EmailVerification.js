@@ -33,6 +33,8 @@ const EmailVerification = () => {
         }
         if (response === "jwt expired") {
           toast.error("Verified link Expired!");
+          navigate("/login");
+          return;
         }
         if (response.isVerified) {
           // const user = await ME(token);
@@ -41,7 +43,10 @@ const EmailVerification = () => {
           toast.success("Email Verified Successfully!");
           navigate("/login");
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log("error in verifyEmail use effects", error);
+        toast.error(error.message);
+      }
     }
 
     const params = new URLSearchParams(location.search);
@@ -54,7 +59,7 @@ const EmailVerification = () => {
   useEffect(() => {
     const email = localStorage.getItem("userEmail");
     setUserEmail(email);
-    checkLogin('/login');
+    checkLogin("/login");
     setTimeout(() => {
       setZoom("scale-100");
     }, 500); // Adjust the delay as needed
@@ -143,7 +148,9 @@ const EmailVerification = () => {
             {/* </div> */}
             <p className='mt-2 text-center  text-sm text-gray-500'>
               <span>
-                {isButtonDisabled ? `Wait for (${countdown}s) for resending the email` : ""}
+                {isButtonDisabled
+                  ? `Wait for (${countdown}s) for resending the email`
+                  : ""}
               </span>
             </p>
             <p className='mt-2 text-center  text-sm text-gray-500'>

@@ -13,13 +13,13 @@ export const AuthContextProvider = ({ children }) => {
   const checkLogin = (path) => {
     const verifyEmail = localStorage.getItem("verifyEmail");
     const token = localStorage.getItem("accessToken");
-    if (!token) {
-      navigate('/login');
+    if (!token && !verifyEmail) {
+      navigate(path || '/login');
       return;
     }
     if (token) {
       updateUserToken(token);
-      navigate(path || "/garden/registration");
+      navigate("/garden/registration");
       return;
     }
     if (verifyEmail) {
@@ -27,7 +27,7 @@ export const AuthContextProvider = ({ children }) => {
       return;
     }
     updateUserToken("");
-    navigate("/login");
+    navigate(path || "/login");
   };
 
   const Logout = () => {

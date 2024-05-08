@@ -96,7 +96,8 @@ const SignUp = () => {
       toast.error(result.message);
     } catch (error) {
       // Handle errors
-      console.error("Error while Login:", error);
+      console.error("Error while signup:", error);
+      toast.error(error?.message);
     }
   };
 

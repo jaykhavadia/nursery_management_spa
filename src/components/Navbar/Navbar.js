@@ -17,79 +17,88 @@ const Navbar = () => {
   };
 
   return (
-    <nav className='sticky-component navbar navbar-expand-lg bg-white navbar-light sticky top-0 z-10 p-0'>
-      <a
-        href='/home'
-        className='navbar-brand d-flex align-items-center px-4 px-lg-5'
-      >
-        <h1 className='m-0'>Gardener</h1>
-      </a>
-      <button
-        type='button'
-        className='navbar-toggler me-4'
-        data-bs-toggle='collapse'
-        // data-bs-target='#navbarCollapse'
-        onClick={toggleDropdown}
-      >
-        <span className='navbar-toggler-icon'></span>
-      </button>
-      <div
-        className={`navbar-collapse ${isOpen ? "block" : "hidden"}`}
-        id='navbarCollapse'
-      >
-        <div className='navbar-nav ms-auto p-4 p-lg-0'>
-          <a href='/home' className='nav-item nav-link active'>
-            Home
-          </a>
-          {/* <a href='/about' className='nav-item nav-link'>
+    <div>
+      <div className='container-fluid bg-dark text-light px-0 py-2'>
+        <div className='row gx-0 d-none d-lg-flex'>
+          <div className='h-100 d-inline-flex justify-center align-items-center me-4'>
+            <span>Register Free your Garden with us !</span>
+          </div>
+        </div>
+      </div>
+      <nav className='sticky-component navbar navbar-expand-lg bg-white navbar-light sticky top-0 z-10 p-0'>
+        <a
+          href='/home'
+          className='navbar-brand d-flex align-items-center px-4 px-lg-5'
+        >
+          <h1 className='m-0'>Gardener</h1>
+        </a>
+        <button
+          type='button'
+          className='navbar-toggler me-4'
+          data-bs-toggle='collapse'
+          // data-bs-target='#navbarCollapse'
+          onClick={toggleDropdown}
+        >
+          <span className='navbar-toggler-icon'></span>
+        </button>
+        <div
+          className={`navbar-collapse ${isOpen ? "block" : "hidden"}`}
+          id='navbarCollapse'
+        >
+          <div className='navbar-nav ms-auto p-4 p-lg-0'>
+            <a href='/home' className='nav-item nav-link active'>
+              Home
+            </a>
+            {/* <a href='/about' className='nav-item nav-link'>
             About
           </a> */}
-          {/* <a href='/login' className='nav-item nav-link'>
+            {/* <a href='/login' className='nav-item nav-link'>
             Services
           </a> */}
-          {/* <a href='/projects' className='nav-item nav-link'>
+            {/* <a href='/projects' className='nav-item nav-link'>
             Projects
           </a> */}
-          <div className='nav-item dropdown'>
-            <a
-              href='#'
-              className='nav-link dropdown-toggle'
-              data-bs-toggle='dropdown'
-            >
-              Services
-            </a>
-            <div className='dropdown-menu bg-light m-0'>
+            <div className='nav-item dropdown'>
               <a
-                href={token ? "/garden/registration" : "/login"}
-                className='dropdown-item'
+                href='#'
+                className='nav-link dropdown-toggle'
+                data-bs-toggle='dropdown'
               >
-                Garden Registration
+                Services
               </a>
-              <a
-                href={token ? "/garden/maintenance/list" : "/login"}
-                className='dropdown-item'
-              >
-                Garden Maintenance
-              </a>
+              <div className='dropdown-menu bg-light m-0'>
+                <a
+                  href={token ? "/garden/registration" : "/login"}
+                  className='dropdown-item'
+                >
+                  Garden Registration
+                </a>
+                <a
+                  href={token ? "/garden/maintenance/list" : "/login"}
+                  className='dropdown-item'
+                >
+                  Garden Maintenance
+                </a>
+              </div>
             </div>
-          </div>
-          <a href='/contact' className='nav-item nav-link'>
-            Contact
-          </a>
-          {token && (
-            <a onClick={Logout} className='nav-item nav-link'>
-              Logout
+            <a href='/contact' className='nav-item nav-link'>
+              Contact
             </a>
-          )}
+            {token && (
+              <a onClick={Logout} className='nav-item nav-link'>
+                Logout
+              </a>
+            )}
+          </div>
+          <a
+            href=''
+            className='btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block'
+          >
+            Get A Quote<i className='fa fa-arrow-right ms-3'></i>
+          </a>
         </div>
-        <a
-          href=''
-          className='btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block'
-        >
-          Get A Quote<i className='fa fa-arrow-right ms-3'></i>
-        </a>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 };
 

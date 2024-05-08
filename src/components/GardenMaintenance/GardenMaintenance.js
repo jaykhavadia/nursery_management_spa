@@ -131,6 +131,11 @@ const GardenMaintenance = () => {
       localStorage.clear();
       navigate("/login");
     }
+    console.log('response', response);
+    setFormData((prevData) => ({
+      ...prevData,
+      gardenId: response?._id,
+    }));
   };
 
   useEffect(() => {
@@ -144,7 +149,7 @@ const GardenMaintenance = () => {
       const maintenanceData = await getAllMaintenance();
       if (
         maintenanceData.length &&
-        maintenanceData[maintenanceData?.length - 1]?.status !== "pending"
+        maintenanceData[maintenanceData?.length - 1]?.status === "pending"
       ) {
         navigate("/garden/maintenance/list");
         return;
