@@ -28,6 +28,7 @@ const EmailVerification = () => {
         const response = await verifyEmail(token);
         if (response === "User already verified") {
           // add tost
+          toast.error("User already verified");
           localStorage.clear();
           navigate("/login");
         }
@@ -37,15 +38,19 @@ const EmailVerification = () => {
           return;
         }
         if (response.isVerified) {
-          // const user = await ME(token);
-          // console.log("user", user);
           localStorage.removeItem("verifyEmail");
           toast.success("Email Verified Successfully!");
           navigate("/login");
         }
       } catch (error) {
         console.log("error in verifyEmail use effects", error);
-        toast.error(error.message);
+        if (error === "User already verified") {
+          toast.error("User already verified");
+          localStorage.clear();
+          navigate("/login");
+          return;
+        }
+        toast.error(error?.message || error);
       }
     }
 
