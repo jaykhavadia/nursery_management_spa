@@ -11,6 +11,8 @@ import {
 } from "../../service/api_service";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 const GardenMaintenance = () => {
   const navigate = useNavigate();
@@ -128,7 +130,9 @@ const GardenMaintenance = () => {
   const setGardenData = async () => {
     const response = await getGardenDetails();
     if (response === null) {
-      toast.error('Please Register a garden first');
+      toast('Please Register a garden first', {
+        icon: <FontAwesomeIcon className="text-yellow-700" icon={faExclamationCircle} />,
+      });
       navigate("/garden/registration");
       return;
     }
