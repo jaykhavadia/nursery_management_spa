@@ -88,6 +88,11 @@ const GardenMaintenance = () => {
   };
 
   const handleRegistration = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     const isValid = validateForm();
     if (isValid) {
       // Perform form submission

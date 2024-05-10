@@ -146,6 +146,11 @@ const GardenRegistration = () => {
   };
 
   const handleRegistration = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     const isValid = validateForm();
     if (isValid) {
       // Perform form submission
@@ -168,6 +173,11 @@ const GardenRegistration = () => {
   };
 
   const handleUpdatedRegistration = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     const isValid = validateForm();
     if (isValid) {
       // Perform form submission
