@@ -148,6 +148,7 @@ const GardenRegistration = () => {
   const handleRegistration = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
+      toast.error('Token Expired');
       navigate("/login");
       return;
     }
@@ -175,6 +176,7 @@ const GardenRegistration = () => {
   const handleUpdatedRegistration = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
+      toast.error('Token Expired');
       navigate("/login");
       return;
     }

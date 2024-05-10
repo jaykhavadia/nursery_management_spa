@@ -90,6 +90,7 @@ const GardenMaintenance = () => {
   const handleRegistration = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
+      toast.error('Token Expired');
       navigate("/login");
       return;
     }

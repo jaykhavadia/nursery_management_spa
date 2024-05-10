@@ -27,7 +27,6 @@ const EmailVerification = () => {
       try {
         const response = await verifyEmail(token);
         if (response === "User already verified") {
-          // add tost
           toast.error("User already verified");
           localStorage.clear();
           navigate("/login");
