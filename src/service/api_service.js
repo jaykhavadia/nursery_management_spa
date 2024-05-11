@@ -1,10 +1,11 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = process.env.REACT_APP_API_KEY;
 
 export const ME = async () => {
   try {
-    const response = await axios.post(`${BASE_URL}/me`);
+    const apiURL = `${BASE_URL}/me`;
+    const response = await axios.post(apiURL);
     return response.data;
   } catch (error) {
     // Handle errors
@@ -14,7 +15,8 @@ export const ME = async () => {
 };
 export const login = async (payload) => {
   try {
-    const response = await axios.post(`${BASE_URL}/login`, payload);
+    const apiURL = `${BASE_URL}/login`;
+    const response = await axios.post(apiURL, payload);
     localStorage.setItem("accessToken", response.data.token);
     return response.data;
     // return {token: 'response.data'};
@@ -27,7 +29,8 @@ export const login = async (payload) => {
 
 export const registerUser = async (payload) => {
   try {
-    const response = await axios.post(`${BASE_URL}/register`, payload);
+    const apiURL = `${BASE_URL}/register`;
+    const response = await axios.post(apiURL, payload);
     localStorage.setItem("verifyEmail", true);
     return response.data;
   } catch (error) {
@@ -39,7 +42,8 @@ export const registerUser = async (payload) => {
 
 export const resendVerificationEmail = async (userEmail) => {
   try {
-    const response = await axios.post(`${BASE_URL}/resend-verfication`, {
+    const apiURL = `${BASE_URL}/resend-verfication`;
+    const response = await axios.post(apiURL, {
       email: userEmail,
     });
     localStorage.setItem("verifyEmail", true);
@@ -53,7 +57,8 @@ export const resendVerificationEmail = async (userEmail) => {
 
 export const verifyEmail = async (token) => {
   try {
-    const response = await axios.get(`${BASE_URL}/verifyemail/${token}`);
+    const apiURL = `${BASE_URL}/verifyemail/${token}`;
+    const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {
     // Handle errors
@@ -64,7 +69,8 @@ export const verifyEmail = async (token) => {
 
 export const registerGarden = async (payload) => {
   try {
-    const response = await axios.post(`${BASE_URL}/garden/register`, payload, {
+    const apiURL = `${BASE_URL}/garden/register`;
+    const response = await axios.post(apiURL, payload, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -78,10 +84,8 @@ export const registerGarden = async (payload) => {
 };
 export const createMaintenance = async (payload) => {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/garden/maintenance`,
-      payload
-    );
+    const apiURL = `${BASE_URL}/garden/maintenance`;
+    const response = await axios.post(apiURL, payload);
     return response.data;
   } catch (error) {
     // Handle errors
@@ -91,7 +95,8 @@ export const createMaintenance = async (payload) => {
 };
 export const getAllMaintenance = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/garden/maintenance`);
+    const apiURL = `${BASE_URL}/garden/maintenance`;
+    const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {
     // Handle errors
@@ -101,7 +106,8 @@ export const getAllMaintenance = async () => {
 };
 export const updateGarden = async (payload) => {
   try {
-    const response = await axios.patch(`${BASE_URL}/garden/update`, payload, {
+    const apiURL = `${BASE_URL}/garden/update`;
+    const response = await axios.patch(apiURL, payload, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -116,7 +122,8 @@ export const updateGarden = async (payload) => {
 
 export const getGardenDetails = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/garden/details`);
+    const apiURL = `${BASE_URL}/garden/details`;
+    const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {
     // Handle errors
@@ -127,7 +134,8 @@ export const getGardenDetails = async () => {
 
 export const contact = async (payload) => {
   try {
-    const response = await axios.post(`${BASE_URL}/contact-us`, payload);
+    const apiURL = `${BASE_URL}/contact-us`;
+    const response = await axios.post(apiURL, payload);
     return response.data;
   } catch (error) {
     // Handle errors
