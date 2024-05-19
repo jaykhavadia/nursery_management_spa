@@ -29,6 +29,7 @@ import Contact from "./components/Contact/Contact";
 import GardenRegistration from "./components/GardenRegistration/GardenRegistration";
 import GardenMaintenance from "./components/GardenMaintenance/GardenMaintenance";
 import GardenMaintenanceList from "./components/GardenMaintenanceListing/GardenMaintenanceList";
+import ManageMaintenance from "./components/ManageMaintenance/ManageMaintenance";
 
 let token = localStorage.getItem("accessToken");
 axios.interceptors.request.use(
@@ -67,6 +68,7 @@ root.render(
           <Route path='projects' element={<Projects />} />
           <Route path='contact' element={<Contact />} />
           <Route path='login' element={<Login />} />
+          <Route path='admin/login' element={<Login admin={true} />} />
           <Route path='sign-up' element={<SignUp />} />
           {/* <Route path='dashboard' element={<Dashboard />} /> */}
           <Route path='email-verification' element={<EmailVerification />} />
@@ -76,6 +78,7 @@ root.render(
             element={<GardenMaintenanceList />}
           />
           <Route path='garden/maintenance' element={<GardenMaintenance />} />
+          <Route path='/admin/manage-maintenance' element={<ManageMaintenance />} />
         </Routes>
         <Toaster
           position='top-right'

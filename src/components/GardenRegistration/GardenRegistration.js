@@ -18,7 +18,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const GardenRegistration = () => {
   const navigate = useNavigate();
-  const { checkLogin, Logout } = useContext(AuthContext);
+  const { checkAdmin, Logout } = useContext(AuthContext);
   const [zoom, setZoom] = useState("scale-0");
   const [userData, setUserData] = useState();
   const [Cities, setCities] = useState([]);
@@ -266,6 +266,7 @@ const GardenRegistration = () => {
     }
     async function getGardenData() {
       try {
+        await checkAdmin();
         await me();
         await setGardenData();
       } catch (error) {

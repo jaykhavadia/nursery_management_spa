@@ -93,9 +93,9 @@ export const createMaintenance = async (payload) => {
     throw error.response.data;
   }
 };
-export const getAllMaintenance = async () => {
+export const getAllGardenMaintenance = async () => {
   try {
-    const apiURL = `${BASE_URL}/garden/maintenance`;
+    const apiURL = `${BASE_URL}/garden/all-maintenance`;
     const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {
@@ -132,10 +132,34 @@ export const getGardenDetails = async () => {
   }
 };
 
+export const getAllMaintenance = async () => {
+  try {
+    const apiURL = `${BASE_URL}/garden/maintenance`;
+    const response = await axios.get(apiURL);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting data:", error);
+    throw error.response.data;
+  }
+};
+
 export const contact = async (payload) => {
   try {
     const apiURL = `${BASE_URL}/contact-us`;
     const response = await axios.post(apiURL, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error posting data:", error);
+    throw error.response.data;
+  }
+};
+
+export const updateMaintenance = async (payload, maintenanceId) => {
+  try {
+    const apiURL = `${BASE_URL}/garden/update-maintenance/${maintenanceId}`;
+    const response = await axios.put(apiURL, payload);
     return response.data;
   } catch (error) {
     // Handle errors
