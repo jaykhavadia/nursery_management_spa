@@ -30,6 +30,7 @@ import GardenRegistration from "./components/GardenRegistration/GardenRegistrati
 import GardenMaintenance from "./components/GardenMaintenance/GardenMaintenance";
 import GardenMaintenanceList from "./components/GardenMaintenanceListing/GardenMaintenanceList";
 import ManageMaintenance from "./components/ManageMaintenance/ManageMaintenance";
+import Products from "./components/Products/Products";
 
 let token = localStorage.getItem("accessToken");
 axios.interceptors.request.use(
@@ -79,6 +80,7 @@ root.render(
           />
           <Route path='garden/maintenance' element={<GardenMaintenance />} />
           <Route path='/admin/manage-maintenance' element={<ManageMaintenance />} />
+          <Route path='/products' element={<Products />} />
         </Routes>
         <Toaster
           position='top-right'
