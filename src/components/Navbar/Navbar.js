@@ -92,7 +92,7 @@ const Navbar = () => {
                   View Products
                 </a>
                 {token && (
-                  <a href={"/products/cart"} className='dropdown-item'>
+                  <a href={"/products/checkout"} className='dropdown-item'>
                     View Cart
                   </a>
                 )}

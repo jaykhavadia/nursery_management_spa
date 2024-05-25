@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCartShopping,
+  faEnvelope,
+  faExclamationCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Products = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const sample_data = [
+  const [sample_data, setProducts] = useState([
     {
       id: 1,
       title: "Lululemon Comfort Tee - White",
@@ -19,6 +23,7 @@ const Products = () => {
       price: "79",
       imageUrl:
         "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1072&q=80",
+      itemCount: 0,
     },
     {
       id: 2,
@@ -27,6 +32,7 @@ const Products = () => {
       price: "120",
       imageUrl:
         "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/3f3e7049-5c99-428c-abcd-e246b086f2ed/air-force-1-07-shoes-VWCc04.png",
+      itemCount: 0,
     },
     {
       id: 3,
@@ -35,6 +41,7 @@ const Products = () => {
       price: "45",
       imageUrl:
         "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/68cb5b22233a407599dd948fd959dedc_9366/INDIA_LIMITED_EDITION_SHOE_WOMEN_White_IV4475_02_standard_hover.jpg",
+      itemCount: 0,
     },
     {
       id: 4,
@@ -43,6 +50,7 @@ const Products = () => {
       price: "99",
       imageUrl:
         "https://himalayaoptical.com/cdn/shop/products/8056597625241_1_1024x1024.jpg?v=1656746401",
+      itemCount: 0,
     },
     {
       id: 5,
@@ -51,6 +59,7 @@ const Products = () => {
       price: "89",
       imageUrl:
         "https://images-cdn.ubuy.co.in/64c95ab7fe82525f6e6e905e-levi-s-boys-denim-trucker-jacket-sizes.jpg",
+      itemCount: 0,
     },
     {
       id: 6,
@@ -59,6 +68,7 @@ const Products = () => {
       price: "79",
       imageUrl:
         "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1072&q=80",
+      itemCount: 0,
     },
     {
       id: 7,
@@ -67,6 +77,7 @@ const Products = () => {
       price: "120",
       imageUrl:
         "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/3f3e7049-5c99-428c-abcd-e246b086f2ed/air-force-1-07-shoes-VWCc04.png",
+      itemCount: 0,
     },
     {
       id: 8,
@@ -75,6 +86,7 @@ const Products = () => {
       price: "45",
       imageUrl:
         "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/68cb5b22233a407599dd948fd959dedc_9366/INDIA_LIMITED_EDITION_SHOE_WOMEN_White_IV4475_02_standard_hover.jpg",
+      itemCount: 0,
     },
     {
       id: 9,
@@ -83,6 +95,7 @@ const Products = () => {
       price: "99",
       imageUrl:
         "https://himalayaoptical.com/cdn/shop/products/8056597625241_1_1024x1024.jpg?v=1656746401",
+      itemCount: 0,
     },
     {
       id: 10,
@@ -91,8 +104,9 @@ const Products = () => {
       price: "89",
       imageUrl:
         "https://images-cdn.ubuy.co.in/64c95ab7fe82525f6e6e905e-levi-s-boys-denim-trucker-jacket-sizes.jpg",
+      itemCount: 0,
     },
-  ];
+  ]);
 
   const sample_category = [
     {
@@ -137,8 +151,15 @@ const Products = () => {
     },
   ];
 
-  const addToCart = (product) => {
-    if(!token){
+  useEffect(() => {
+    // Save cart data to localStorage
+    const cartData = sample_data.filter((product) => product.itemCount > 0);
+    console.log("set cart", cartData);
+    localStorage.setItem("cart", JSON.stringify(cartData));
+  }, [sample_data]);
+
+  const addToCart = async (product) => {
+    if (!token) {
       toast("Login Before Buying Products!", {
         icon: (
           <FontAwesomeIcon
@@ -150,8 +171,45 @@ const Products = () => {
       navigate("/login");
       return;
     }
-    console.log('Product', product);
-  } 
+    setProducts((prevProducts) =>
+      prevProducts.map((p) =>
+        p.id === product.id ? { ...p, itemCount: p.itemCount + 1 } : p
+      )
+    );
+  };
+
+  const removeFromCart = (product) => {
+    if (!token) {
+      toast("Login Before Removing Products!", {
+        icon: (
+          <FontAwesomeIcon
+            className='text-yellow-700'
+            icon={faExclamationCircle}
+          />
+        ),
+      });
+      navigate("/login");
+      return;
+    }
+
+    // Update the product in the state
+    setProducts((prevProducts) =>
+      prevProducts.map((p) =>
+        p.id === product.id && p.itemCount > 0
+          ? { ...p, itemCount: p.itemCount - 1 }
+          : p
+      )
+    );
+    console.log("Product removed from cart:", product);
+  };
+
+  const setToCart = () => {
+    const cart = sample_data.filter((product) => {
+      return product.itemCount > 0;
+    });
+    console.log("setCart", cart);
+    // localStorage.setItem("cart", );
+  };
 
   return (
     <div>
@@ -223,76 +281,60 @@ const Products = () => {
             )}
           </div>
         </div>
-        <div className='container flex flex-row justify-evenly flex-wrap'>
-          {sample_data.map((product, index) => (
-            <>
-              {selectedCategory === product.category ||
-              selectedCategory === "" ? (
-                <div
-                  key={index}
-                  className='group my-10 flex w-full max-w-xs flex-col overflow-hidden border border-gray-100 bg-white shadow-md wow fadeIn'
-                >
-                  <a className='relative flex h-60 overflow-hidden' href='#'>
-                    <img
-                      className='absolute top-0 right-0 h-full w-full object-cover'
-                      src={product.imageUrl}
-                      alt='product_image'
-                    />
-                    {/* {token && (
-                      <div className='absolute -right-16 bottom-0 mr-2 mb-4 space-y-2 transition-all duration-300 group-hover:right-0'>
-                        <button className='flex h-10 w-10 items-center justify-center bg-gray-900 text-white transition hover:bg-gray-700'>
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            className='h-5 w-5'
-                            viewBox='0 0 20 20'
-                            fill='currentColor'
-                          >
-                            <path
-                              fillRule='evenodd'
-                              d='M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z'
-                              clipRule='evenodd'
-                            />
-                          </svg>
+        <div className='container px-4 sm:px-6 lg:px-8 py-5'>
+          <div className='grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+            {sample_data.map((product, index) => (
+              <div
+                key={index}
+                className='border border-gray-200 rounded-md overflow-hidden shadow-sm'
+              >
+                <img
+                  className='w-full h-60 object-cover'
+                  src={product.imageUrl}
+                  alt={product.title}
+                />
+                <div className='p-4'>
+                  <h3 className='text-lg font-semibold whitespace-nowrap overflow-hidden'>{product.title}</h3>
+                  <p className='text-gray-600'>{product.category}</p>
+                  <div className='flex flex-col items-center justify-between mt-2'>
+                    <p className='text-xl font-semibold'>Rs. {product.price}</p>
+                    <div>
+                      {product.itemCount === 0 ? (
+                        <button
+                          className='px-3 py-1 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition duration-300'
+                          onClick={() => addToCart(product)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faCartShopping}
+                            className='mr-2'
+                          />
+                          Add to Cart
                         </button>
-                      </div>
-                    )} */}
-                  </a>
-                  <div className='mt-4 px-5 pb-5'>
-                    <a href='#'>
-                      <h5 className='text-xl tracking-tight text-slate-900'>
-                        {product.title}
-                      </h5>
-                    </a>
-                    <a href='#'>
-                      <h5 className='text-xl tracking-tight text-slate-900'>
-                        {product.category}
-                      </h5>
-                    </a>
-                    <div className=' mb-3 flex items-center justify-between'>
-                      <p>
-                        <span className='text-3xl font-bold text-slate-900'>
-                          Rs. {product.price}
-                        </span>
-                      </p>
+                      ) : (
+                        <div className='flex items-center'>
+                          <button
+                            className='px-2 py-1 bg-gray-300 text-gray-700 rounded-l-md hover:bg-gray-400 transition duration-300'
+                            onClick={() => removeFromCart(product)}
+                          >
+                            -
+                          </button>
+                          <span className='px-3 py-1 bg-gray-200'>
+                            {product.itemCount}
+                          </span>
+                          <button
+                            className='px-2 py-1 bg-gray-300 text-gray-700 rounded-r-md hover:bg-gray-400 transition duration-300'
+                            onClick={() => addToCart(product)}
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
                     </div>
-                    <button className='flex items-center justify-center bg-gray-900 px-2 py-1 text-sm text-white transition hover:bg-gray-700' onClick={()=> addToCart(product) } >
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='mr-2 h-5 w-5'
-                        viewBox='0 0 20 20'
-                        fill='currentColor'
-                      >
-                        <path d='M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z' />
-                      </svg>
-                      Add to cart
-                    </button>
                   </div>
                 </div>
-              ) : (
-                ""
-              )}
-            </>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
