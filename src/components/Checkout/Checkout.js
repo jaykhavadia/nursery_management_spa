@@ -16,24 +16,47 @@ import {
   faEnvelope,
   faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import Summary from "./steps/Summary/Summary";
+import Address from "./steps/Address/Address";
 
 const steps = ["Checkout", "Address", "Payment"];
 
 const Checkout = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
-  const [cartData, setCartData] = useState();
-
+  const [cartData, setCartData] = useState([]);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [cartSize, setCartSize] = useState(0) ;
+  const [isValidAddress, setIsValidAddress] = useState(false) ;
+  
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     const cartData = localStorage.getItem("cart");
-    console.log("CartData", JSON.parse(cartData));
-    setCartData(JSON.parse(cartData));
+    if (cartData) {
+      setCartData(JSON.parse(cartData));
+    }
   }, []);
 
   useEffect(() => {
     // Save cart data to localStorage
     const cart = cartData?.filter((product) => product.itemCount > 0);
     console.log("set cart", cart);
+    let total = 0;
+    let cartLength = 0;
+    if (cart) {
+      for (const product of cart) {
+        total += product?.itemCount * product?.price;
+        if (product?.itemCount > 0) {
+          cartLength += 1;
+        }
+      }
+      setGrandTotal(total);
+      setCartSize(cartLength);
+    }
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cartData]);
 
@@ -123,6 +146,10 @@ const Checkout = () => {
     setActiveStep(0);
   };
 
+  const setAddressValidity = () =>{
+    setIsValidAddress(true);
+  }
+
   return (
     <div>
       <Navbar />
@@ -182,60 +209,29 @@ const Checkout = () => {
               <Typography sx={{ mt: 2, mb: 1 }}>
                 All steps completed - you&apos;re finished
               </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              {/* <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                 <Box sx={{ flex: "1 1 auto" }} />
                 <Button onClick={handleReset}>Reset</Button>
-              </Box>
+              </Box> */}
             </React.Fragment>
           ) : (
             <React.Fragment>
               <Typography sx={{ mt: 2, mb: 1 }}>
                 <div className='flex justify-center'>
                   <div className='container px-4 sm:px-6 lg:px-8 py-5'>
-                    <div className=''>
-                      {cartData?.map((product, index) => (
-                        <div
-                          key={index}
-                          className='flex border border-gray-200 rounded-md overflow-hidden shadow-sm p-2 w-full justify-between'
-                        >
-                          <img
-                            className='w-20 h-20 object-cover'
-                            src={product.imageUrl}
-                            alt={product.title}
-                          />
-                          <div className='px-3 pt-2'>
-                            <h3 className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
-                              {product.title}
-                            </h3>
-                            <p className='text-gray-600'>{product.category}</p>
-                          </div>
-                          <div className='flex flex-col items-center pr-4'>
-                            <p className='text-xl font-semibold'>
-                              Rs. {product.price}
-                            </p>
-                            <div>
-                              <div className='flex items-center'>
-                                <button
-                                  className='px-2 py-1 bg-gray-300 text-gray-700 rounded-l-md hover:bg-gray-400 transition duration-300'
-                                  onClick={() => removeFromCart(product)}
-                                >
-                                  -
-                                </button>
-                                <span className='px-3 py-1 bg-gray-200'>
-                                  {product.itemCount}
-                                </span>
-                                <button
-                                  className='px-2 py-1 bg-gray-300 text-gray-700 rounded-r-md hover:bg-gray-400 transition duration-300'
-                                  onClick={() => addToCart(product)}
-                                >
-                                  +
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    {/* checkout */}
+                    {activeStep === 0 && (
+                      <Summary
+                        cartData={cartData}
+                        removeFromCart={removeFromCart}
+                        addToCart={addToCart}
+                        grandTotal={grandTotal}
+                        cartSize={cartSize}
+                      />
+                    )}
+                    {/* Address */}
+                    {activeStep === 1 && <Address setAddressValidity={setAddressValidity} />}
+                    {/* Payment */}
                   </div>
                 </div>
               </Typography>
@@ -243,23 +239,35 @@ const Checkout = () => {
                 className='px-16'
                 sx={{ display: "flex", flexDirection: "row", pt: 2 }}
               >
-                <Button
-                  color='inherit'
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  sx={{ mr: 1 }}
-                >
-                  Back
-                </Button>
+                {activeStep !== 0 && (
+                  <Button
+                    color='inherit'
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                )}
                 <Box sx={{ flex: "1 1 auto" }} />
                 {/* {isStepOptional(activeStep) && (
                   <Button color='inherit' onClick={handleSkip} sx={{ mr: 1 }}>
                     Skip
                   </Button>
                 )} */}
-                <Button onClick={handleNext}>
-                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button>
+                {activeStep === 0 && (
+                  <Button disabled={cartSize === 0} onClick={handleNext}>Address</Button>
+                )}
+                {activeStep === 1 && (
+                  <Button disabled={!isValidAddress} onClick={handleNext}>Payment</Button>
+                )}
+                {/* <Button onClick={handleNext}>
+                  {activeStep === steps.length - 1
+                    ? "Finish"
+                    : activeStep === 0
+                    ? "Address"
+                    : "Next"}
+                </Button> */}
               </Box>
             </React.Fragment>
           )}

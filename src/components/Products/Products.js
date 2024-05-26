@@ -20,6 +20,7 @@ const Products = () => {
       id: 1,
       title: "Lululemon Comfort Tee - White",
       category: "T-shirt",
+      description: "its a T-shirt",
       price: "79",
       imageUrl:
         "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1072&q=80",
@@ -152,10 +153,29 @@ const Products = () => {
   ];
 
   useEffect(() => {
+    const userCart = localStorage.getItem("cart");
+    if (userCart && userCart.length > 0) {
+      const cart = JSON.parse(userCart);
+      // Update the sample data with item counts from the cart
+      const updatedData = sample_data.map((product) => {
+        const cartItem = cart.find((item) => item.id === product.id);
+        if (cartItem) {
+          return { ...product, itemCount: cartItem.itemCount };
+        }
+        return product;
+      });
+
+      setProducts(updatedData);
+    }
+  }, []);
+
+  useEffect(() => {
     // Save cart data to localStorage
     const cartData = sample_data.filter((product) => product.itemCount > 0);
     console.log("set cart", cartData);
-    localStorage.setItem("cart", JSON.stringify(cartData));
+    if (cartData.length) {
+      localStorage.setItem("cart", JSON.stringify(cartData));
+    }
   }, [sample_data]);
 
   const addToCart = async (product) => {
@@ -245,24 +265,20 @@ const Products = () => {
         <div className='container mx-auto'>
           <div className='flex justify-center items-center py-4'>
             {sample_category.map((product, index) => (
-              <>
-                <div
-                  key={index}
-                  className='text-center mr-5'
-                  onClick={() => setSelectedCategory(product.category)}
-                >
-                  <div className='block'>
-                    <img
-                      className='h-24 w-24 mx-auto'
-                      src={product.imageUrl}
-                      alt={product.name}
-                    />
-                    <p className='mt-2 text-sm font-medium'>
-                      {product.category}
-                    </p>
-                  </div>
+              <div
+                key={index}
+                className='text-center mr-5'
+                onClick={() => setSelectedCategory(product.category)}
+              >
+                <div className='block'>
+                  <img
+                    className='h-24 w-24 mx-auto'
+                    src={product.imageUrl}
+                    alt={product.name}
+                  />
+                  <p className='mt-2 text-sm font-medium'>{product.category}</p>
                 </div>
-              </>
+              </div>
             ))}
             {selectedCategory !== "" && (
               <div
@@ -294,7 +310,9 @@ const Products = () => {
                   alt={product.title}
                 />
                 <div className='p-4'>
-                  <h3 className='text-lg font-semibold whitespace-nowrap overflow-hidden'>{product.title}</h3>
+                  <h3 className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
+                    {product.title}
+                  </h3>
                   <p className='text-gray-600'>{product.category}</p>
                   <div className='flex flex-col items-center justify-between mt-2'>
                     <p className='text-xl font-semibold'>Rs. {product.price}</p>

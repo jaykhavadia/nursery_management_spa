@@ -1,67 +1,56 @@
 import toast from "react-hot-toast";
 import { useContext, useEffect, useState } from "react";
-import {
-  getAllGardenMaintenance,
-  ME,
-  updateMaintenance,
-} from "../../service/api_service";
-import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Moment from "react-moment";
-import Sidebar from "../Sidebar/Sidebar";
-import Dropdown from "react-dropdown";
-import "react-dropdown/style.css";
-const ManageMaintenance = () => {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import Navbar from "../../../Navbar/Navbar";
+import Footer from "../../../Footer/Footer";
+import { AuthContext } from "../../../../context/AuthContext";
+import { getAllMaintenance, getGardenDetails } from "../../../../service/api_service";
+
+const ProductsList = () => {
   const navigate = useNavigate();
+  const { checkAdmin } = useContext(AuthContext);
   const [maintenanceList, setMaintenanceList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedList, setSelectedList] = useState();
-  const { Logout } = useContext(AuthContext);
 
-  // const setGardenData = async () => {
-  //   const response = await getAllMaintenance();
-  //   if (response === null) {
-  //     // toast('', {
-  //     //   icon: <FontAwesomeIcon className="text-yellow-700" icon={faExclamationCircle} />,
-  //     // });
-  //     // navigate("/garden/registration");
-  //     return;
-  //   }
-  //   if (response?.message === "Invalid token") {
-  //     toast.success(response?.message);
-  //     localStorage.clear();
-  //     navigate("/login");
-  //   }
-  // };
-  const me = async () => {
-    try {
-      const user = await ME();
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      console.log("user =>>", user.user);
-      return user?.user?.isAdmin || false;
-    } catch (error) {
-      if (error.message === "jwt expired") {
-        Logout();
-      }
-      throw new Error(error);
+  const setGardenData = async () => {
+    const response = await getGardenDetails();
+    if (response === null) {
+      toast("Please Register a garden first", {
+        icon: (
+          <FontAwesomeIcon
+            className='text-yellow-700'
+            icon={faExclamationCircle}
+          />
+        ),
+      });
+      navigate("/garden/registration");
+      return;
+    }
+    if (response?.message === "Invalid token") {
+      toast.success(response?.message);
+      localStorage.clear();
+      navigate("/login");
     }
   };
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
+    const isAdmin = localStorage.getItem("isAdmin");
     if (!token) {
       navigate("/login");
       return;
     }
     async function getMaintenanceData() {
-      const isAdmin = await me();
+      await checkAdmin();
       if (!isAdmin) {
-        toast.error("You are not a admin");
-        Logout();
-        return;
+        await setGardenData();
+        const maintenanceData = await getAllMaintenance();
+        setMaintenanceList(maintenanceData);
       }
-      const maintenanceData = await getAllGardenMaintenance();
-      setMaintenanceList(maintenanceData);
     }
     getMaintenanceData();
 
@@ -70,32 +59,36 @@ const ManageMaintenance = () => {
     }, 500); // Adjust the delay as needed
   }, []);
 
-  const selected = async (event, data) => {
-    console.log("event", event, data);
-    await updateMaintenance({ status: event.value }, data._id);
-
-    const maintenanceData = await getAllGardenMaintenance();
-    setMaintenanceList(maintenanceData);
-  };
-
   return (
-    <div className='h-screen'>
-      <Sidebar />
-      <div className='page-header wow fadeIn h-full' data-wow-delay='0.1s'>
+    <div>
+      <Navbar />
+      <div
+        className='container-fluid page-header py-5 wow fadeIn'
+        data-wow-delay='0.1s'
+      >
         <div className='container text-center py-5'>
-          <h1 className='display-3 text-white mb-2 animated slideInDown'>
+          <h1 className='display-3 text-white mb-4 animated slideInDown'>
             Garden Maintenance Listing
           </h1>
+          <nav aria-label='breadcrumb animated slideInDown'>
+            <ol className='breadcrumb justify-content-center mb-0'>
+              <li className='breadcrumb-item'>Home</li>
+              <li className='breadcrumb-item'>Pages</li>
+              <li className='breadcrumb-item' aria-current='page'>
+                garden / Maintenance / list
+              </li>
+            </ol>
+          </nav>
           {/* ----------------- Form ----------------------- */}
           <div>
             <div className='flex min-h-full flex-col justify-center px-6 pt-12 lg:px-8'>
               <div className='sm:mx-auto sm:w-full p-6  bg-gray-100 border border-gray-100 rounded-lg shadow dark:bg-gray-100 dark:border-gray-200'>
                 <div className='sm:mx-auto sm:w-full '>
                   <div className='space-y-6'>
-                    {/* <div className='flex justify-end mr-5 '>
+                    <div className='flex justify-end mr-5 '>
                       {maintenanceList?.length === 0 ||
                       maintenanceList[maintenanceList.length - 1].status !==
-                        "pending" ? (
+                        "Pending" ? (
                         <button
                           className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center'
                           onClick={() => navigate("/garden/maintenance")}
@@ -105,12 +98,11 @@ const ManageMaintenance = () => {
                       ) : (
                         ""
                       )}
-                    </div> */}
+                    </div>
                     <table className='table table-hover'>
                       <thead>
                         <tr>
                           <th scope='col'>#</th>
-                          <th scope='col'>Garden Name</th>
                           <th scope='col'>Maintenance Name</th>
                           <th scope='col'>Date</th>
                           <th scope='col'>Status</th>
@@ -122,7 +114,6 @@ const ManageMaintenance = () => {
                           maintenanceList?.map((maintenanceData, index) => (
                             <tr key={index}>
                               <th scope='row'>{index + 1}</th>
-                              <td>{maintenanceData.gardenId.name}</td>
                               <td>{maintenanceData.maintenanceName}</td>
                               <td>
                                 <Moment
@@ -132,31 +123,17 @@ const ManageMaintenance = () => {
                                 />
                               </td>
                               <td>
-                                <div className='flex justify-center'>
-                                  <Dropdown
-                                    className='w-[150px]'
-                                    options={[
-                                      "Completed",
-                                      "Pending",
-                                      "Processing",
-                                      "Canalled",
-                                    ]}
-                                    onChange={(e) =>
-                                      selected(e, maintenanceData)
-                                    }
-                                    value={maintenanceData.status}
-                                    placeholder={maintenanceData.status}
-                                  />
-                                </div>
-                                {/* <span
+                                <span
                                   className={`py-2 px-4 badge ${
-                                    maintenanceData.status === "completed"
+                                    maintenanceData.status === "Completed"
                                       ? "bg-success"
+                                      : maintenanceData.status === "Canalled"
+                                      ? "bg-red-500"
                                       : "bg-warning"
                                   }`}
                                 >
                                   {maintenanceData.status}
-                                </span> */}
+                                </span>
                               </td>
                               <td>
                                 <button
@@ -230,9 +207,9 @@ const ManageMaintenance = () => {
           </>
         </div>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };
 
-export default ManageMaintenance;
+export default ProductsList;
