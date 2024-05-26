@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
@@ -9,11 +9,18 @@ import {
   faEnvelope,
   faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "../../context/AuthContext";
 
 const Products = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
   const [selectedCategory, setSelectedCategory] = useState("");
+
+  const { checkAdmin } = useContext(AuthContext);
+
+  useEffect(() => {
+    checkAdmin();
+  },[]);
 
   const [sample_data, setProducts] = useState([
     {

@@ -9,7 +9,7 @@ export const ME = async () => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error ME:", error);
     throw error.response.data;
   }
 };
@@ -22,7 +22,7 @@ export const login = async (payload) => {
     // return {token: 'response.data'};
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error login:", error);
     throw error.response.data;
   }
 };
@@ -35,7 +35,7 @@ export const registerUser = async (payload) => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error registerUser:", error);
     throw error.response.data;
   }
 };
@@ -50,7 +50,7 @@ export const resendVerificationEmail = async (userEmail) => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error resendVerificationEmail:", error);
     throw error.response.data;
   }
 };
@@ -62,7 +62,7 @@ export const verifyEmail = async (token) => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error verifyEmail:", error);
     throw error.response.data.message;
   }
 };
@@ -78,10 +78,27 @@ export const registerGarden = async (payload) => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error registerGarden:", error);
     throw error.response.data;
   }
 };
+
+export const addProduct = async (payload) => {
+  try {
+    const apiURL = `${BASE_URL}/product/create`;
+    const response = await axios.post(apiURL, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error addProduct:", error);
+    throw error.response.data;
+  }
+};
+
 export const createMaintenance = async (payload) => {
   try {
     const apiURL = `${BASE_URL}/garden/maintenance`;
@@ -89,7 +106,7 @@ export const createMaintenance = async (payload) => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error createMaintenance:", error);
     throw error.response.data;
   }
 };
@@ -100,7 +117,7 @@ export const getAllGardenMaintenance = async () => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error getAllGardenMaintenance:", error);
     throw error.response.data;
   }
 };
@@ -115,7 +132,7 @@ export const updateGarden = async (payload) => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error updateGarden:", error);
     throw error.response.data;
   }
 };
@@ -127,7 +144,55 @@ export const getGardenDetails = async () => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error getGardenDetails:", error);
+    throw error.response.data;
+  }
+};
+
+export const getProductDetails = async () => {
+  try {
+    const apiURL = `${BASE_URL}/product`;
+    const response = await axios.get(apiURL);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error getGardenDetails:", error);
+    throw error.response.data;
+  }
+};
+
+export const getProductDetailsById = async (id) => {
+  try {
+    const apiURL = `${BASE_URL}/product/${id}`;
+    const response = await axios.get(apiURL);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error getGardenDetails:", error);
+    throw error.response.data;
+  }
+};
+
+export const getCategory = async () => {
+  try {
+    const apiURL = `${BASE_URL}/category`;
+    const response = await axios.get(apiURL);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error getCategory:", error);
+    throw error.response.data;
+  }
+};
+
+export const createCategory = async (payload) => {
+  try {
+    const apiURL = `${BASE_URL}/category/create`;
+    const response = await axios.post(apiURL, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error getCategory:", error);
     throw error.response.data;
   }
 };
@@ -139,7 +204,7 @@ export const getAllMaintenance = async () => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error getAllMaintenance:", error);
     throw error.response.data;
   }
 };
@@ -151,7 +216,7 @@ export const contact = async (payload) => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error contact:", error);
     throw error.response.data;
   }
 };
@@ -163,7 +228,18 @@ export const updateMaintenance = async (payload, maintenanceId) => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error posting data:", error);
+    console.error("Error updateMaintenance:", error);
+    throw error.response.data;
+  }
+};
+export const updateProduct = async (payload, productId) => {
+  try {
+    const apiURL = `${BASE_URL}/product/update-product/${productId}`;
+    const response = await axios.put(apiURL, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error updateProduct:", error);
     throw error.response.data;
   }
 };

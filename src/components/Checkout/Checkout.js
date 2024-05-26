@@ -18,6 +18,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Summary from "./steps/Summary/Summary";
 import Address from "./steps/Address/Address";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 const steps = ["Checkout", "Address", "Payment"];
 
@@ -26,9 +28,15 @@ const Checkout = () => {
   const token = localStorage.getItem("accessToken");
   const [cartData, setCartData] = useState([]);
   const [grandTotal, setGrandTotal] = useState(0);
-  const [cartSize, setCartSize] = useState(0) ;
-  const [isValidAddress, setIsValidAddress] = useState(false) ;
-  
+  const [cartSize, setCartSize] = useState(0);
+  const [isValidAddress, setIsValidAddress] = useState(false);
+
+  const { checkAdmin } = useContext(AuthContext);
+
+  useEffect(() => {
+    checkAdmin();
+  },[]);
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
@@ -146,9 +154,9 @@ const Checkout = () => {
     setActiveStep(0);
   };
 
-  const setAddressValidity = () =>{
+  const setAddressValidity = () => {
     setIsValidAddress(true);
-  }
+  };
 
   return (
     <div>
@@ -230,7 +238,9 @@ const Checkout = () => {
                       />
                     )}
                     {/* Address */}
-                    {activeStep === 1 && <Address setAddressValidity={setAddressValidity} />}
+                    {activeStep === 1 && (
+                      <Address setAddressValidity={setAddressValidity} />
+                    )}
                     {/* Payment */}
                   </div>
                 </div>
@@ -256,10 +266,14 @@ const Checkout = () => {
                   </Button>
                 )} */}
                 {activeStep === 0 && (
-                  <Button disabled={cartSize === 0} onClick={handleNext}>Address</Button>
+                  <Button disabled={cartSize === 0} onClick={handleNext}>
+                    Address
+                  </Button>
                 )}
                 {activeStep === 1 && (
-                  <Button disabled={!isValidAddress} onClick={handleNext}>Payment</Button>
+                  <Button disabled={!isValidAddress} onClick={handleNext}>
+                    Payment
+                  </Button>
                 )}
                 {/* <Button onClick={handleNext}>
                   {activeStep === steps.length - 1

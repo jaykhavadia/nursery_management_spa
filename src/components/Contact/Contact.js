@@ -16,7 +16,7 @@ const Contact = () => {
   const { checkAdmin } = useContext(AuthContext);
   useEffect(() => {
     checkAdmin();
-  });
+  },[]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;

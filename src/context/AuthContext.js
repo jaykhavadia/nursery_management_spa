@@ -10,12 +10,12 @@ export const AuthContextProvider = ({ children }) => {
   const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
 
-  const checkAdmin = async () => {
+  const checkAdmin = async (path) => {
     const token = localStorage.getItem("accessToken");
     const isAdmin = localStorage.getItem("isAdmin");
     if (token && isAdmin) {
-      toast.success("You are a admin User");
-      navigate("/admin/manage-maintenance");
+      // toast.success("You are a admin User");
+      navigate(path || "/admin/manage-maintenance");
     }
   };
   
@@ -33,7 +33,7 @@ export const AuthContextProvider = ({ children }) => {
     if (token) {
       updateUserToken(token);
       if (isAdmin) {
-        navigate("/admin/manage-maintenance");
+        navigate(path || "/admin/manage-maintenance");
       } else {
         navigate("/garden/registration");
       }

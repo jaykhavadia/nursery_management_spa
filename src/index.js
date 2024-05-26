@@ -34,6 +34,7 @@ import Products from "./components/Products/Products";
 import Checkout from "./components/Checkout/Checkout";
 import ProductsList from "./components/Admin/ManageProducts/ProductsListing/ProductsList";
 import ProductDetail from "./components/ProductDetail/ProductDetail";
+import AddProducts from "./components/Admin/ManageProducts/AddProducts/AddProducts";
 
 let token = localStorage.getItem("accessToken");
 axios.interceptors.request.use(
@@ -82,8 +83,12 @@ root.render(
             element={<GardenMaintenanceList />}
           />
           <Route path='garden/maintenance' element={<GardenMaintenance />} />
+          
           <Route path='/admin/manage-maintenance' element={<ManageMaintenance />} />
           <Route path='/admin/manage-products' element={<ProductsList />} />
+          <Route path='/admin/add-products' element={<AddProducts />} />
+          <Route path='/admin/edit-product/:id' element={<AddProducts />} />
+
           <Route path='/products' element={<Products />} />
           <Route path='/products/:id' element={<ProductDetail />} />
           <Route path='/products/checkout' element={<Checkout />} />
