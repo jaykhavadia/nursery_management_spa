@@ -9,20 +9,26 @@ const Summary = (prams) => {
           {cartData?.map((product, index) => (
             <div key={index}>
               {product.itemCount > 0 && (
-                <div className='flex border border-gray-200 rounded-md overflow-hidden shadow-sm p-2 w-full justify-between'>
-                  <img
-                    className='w-20 h-20 object-cover'
-                    src={product.imageUrl}
-                    alt={product.title}
-                  />
-                  <div className='px-3 pt-2'>
-                    <h3 className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
-                      {product.title}
-                    </h3>
-                    <p className='text-gray-600'>{product.category}</p>
+                <div className='flex border border-gray-200 rounded-md overflow-hidden shadow-sm p-2 w-full justify-between mb-2'>
+                  <div className='flex' >
+                    <img
+                      className='w-20 h-20 object-cover mr-3'
+                      src={product.image}
+                      alt={product.title}
+                    />
+                    <div className='px-3 pt-2'>
+                      <h3 className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
+                        {product.title}
+                      </h3>
+                      <span className='text-gray-600'>
+                        {product.category.name}
+                      </span>
+                    </div>
                   </div>
                   <div className='flex flex-col items-center pr-4'>
-                    <p className='text-xl font-semibold'>Rs. {product.price}</p>
+                    <span className='text-xl font-semibold'>
+                      Rs. {product.price}
+                    </span>
                     <div>
                       <div className='flex items-center'>
                         <button
@@ -59,26 +65,24 @@ const Summary = (prams) => {
                         {product.title}
                       </span>
                       <span className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
-                        ({product.category})
+                        ({product.category.name})
                       </span>
                     </div>
                     <div className='items-center pr-4 w-48'>
-                      <p className='text-xl font-semibold'>
+                      <span className='text-xl font-semibold'>
                         Rs. {product.price}
-                      </p>
+                      </span>
                     </div>
                     <div className='items-center pr-4 w-48'>
-                      <p className='text-xl font-semibold'>
+                      <span className='text-xl font-semibold'>
                         Total Rs. {product.price * product.itemCount}
-                      </p>
+                      </span>
                     </div>
                   </div>
                 )}
               </div>
             ))}
-            <div>
-              <hr />
-            </div>
+            <div className='my-4 border-t border-gray-300'></div>
             <div className='w-full flex justify-between px-4'>
               <span className='text-lg font-semibold whitespace-nowrap overflow-hidden mr-2'>
                 Grand Total

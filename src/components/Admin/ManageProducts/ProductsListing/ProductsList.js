@@ -174,18 +174,18 @@ const ProductsList = () => {
                 <div className='bg-white p-8 rounded-lg shadow-lg z-10'>
                   <h2 className='text-xl mb-4'>Maintenance Data</h2>
                   <div className='flex flex-col justify-start items-start'>
-                    <p>
+                    <span>
                       <strong>Title:</strong> {selectedList.title}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Description:</strong> {selectedList.description}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Price:</strong> {selectedList.price}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Category:</strong> {selectedList.category.name}
-                    </p>
+                    </span>
                   </div>
 
                   <button

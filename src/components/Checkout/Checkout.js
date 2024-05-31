@@ -85,7 +85,7 @@ const Checkout = () => {
     // Update the product in the state
     setCartData((prevProducts) =>
       prevProducts.map((p) =>
-        p.id === product.id && p.itemCount > 0
+        p._id === product._id && p.itemCount > 0
           ? { ...p, itemCount: p.itemCount - 1 }
           : p
       )
@@ -108,7 +108,7 @@ const Checkout = () => {
     }
     setCartData((prevProducts) =>
       prevProducts.map((p) =>
-        p.id === product.id ? { ...p, itemCount: p.itemCount + 1 } : p
+        p._id === product._id ? { ...p, itemCount: p.itemCount + 1 } : p
       )
     );
   };

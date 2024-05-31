@@ -191,31 +191,31 @@ const ManageMaintenance = () => {
                 <div className='bg-white p-8 rounded-lg shadow-lg z-10'>
                   <h2 className='text-xl mb-4'>Maintenance Data</h2>
                   <div className='flex flex-col justify-start items-start'>
-                    <p>
+                    <span>
                       <strong>Maintenance Name:</strong>{" "}
                       {selectedList.maintenanceName}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Design Change:</strong>{" "}
                       {selectedList.designChange ? "Yes" : "No"}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Garden:</strong> {selectedList.garden}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Pot Change:</strong>{" "}
                       {selectedList.potChange ? "Yes" : "No"}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Status:</strong> {selectedList.status}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Water Supply:</strong>{" "}
                       {selectedList.waterSupply ? "Yes" : "No"}
-                    </p>
-                    <p>
+                    </span>
+                    <span>
                       <strong>Description:</strong> {selectedList.description}
-                    </p>
+                    </span>
                   </div>
 
                   <button
