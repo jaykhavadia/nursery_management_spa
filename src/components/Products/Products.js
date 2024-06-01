@@ -166,11 +166,19 @@ const Products = () => {
       <div className='container-xxl py-5'>
         <div className='container mx-auto'>
           <div className='overflow-x-scroll'>
-            <div className='flex justify-center items-center py-4'>
+            <div
+              className='flex justify-center items-center py-4 px-5 overflow-x-auto'
+              style={{
+                "-ms-overflow-style": "none",
+                "scrollbar-width": "none",
+              }}
+            >
               {sample_category.map((category, index) => (
                 <div
                   key={index}
-                  className='text-center mr-5'
+                  className={`${
+                    index === 0 ? "pl-[130px]" : ""
+                  } text-center mr-5`}
                   onClick={() => setSelectedCategory(category)}
                 >
                   <div className='block'>
@@ -192,10 +200,10 @@ const Products = () => {
                 >
                   <div className='block'>
                     {/* <img
-              className='h-24 w-24 mx-auto'
-              src='https://www.jiomart.com/images/product/original/rvxxiknwa8/shopimoz-microfiber-cloth-12-pcs-thick-lint-streak-free-multipurpose-cloths-mix-colors-product-images-orvxxiknwa8-p597487682-0-202301111715.jpg?im=Resize=(420,420)'
-              alt='all'
-            /> */}
+          className='h-24 w-24 mx-auto'
+          src='https://www.jiomart.com/images/product/original/rvxxiknwa8/shopimoz-microfiber-cloth-12-pcs-thick-lint-streak-free-multipurpose-cloths-mix-colors-product-images-orvxxiknwa8-p597487682-0-202301111715.jpg?im=Resize=(420,420)'
+          alt='all'
+        /> */}
                     <p className='mt-2 text-sm font-medium'>All</p>
                   </div>
                 </div>
@@ -215,7 +223,7 @@ const Products = () => {
                   >
                     <img
                       className='w-full h-60 object-cover'
-                      src={ team1 || product?.image}
+                      src={team1 || product?.image}
                       alt={product.title}
                       onClick={() => goToDetailPage(product)}
                     />
@@ -287,12 +295,23 @@ const Products = () => {
                     onClick={() => goToDetailPage(product)}
                   />
                   <div className='p-4'>
-                    <h3 onClick={() => goToDetailPage(product)} className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
+                    <h3
+                      onClick={() => goToDetailPage(product)}
+                      className='text-lg font-semibold whitespace-nowrap overflow-hidden'
+                    >
                       {product.title}
                     </h3>
-                    <p onClick={() => goToDetailPage(product)} className='text-gray-600'>{product.category.name}</p>
+                    <p
+                      onClick={() => goToDetailPage(product)}
+                      className='text-gray-600'
+                    >
+                      {product.category.name}
+                    </p>
                     <div className='flex flex-col items-center justify-between mt-2'>
-                      <p onClick={() => goToDetailPage(product)} className='text-xl font-semibold'>
+                      <p
+                        onClick={() => goToDetailPage(product)}
+                        className='text-xl font-semibold'
+                      >
                         Rs. {product.price}
                       </p>
                       <div>
