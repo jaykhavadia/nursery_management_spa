@@ -35,6 +35,8 @@ const Address = (props) => {
   const [isDataAvailable, setIsDataAvailable] = useState(false);
 
   const handleChange = (e) => {
+    setAddressValidity(false);
+
     const { id, value } = e.target;
     if (id === "image" || id === "state") {
       return;
@@ -52,18 +54,31 @@ const Address = (props) => {
   };
 
   const handleStateChange = (e) => {
+    setAddressValidity(false);
+
     setErrors((prevErrors) => ({
       ...prevErrors,
       state: "",
     }));
     const stateCode = e.target.value;
-    const stateObj = indianStates.find((state) => state?.isoCode === stateCode);
-    setSelectedState(stateObj); // Store the whole state object
-    setFormData((prevData) => ({
-      ...prevData,
-      state: stateObj.name,
-    }));
-    setCities(City.getCitiesOfState("IN", stateObj.isoCode)); // Pass stateObj instead of state
+    if (stateCode) {
+      const stateObj = indianStates.find(
+        (state) => state?.isoCode === stateCode
+      );
+      setSelectedState(stateObj); // Store the whole state object
+      setFormData((prevData) => ({
+        ...prevData,
+        state: stateObj.name,
+      }));
+      setCities(City.getCitiesOfState("IN", stateObj.isoCode)); // Pass stateObj instead of state
+    } else {
+      setSelectedState(""); // Store the whole state object
+      setFormData((prevData) => ({
+        ...prevData,
+        state: "",
+      }));
+      setCities();
+    }
   };
 
   const validateForm = () => {
@@ -114,14 +129,14 @@ const Address = (props) => {
     const isValid = validateForm();
     if (isValid) {
       console.log("Form is valid", formData);
-      setAddressValidity();
       try {
         if (formData?.userId) {
           delete formData?.userId;
         }
         const result = await createAddress(formData); // Call getSomeData function from the API service
         if (result) {
-          toast.success("Garden registered Successful!");
+          setAddressValidity(true);
+          toast.success(result.message);
           resetFields();
           await setAddressData();
         }
@@ -146,6 +161,7 @@ const Address = (props) => {
           delete formData?.userId;
         }
         const result = await updateAddress(formData); // Call getSomeData function from the API service
+        setAddressValidity(true);
         if (result) {
           toast.success(result.message);
           resetFields();
@@ -189,7 +205,6 @@ const Address = (props) => {
     );
     setSelectedState(stateObj);
     setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
-    setAddressValidity();
   };
 
   const me = async () => {
@@ -302,7 +317,7 @@ const Address = (props) => {
                         id='state'
                         name='state'
                         value={
-                          "formData.state" || selectedState
+                          formData.state || selectedState
                             ? selectedState?.isoCode
                             : ""
                         } // Use isoCode property

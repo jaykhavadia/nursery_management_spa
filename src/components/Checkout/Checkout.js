@@ -154,8 +154,8 @@ const Checkout = () => {
     setActiveStep(0);
   };
 
-  const setAddressValidity = () => {
-    setIsValidAddress(true);
+  const setAddressValidity = (value) => {
+    setIsValidAddress(value);
   };
 
   return (
