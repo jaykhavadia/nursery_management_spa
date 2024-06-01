@@ -1,0 +1,5 @@
+.table-container {
+    overflow-x: auto; /* Horizontal scroll */
+    white-space: nowrap; /* Prevent line breaks */
+  }
+  

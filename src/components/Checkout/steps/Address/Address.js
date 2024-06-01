@@ -1,10 +1,17 @@
 import { City, State } from "country-state-city";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { ME } from "../../../../service/api_service";
+import {
+  createAddress,
+  getAddressDetails,
+  ME,
+  updateAddress,
+} from "../../../../service/api_service";
 import { AuthContext } from "../../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Address = (props) => {
+  const navigate = useNavigate();
   const { setAddressValidity } = props;
   const { Logout } = useContext(AuthContext);
   const [zoom, setZoom] = useState("scale-0");
@@ -24,7 +31,6 @@ const Address = (props) => {
     city: "",
     pincode: "",
     contact: "",
-    userId: "",
   });
   const [isDataAvailable, setIsDataAvailable] = useState(false);
 
@@ -102,26 +108,23 @@ const Address = (props) => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
       toast.error("Token Expired");
-      // navigate("/login");
+      navigate("/login");
       return;
     }
     const isValid = validateForm();
     if (isValid) {
-      //   Perform form submission
-      if (!formData.userId || !formData.userId.length) {
-        await me();
-      }
-
       console.log("Form is valid", formData);
       setAddressValidity();
       try {
-        //   const result = await registerGarden(formData); // Call getSomeData function from the API service
-        //   if (result) {
-        // useAddress
-        //     toast.success("Garden registered Successful!");
-        //     resetFields();
-        //     await setGardenData();
-        //   }
+        if (formData?.userId) {
+          delete formData?.userId;
+        }
+        const result = await createAddress(formData); // Call getSomeData function from the API service
+        if (result) {
+          toast.success("Garden registered Successful!");
+          resetFields();
+          await setAddressData();
+        }
       } catch (error) {
         console.error("Error while Login:", error);
         toast.error(error.message);
@@ -129,27 +132,25 @@ const Address = (props) => {
     }
   };
 
-  const handleUpdatedRegistration = async () => {
+  const handleUpdatedAddress = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
       toast.error("Token Expired");
-      // navigate("/login");
+      navigate("/login");
       return;
     }
     const isValid = validateForm();
     if (isValid) {
-      // Perform form submission
-      if (!formData.userId || !formData.userId.length ) {
-        await me();
-      }
-
       try {
-        //   const result = await updateGarden(formData); // Call getSomeData function from the API service
-        //   if (result) {
-        //     toast.success("Garden data updated Successful!");
-        //     resetFields();
-        //     await setGardenData();
-        //   }
+        if (formData?.userId) {
+          delete formData?.userId;
+        }
+        const result = await updateAddress(formData); // Call getSomeData function from the API service
+        if (result) {
+          toast.success(result.message);
+          resetFields();
+          await setAddressData();
+        }
       } catch (error) {
         console.error("Error while Login:", error);
         toast.error(error.message);
@@ -165,32 +166,30 @@ const Address = (props) => {
       city: "",
       pincode: "",
       contact: "",
-      userId: "",
     });
-    setImage("");
     setSelectedState("");
     setErrors();
   };
 
-  // const setGardenData = async () => {
-  // //   const response = await getGardenDetails();
+  const setAddressData = async () => {
+    const response = await getAddressDetails();
 
-  //   if (response === null) {
-  //     return;
-  //   }
-  //   if (response?.message === "Invalid token") {
-  //     toast.success(response?.message);
-  //     localStorage.clear();
-  //     navigate("/login");
-  //   }
-  //   setFormData(response);
-  //   setIsDataAvailable(true);
-  //   const stateObj = indianStates.find(
-  //     (state) => state.name === response.state
-  //   );
-  //   setSelectedState(stateObj);
-  //   setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
-  // };
+    if (response === null) {
+      return;
+    }
+    if (response?.message === "Invalid token") {
+      toast.error(response?.message);
+      localStorage.clear();
+      navigate("/login");
+    }
+    setFormData(response.address);
+    setIsDataAvailable(true);
+    const stateObj = indianStates.find(
+      (state) => state.name === response.address.state
+    );
+    setSelectedState(stateObj);
+    setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+  };
 
   const me = async () => {
     try {
@@ -210,17 +209,17 @@ const Address = (props) => {
   };
 
   useEffect(() => {
-    async function getGardenData() {
+    async function getAddressData() {
       try {
         //   await checkAdmin();
         await me();
-        //   await setGardenData();
+        await setAddressData();
       } catch (error) {
         console.error("get Garden Data", error);
         throw error;
       }
     }
-    //   getGardenData();
+    getAddressData();
 
     // Zoom in after a delay
     setTimeout(() => {
@@ -411,7 +410,7 @@ const Address = (props) => {
                   {isDataAvailable ? (
                     <button
                       className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                      onClick={handleUpdatedRegistration}
+                      onClick={handleUpdatedAddress}
                     >
                       Update your address
                     </button>

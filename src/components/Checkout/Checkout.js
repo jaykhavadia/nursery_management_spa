@@ -35,7 +35,7 @@ const Checkout = () => {
 
   useEffect(() => {
     checkAdmin();
-  },[]);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -226,7 +226,7 @@ const Checkout = () => {
             <React.Fragment>
               <Typography sx={{ mt: 2, mb: 1 }}>
                 <div className='flex justify-center'>
-                  <div className='container px-4 sm:px-6 lg:px-8 py-5'>
+                  <div className='container px-4 sm:px-6 lg:px-8 py-3'>
                     {/* checkout */}
                     {activeStep === 0 && (
                       <Summary
@@ -266,9 +266,14 @@ const Checkout = () => {
                   </Button>
                 )} */}
                 {activeStep === 0 && (
-                  <Button disabled={cartSize === 0} onClick={handleNext}>
+                  <button
+                    type='button'
+                    className='btn btn-primary pb-2 my-2 text-white'
+                    disabled={cartSize === 0}
+                    onClick={handleNext}
+                  >
                     Address
-                  </Button>
+                  </button>
                 )}
                 {activeStep === 1 && (
                   <Button disabled={!isValidAddress} onClick={handleNext}>

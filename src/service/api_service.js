@@ -83,6 +83,18 @@ export const registerGarden = async (payload) => {
   }
 };
 
+export const createAddress = async (payload) => {
+  try {
+    const apiURL = `${BASE_URL}/address/create`;
+    const response = await axios.post(apiURL, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error createAddress:", error);
+    throw error.response.data;
+  }
+};
+
 export const addProduct = async (payload) => {
   try {
     const apiURL = `${BASE_URL}/product/create`;
@@ -121,6 +133,18 @@ export const getAllGardenMaintenance = async () => {
     throw error.response.data;
   }
 };
+export const updateAddress = async (payload) => {
+  try {
+    const apiURL = `${BASE_URL}/address`;
+    const response = await axios.put(apiURL, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error updateGarden:", error);
+    throw error.response.data;
+  }
+};
+
 export const updateGarden = async (payload) => {
   try {
     const apiURL = `${BASE_URL}/garden/update`;
@@ -137,6 +161,17 @@ export const updateGarden = async (payload) => {
   }
 };
 
+export const getAddressDetails = async () => {
+  try {
+    const apiURL = `${BASE_URL}/address`;
+    const response = await axios.get(apiURL);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error getAddressDetails:", error);
+    throw error.response.data;
+  }
+};
 export const getGardenDetails = async () => {
   try {
     const apiURL = `${BASE_URL}/garden/details`;
@@ -235,7 +270,7 @@ export const updateMaintenance = async (payload, maintenanceId) => {
 export const updateProduct = async (payload, productId) => {
   try {
     const apiURL = `${BASE_URL}/product/update/${productId}`;
-    
+
     // Create a FormData object
     const formData = new FormData();
 
@@ -247,7 +282,7 @@ export const updateProduct = async (payload, productId) => {
     // Make the PUT request with the FormData object
     const response = await axios.put(apiURL, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
 

@@ -6,11 +6,12 @@ import toast from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartShopping,
-  faEnvelope,
   faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../../context/AuthContext";
 import { getCategory, getProductDetails } from "../../service/api_service";
+import team1 from "../../assets/img/team-1.jpg";
+import "./Products.css";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -90,12 +91,13 @@ const Products = () => {
       navigate("/login");
       return;
     }
-    setProducts((prevProducts) =>
-      prevProducts.map((p) =>
-        p._id === product._id ? { ...p, itemCount: p.itemCount + 1 } : p
-      )
+
+    const updatedProducts = sample_data.map((p) =>
+      p._id === product._id ? { ...p, itemCount: p.itemCount + 1 } : p
     );
-    setToCart();
+
+    setProducts(updatedProducts);
+    setToCart(updatedProducts);
   };
 
   const removeFromCart = (product) => {
@@ -112,24 +114,23 @@ const Products = () => {
       return;
     }
 
-    // Update the product in the state
-    setProducts((prevProducts) =>
-      prevProducts.map((p) =>
-        p._id === product._id && p.itemCount > 0
-          ? { ...p, itemCount: p.itemCount - 1 }
-          : p
-      )
+    const updatedProducts = sample_data.map((p) =>
+      p._id === product._id ? { ...p, itemCount: p.itemCount - 1 } : p
     );
-    setToCart();
+
+    setProducts(updatedProducts);
+    setToCart(updatedProducts);
   };
 
-  const setToCart = () => {
-    const cartData = sample_data.filter((product) => {
-      return product.itemCount > 0;
-    });
+  const setToCart = (updatedProducts) => {
+    const cartData = updatedProducts.filter((product) => product.itemCount > 0);
     if (cartData.length) {
       localStorage.setItem("cart", JSON.stringify(cartData));
     }
+  };
+
+  const goToDetailPage = (product) => {
+    navigate(`/products/${product._id}`);
   };
 
   return (
@@ -164,42 +165,45 @@ const Products = () => {
 
       <div className='container-xxl py-5'>
         <div className='container mx-auto'>
-          <div className='flex justify-center items-center py-4'>
-            {sample_category.map((category, index) => (
-              <div
-                key={index}
-                className='text-center mr-5'
-                onClick={() => setSelectedCategory(category)}
-              >
-                <div className='block'>
-                  {category.imageUrl && (
-                    <img
-                      className='h-24 w-24 mx-auto'
-                      src={category.imageUrl}
-                      alt={category.name}
-                    />
-                  )}
-                  <p className='mt-2 text-sm font-medium'>{category.name}</p>
+          <div className='overflow-x-scroll'>
+            <div className='flex justify-center items-center py-4'>
+              {sample_category.map((category, index) => (
+                <div
+                  key={index}
+                  className='text-center mr-5'
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  <div className='block'>
+                    {category.imageUrl && (
+                      <img
+                        className='h-24 w-24 mx-auto'
+                        src={category.imageUrl}
+                        alt={category.name}
+                      />
+                    )}
+                    <p className='mt-2 text-sm font-medium'>{category.name}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-            {selectedCategory && (
-              <div
-                className='text-center mr-5'
-                onClick={() => setSelectedCategory("")}
-              >
-                <div className='block'>
-                  {/* <img
-                    className='h-24 w-24 mx-auto'
-                    src='https://www.jiomart.com/images/product/original/rvxxiknwa8/shopimoz-microfiber-cloth-12-pcs-thick-lint-streak-free-multipurpose-cloths-mix-colors-product-images-orvxxiknwa8-p597487682-0-202301111715.jpg?im=Resize=(420,420)'
-                    alt='all'
-                  /> */}
-                  <p className='mt-2 text-sm font-medium'>All</p>
+              ))}
+              {selectedCategory && (
+                <div
+                  className='text-center mr-5'
+                  onClick={() => setSelectedCategory("")}
+                >
+                  <div className='block'>
+                    {/* <img
+              className='h-24 w-24 mx-auto'
+              src='https://www.jiomart.com/images/product/original/rvxxiknwa8/shopimoz-microfiber-cloth-12-pcs-thick-lint-streak-free-multipurpose-cloths-mix-colors-product-images-orvxxiknwa8-p597487682-0-202301111715.jpg?im=Resize=(420,420)'
+              alt='all'
+            /> */}
+                    <p className='mt-2 text-sm font-medium'>All</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
+
         <div className='container px-4 sm:px-6 lg:px-8 py-5'>
           <div className='grid grid-cols-2 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4'>
             {sample_data.map((product, index) =>
@@ -211,16 +215,28 @@ const Products = () => {
                   >
                     <img
                       className='w-full h-60 object-cover'
-                      src={product.image}
+                      src={ team1 || product?.image}
                       alt={product.title}
+                      onClick={() => goToDetailPage(product)}
                     />
                     <div className='p-4'>
-                      <h3 className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
+                      <span
+                        onClick={() => goToDetailPage(product)}
+                        className='text-lg font-semibold whitespace-nowrap overflow-hidden'
+                      >
                         {product.title}
-                      </h3>
-                      <p className='text-gray-600'>{product.category.name}</p>
+                      </span>
+                      <span
+                        onClick={() => goToDetailPage(product)}
+                        className='text-gray-600'
+                      >
+                        {product.category.name}
+                      </span>
                       <div className='flex flex-col items-center justify-between mt-2'>
-                        <p className='text-xl font-semibold'>
+                        <p
+                          onClick={() => goToDetailPage(product)}
+                          className='text-xl font-semibold'
+                        >
                           Rs. {product.price}
                         </p>
                         <div>
@@ -266,16 +282,17 @@ const Products = () => {
                 >
                   <img
                     className='w-full h-60 object-cover'
-                    src={product.image}
+                    src={product?.image}
                     alt={product.title}
+                    onClick={() => goToDetailPage(product)}
                   />
                   <div className='p-4'>
-                    <h3 className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
+                    <h3 onClick={() => goToDetailPage(product)} className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
                       {product.title}
                     </h3>
-                    <p className='text-gray-600'>{product.category.name}</p>
+                    <p onClick={() => goToDetailPage(product)} className='text-gray-600'>{product.category.name}</p>
                     <div className='flex flex-col items-center justify-between mt-2'>
-                      <p className='text-xl font-semibold'>
+                      <p onClick={() => goToDetailPage(product)} className='text-xl font-semibold'>
                         Rs. {product.price}
                       </p>
                       <div>

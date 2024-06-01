@@ -278,7 +278,7 @@ const AddProducts = () => {
       return;
     }
     if (response?.message === "Invalid token") {
-      toast.success(response?.message);
+      toast.error(response?.message);
       localStorage.clear();
       navigate("/login");
     }
@@ -292,7 +292,7 @@ const AddProducts = () => {
       return;
     }
     if (response?.message === "Invalid token") {
-      toast.success(response?.message);
+      toast.error(response?.message);
       localStorage.clear();
       navigate("/login");
     }

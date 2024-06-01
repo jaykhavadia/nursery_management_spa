@@ -75,7 +75,7 @@ const Summary = (prams) => {
                     </div>
                     <div className='items-center pr-4 w-48'>
                       <span className='text-xl font-semibold'>
-                        Total Rs. {product.price * product.itemCount}
+                        Rs. {product.price * product.itemCount}
                       </span>
                     </div>
                   </div>
