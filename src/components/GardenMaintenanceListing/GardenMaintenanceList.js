@@ -87,8 +87,8 @@ const GardenMaintenanceList = () => {
                   <div className='space-y-6'>
                     <div className='flex justify-end mr-5 '>
                       {maintenanceList?.length === 0 ||
-                      maintenanceList[maintenanceList.length - 1].status !==
-                        "Pending" ? (
+                      (maintenanceList[maintenanceList.length - 1].status !==
+                        "pending" && maintenanceList[maintenanceList.length - 1].status !== 'Pending' )? (
                         <button
                           className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center'
                           onClick={() => navigate("/garden/maintenance")}

@@ -68,13 +68,24 @@ const GardenRegistration = () => {
       state: "",
     }));
     const stateCode = e.target.value;
-    const stateObj = indianStates.find((state) => state?.isoCode === stateCode);
-    setSelectedState(stateObj); // Store the whole state object
-    setFormData((prevData) => ({
-      ...prevData,
-      state: stateObj.name,
-    }));
-    setCities(City.getCitiesOfState("IN", stateObj.isoCode)); // Pass stateObj instead of state
+    if (stateCode) {
+      const stateObj = indianStates.find(
+        (state) => state?.isoCode === stateCode
+      );
+      setSelectedState(stateObj); // Store the whole state object
+      setFormData((prevData) => ({
+        ...prevData,
+        state: stateObj.name,
+      }));
+      setCities(City.getCitiesOfState("IN", stateObj.isoCode)); // Pass stateObj instead of state
+    } else {
+      setSelectedState(''); // Store the whole state object
+      setFormData((prevData) => ({
+        ...prevData,
+        state: '',
+      }));
+      setCities();
+    }
   };
 
   const handleImageChange = (e) => {
@@ -148,7 +159,7 @@ const GardenRegistration = () => {
   const handleRegistration = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      toast.error('Token Expired');
+      toast.error("Token Expired");
       navigate("/login");
       return;
     }
@@ -176,7 +187,7 @@ const GardenRegistration = () => {
   const handleUpdatedRegistration = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      toast.error('Token Expired');
+      toast.error("Token Expired");
       navigate("/login");
       return;
     }
@@ -373,7 +384,7 @@ const GardenRegistration = () => {
                           id='state'
                           name='state'
                           value={
-                            "formData.state" || selectedState
+                            formData.state || selectedState
                               ? selectedState?.isoCode
                               : ""
                           } // Use isoCode property
