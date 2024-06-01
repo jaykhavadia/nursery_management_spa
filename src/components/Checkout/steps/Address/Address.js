@@ -189,6 +189,7 @@ const Address = (props) => {
     );
     setSelectedState(stateObj);
     setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+    setAddressValidity();
   };
 
   const me = async () => {
