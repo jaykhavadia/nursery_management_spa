@@ -48,3 +48,10 @@
       float: none;
     }
   }
+
+  @media (max-width: 768px) {
+    .price-column {
+      display: none;
+    }
+  }
+  

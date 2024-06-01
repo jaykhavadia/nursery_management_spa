@@ -234,12 +234,27 @@ export const updateMaintenance = async (payload, maintenanceId) => {
 };
 export const updateProduct = async (payload, productId) => {
   try {
-    const apiURL = `${BASE_URL}/product/update-product/${productId}`;
-    const response = await axios.put(apiURL, payload);
+    const apiURL = `${BASE_URL}/product/update/${productId}`;
+    
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append all fields from payload to the FormData object
+    for (const key in payload) {
+      formData.append(key, payload[key]);
+    }
+
+    // Make the PUT request with the FormData object
+    const response = await axios.put(apiURL, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return response.data;
   } catch (error) {
     // Handle errors
     console.error("Error updateProduct:", error);
-    throw error.response.data;
+    throw error.response ? error.response.data : error;
   }
 };

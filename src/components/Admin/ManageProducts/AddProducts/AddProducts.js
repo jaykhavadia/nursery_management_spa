@@ -221,16 +221,15 @@ const AddProducts = () => {
     }
     const isValid = validateForm();
     if (isValid) {
-      // Perform form submission
-      if (!formData.userId || !formData.userId.length) {
-        await me();
-      }
 
       try {
+        delete formData.userId;
+        console.log('form Data', formData);
         const result = await updateProduct(formData, id); // Call getSomeData function from the API service
         if (result) {
-          toast.success("Garden data updated Successful!");
+          toast.success(result.message);
           resetFields();
+          navigate('/admin/manage-products');
           // await setGardenData();
         }
       } catch (error) {

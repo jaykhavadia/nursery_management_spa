@@ -1,19 +1,14 @@
 import toast from "react-hot-toast";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Moment from "react-moment";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
-import Navbar from "../../../Navbar/Navbar";
 import Footer from "../../../Footer/Footer";
 import { AuthContext } from "../../../../context/AuthContext";
 import {
-  getAllMaintenance,
-  getGardenDetails,
   getProductDetails,
   ME,
 } from "../../../../service/api_service";
 import Sidebar from "../../../Sidebar/Sidebar";
+import './ProductsList.css';
 
 const ProductsList = () => {
   const navigate = useNavigate();
@@ -22,7 +17,6 @@ const ProductsList = () => {
   const [productList, setProductList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedList, setSelectedList] = useState();
-
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -107,8 +101,8 @@ const ProductsList = () => {
                         <tr>
                           <th scope='col'>#</th>
                           <th scope='col'>Product Title</th>
-                          <th scope='col'>Category</th>
-                          <th scope='col'>price</th>
+                          <th scope='col' className='price-column' >Category</th>
+                          <th scope='col' className='price-column' >Price</th>
                           <th scope='col'>Action</th>
                         </tr>
                       </thead>
@@ -118,8 +112,8 @@ const ProductsList = () => {
                             <tr key={index}>
                               <th scope='row'>{index + 1}</th>
                               <td>{productData.title}</td>
-                              <td>{productData.category.name}</td>
-                              <td>
+                              <td className='price-column' >{productData.category.name}</td>
+                              <td className='price-column'>
                                 <span className='py-2 px-4'>
                                   {productData.price}
                                 </span>
@@ -142,21 +136,22 @@ const ProductsList = () => {
                                 >
                                   Update
                                 </button>
+                                {/* Uncomment if Delete functionality is needed */}
                                 {/* <button
-                                  className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded inline-flex items-center'
-                                  onClick={() => {
-                                    setSelectedList(productData);
-                                    setIsOpen(true);
-                                  }}
-                                >
-                                  Delete
-                                </button> */}
+              className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded inline-flex items-center'
+              onClick={() => {
+                setSelectedList(productData);
+                setIsOpen(true);
+              }}
+            >
+              Delete
+            </button> */}
                               </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan='5'>No Data Found </td>
+                            <td colSpan='5'>No Data Found</td>
                           </tr>
                         )}
                       </tbody>

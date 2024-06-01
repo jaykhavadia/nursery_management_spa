@@ -91,29 +91,21 @@ const ManageMaintenance = () => {
             <div className='flex min-h-full flex-col justify-center px-6 pt-12 lg:px-8'>
               <div className='sm:mx-auto sm:w-full p-6  bg-gray-100 border border-gray-100 rounded-lg shadow dark:bg-gray-100 dark:border-gray-200'>
                 <div className='sm:mx-auto sm:w-full '>
-                  <div className='space-y-6'>
-                    {/* <div className='flex justify-end mr-5 '>
-                      {maintenanceList?.length === 0 ||
-                      maintenanceList[maintenanceList.length - 1].status !==
-                        "pending" ? (
-                        <button
-                          className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center'
-                          onClick={() => navigate("/garden/maintenance")}
-                        >
-                          Create Maintenance
-                        </button>
-                      ) : (
-                        ""
-                      )}
-                    </div> */}
+                  <div className='sm:space-y-6'>
                     <table className='table table-hover'>
                       <thead>
                         <tr>
-                          <th scope='col'>#</th>
+                          <th scope='col'className='price-column'>#</th>
                           <th scope='col'>Garden Name</th>
-                          <th scope='col'>Maintenance Name</th>
-                          <th scope='col'>Date</th>
-                          <th scope='col'>Status</th>
+                          <th scope='col' className='price-column'>
+                            Maintenance Name
+                          </th>
+                          <th scope='col' className='price-column'>
+                            Date
+                          </th>
+                          <th scope='col'>
+                            Status
+                          </th>
                           <th scope='col'>Action</th>
                         </tr>
                       </thead>
@@ -121,10 +113,12 @@ const ManageMaintenance = () => {
                         {maintenanceList?.length ? (
                           maintenanceList?.map((maintenanceData, index) => (
                             <tr key={index}>
-                              <th scope='row'>{index + 1}</th>
+                              <th scope='row' className='price-column'>{index + 1}</th>
                               <td>{maintenanceData.gardenId.name}</td>
-                              <td>{maintenanceData.maintenanceName}</td>
-                              <td>
+                              <td className='price-column'>
+                                {maintenanceData.maintenanceName}
+                              </td>
+                              <td className='price-column'>
                                 <Moment
                                   className='py-2 px-4'
                                   format='DD/MM/YYYY'
