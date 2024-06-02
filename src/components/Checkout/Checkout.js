@@ -242,6 +242,11 @@ const Checkout = () => {
                       <Address setAddressValidity={setAddressValidity} />
                     )}
                     {/* Payment */}
+                    {activeStep === 2 && (
+                      <div className='flex justify-center items-center'>
+                        <h1>payment section</h1>
+                      </div>
+                    )}
                   </div>
                 </div>
               </Typography>

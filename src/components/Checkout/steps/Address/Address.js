@@ -138,7 +138,7 @@ const Address = (props) => {
         const result = await createAddress(formData); // Call getSomeData function from the API service
         if (result) {
           setAddressValidity(true);
-          toast.success(result.message);
+          toast.success(result.message || 'Address saved successfully!');
           resetFields();
           await setAddressData();
         }
