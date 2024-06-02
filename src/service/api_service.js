@@ -167,7 +167,6 @@ export const getAddressDetails = async () => {
     const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {
-    // Handle errors
     console.error("Error getAddressDetails:", error);
     throw error.response.data;
   }

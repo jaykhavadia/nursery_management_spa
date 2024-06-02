@@ -9,6 +9,8 @@ import {
 } from "../../../../service/api_service";
 import { AuthContext } from "../../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 const Address = (props) => {
   const navigate = useNavigate();
@@ -188,23 +190,36 @@ const Address = (props) => {
   };
 
   const setAddressData = async () => {
-    const response = await getAddressDetails();
+    try {
+      const response = await getAddressDetails();
 
-    if (response === null) {
-      return;
+      if (response === null) {
+        return;
+      }
+      if (response?.message === "Invalid token") {
+        toast.error(response?.message);
+        localStorage.clear();
+        navigate("/login");
+      }
+      setFormData(response.address);
+      setIsDataAvailable(true);
+      const stateObj = indianStates.find(
+        (state) => state.name === response.address.state
+      );
+      setSelectedState(stateObj);
+      setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+    } catch (error) {
+      console.log('No Address found', error);
+      setIsDataAvailable(false);
+      toast("Add your Address", {
+        icon: (
+          <FontAwesomeIcon
+            className='text-yellow-700'
+            icon={faExclamationCircle}
+          />
+        ),
+      });
     }
-    if (response?.message === "Invalid token") {
-      toast.error(response?.message);
-      localStorage.clear();
-      navigate("/login");
-    }
-    setFormData(response.address);
-    setIsDataAvailable(true);
-    const stateObj = indianStates.find(
-      (state) => state.name === response.address.state
-    );
-    setSelectedState(stateObj);
-    setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
   };
 
   const me = async () => {
@@ -317,7 +332,7 @@ const Address = (props) => {
                         id='state'
                         name='state'
                         value={
-                          formData.state || selectedState
+                          formData?.state || selectedState
                             ? selectedState?.isoCode
                             : ""
                         } // Use isoCode property
@@ -329,7 +344,7 @@ const Address = (props) => {
                         <option value=''>Select State</option>
                         {indianStates.map((state, index) => (
                           <option key={index} value={state?.isoCode}>
-                            {state.name}
+                            {state?.name}
                           </option>
                         ))}
                       </select>
