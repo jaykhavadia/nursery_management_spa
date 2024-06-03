@@ -180,6 +180,7 @@ const Products = () => {
                     index === 0 ? "pl-[130px]" : ""
                   } text-center mr-5`}
                   onClick={() => setSelectedCategory(category)}
+                  style={{ cursor: 'pointer' }}
                 >
                   <div className='block'>
                     {category.imageUrl && (
@@ -234,12 +235,12 @@ const Products = () => {
                       >
                         {product.title}
                       </span>
-                      <span
+                      {/* <span
                         onClick={() => goToDetailPage(product)}
                         className='text-gray-600'
                       >
                         {product.category.name}
-                      </span>
+                      </span> */}
                       <div className='flex flex-col items-center justify-between mt-2'>
                         <p
                           onClick={() => goToDetailPage(product)}
@@ -290,7 +291,7 @@ const Products = () => {
                 >
                   <img
                     className='w-full h-60 object-cover'
-                    src={product?.image}
+                    src={team1 ||product?.image}
                     alt={product.title}
                     onClick={() => goToDetailPage(product)}
                   />
@@ -301,12 +302,12 @@ const Products = () => {
                     >
                       {product.title}
                     </h3>
-                    <p
+                    {/* <p
                       onClick={() => goToDetailPage(product)}
                       className='text-gray-600'
                     >
                       {product.category.name}
-                    </p>
+                    </p> */}
                     <div className='flex flex-col items-center justify-between mt-2'>
                       <p
                         onClick={() => goToDetailPage(product)}

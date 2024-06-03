@@ -28,7 +28,9 @@ const Address = (props) => {
 
   const [formData, setFormData] = useState({
     name: "",
-    address: "",
+    address_1: "",
+    address_2: "",
+    landMark: "",
     state: "",
     city: "",
     pincode: "",
@@ -89,8 +91,14 @@ const Address = (props) => {
     if (!formData.name) {
       errors.name = errorMessage;
     }
-    if (!formData.address) {
-      errors.address = errorMessage;
+    if (!formData.address_1) {
+      errors.address_1 = errorMessage;
+    }
+    if (!formData.address_2) {
+      errors.address_2 = errorMessage;
+    }
+    if (!formData.landMark) {
+      errors.landMark = errorMessage;
     }
     if (!formData.state) {
       errors.state = errorMessage;
@@ -162,6 +170,7 @@ const Address = (props) => {
         if (formData?.userId) {
           delete formData?.userId;
         }
+        console.log('formData', formData);
         const result = await updateAddress(formData); // Call getSomeData function from the API service
         setAddressValidity(true);
         if (result) {
@@ -298,7 +307,7 @@ const Address = (props) => {
                     )}
                   </div>
 
-                  <div>
+                  {/* <div>
                     <div className='flex justify-start'>
                       <label className='block text-sm font-medium leading-6 text-gray-900'>
                         Address
@@ -318,6 +327,96 @@ const Address = (props) => {
                     {errors?.address && (
                       <div className='invalid-feedback'>
                         Your address {errors?.address}
+                      </div>
+                    )}
+                  </div> */}
+                  <div>
+                    <div className='flex justify-start'>
+                      <label className='block text-sm font-medium leading-6 text-gray-900'>
+                        Address 1
+                      </label>
+                    </div>
+                    <div className='mt-2'>
+                      <input
+                        id='address_1'
+                        name='address_1'
+                        type='text'
+                        autoComplete='address_1'
+                        placeholder='House No., Building Name'
+                        required
+                        value={formData?.address_1}
+                        className={`form-control ${
+                          errors?.address_1 && "is-invalid"
+                        }`}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    {errors?.address_1 && (
+                      <div
+                        style={{ display: "block" }}
+                        className='invalid-feedback'
+                      >
+                        Your address 1 {errors?.address_1}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div className='flex justify-start'>
+                      <label className='block text-sm font-medium leading-6 text-gray-900'>
+                        Address 2
+                      </label>
+                    </div>
+                    <div className='mt-2'>
+                      <input
+                        id='address_2'
+                        name='address_2'
+                        type='text'
+                        autoComplete='address_2'
+                        placeholder='Road name, Area Colony'
+                        required
+                        value={formData?.address_2}
+                        className={`form-control ${
+                          errors?.address_2 && "is-invalid"
+                        }`}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    {errors?.address_2 && (
+                      <div
+                        style={{ display: "block" }}
+                        className='invalid-feedback'
+                      >
+                        Your address 2 {errors?.address_2}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div className='flex justify-start'>
+                      <label className='block text-sm font-medium leading-6 text-gray-900'>
+                        Land Mark
+                      </label>
+                    </div>
+                    <div className='mt-2'>
+                      <input
+                        id='landMark'
+                        name='landMark'
+                        type='text'
+                        autoComplete='landMark'
+                        placeholder='Nearby famous shop/mall/Landmark'
+                        required
+                        value={formData?.landMark}
+                        className={`form-control ${
+                          errors?.landMark && "is-invalid"
+                        }`}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    {errors?.landMark && (
+                      <div
+                        style={{ display: "block" }}
+                        className='invalid-feedback'
+                      >
+                        Your Land Mark {errors?.landMark}
                       </div>
                     )}
                   </div>
