@@ -88,34 +88,34 @@ const Address = (props) => {
   const validateForm = () => {
     const errorMessage = "is required";
     const errors = {};
-    if (!formData.name) {
+    if (!formData?.name) {
       errors.name = errorMessage;
     }
-    if (!formData.address_1) {
+    if (!formData?.address_1) {
       errors.address_1 = errorMessage;
     }
-    if (!formData.address_2) {
+    if (!formData?.address_2) {
       errors.address_2 = errorMessage;
     }
-    if (!formData.landMark) {
+    if (!formData?.landMark) {
       errors.landMark = errorMessage;
     }
-    if (!formData.state) {
+    if (!formData?.state) {
       errors.state = errorMessage;
     }
-    if (!formData.city) {
+    if (!formData?.city) {
       errors.city = errorMessage;
     }
-    if (!formData.pincode) {
+    if (!formData?.pincode) {
       errors.pincode = errorMessage;
     }
-    if (formData.pincode && formData.pincode.length <= 5) {
+    if (formData?.pincode && formData.pincode.length <= 5) {
       errors.pincode = "Length should be of 6 digits";
     }
-    if (!formData.contact) {
+    if (!formData?.contact) {
       errors.contact = errorMessage;
     }
-    if (formData.contact && formData.contact.length !== 10) {
+    if (formData?.contact && formData.contact.length !== 10) {
       errors.contact = "Length should be of 10 digits";
     }
 

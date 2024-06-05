@@ -2,6 +2,36 @@ import { useEffect, useState } from "react";
 
 const Summary = (prams) => {
   const { cartData, removeFromCart, addToCart, grandTotal, cartSize } = prams;
+
+  const [couponErrors, setCouponErrors] = useState();
+  const [couponErrorMessage, setCouponErrorMessage] = useState();
+  const [coupon, setCoupon] = useState();
+  const [activeCoupon, setActiveCoupon] = useState(0);
+
+  const handleCouponChange = (e) => {
+    setCoupon(e.target.value);
+    setCouponErrorMessage();
+    setCouponErrors(false);
+  };
+
+  const checkCoupon = (e) => {
+    // check coupon
+    console.log("Checking coupon", coupon);
+    if (coupon === "test") {
+      setActiveCoupon(10);
+    } else {
+      setCouponErrors(true);
+      setCouponErrorMessage("Invalid Token");
+    }
+  };
+
+  const clearCoupon = () => {
+    setCoupon("");
+    setActiveCoupon(0);
+    setCouponErrorMessage();
+    setCouponErrors(false);
+  };
+
   return (
     <div>
       {cartSize > 0 ? (
@@ -10,7 +40,7 @@ const Summary = (prams) => {
             <div key={index}>
               {product.itemCount > 0 && (
                 <div className='flex border border-gray-200 rounded-md overflow-hidden shadow-sm p-2 w-full justify-between mb-2'>
-                  <div className='flex' >
+                  <div className='flex'>
                     <img
                       className='w-20 h-20 object-cover mr-3'
                       src={product.image}
@@ -83,12 +113,82 @@ const Summary = (prams) => {
               </div>
             ))}
             <div className='my-4 border-t border-gray-300'></div>
+            <div>
+              <div className='flex justify-start'>
+                <label className='block text-sm font-medium leading-6 text-gray-900'>
+                  Coupon
+                </label>
+              </div>
+              <div className='flex'>
+                <div className='mt-2 mr-5 relative'>
+                  <input
+                    id='coupon'
+                    name='coupon'
+                    type='text'
+                    autoComplete='coupon'
+                    placeholder='Enter Coupon'
+                    required
+                    value={coupon}
+                    disabled={activeCoupon}
+                    className={`form-control ${
+                      couponErrors ? "border-red-500" : ""
+                    } p-2 border rounded`}
+                    onChange={handleCouponChange}
+                  />
+                  {coupon && (
+                    <button
+                      type='button'
+                      className='absolute right-2 top-1/2 transform -translate-y-4 text-xl text-gray-500 hover:text-red-500 focus:outline-none'
+                      onClick={clearCoupon}
+                    >
+                      &times;
+                    </button>
+                  )}
+                </div>
+                <button
+                  type='button'
+                  className='btn btn-primary pb-2 my-2 text-white'
+                  disabled={activeCoupon}
+                  onClick={checkCoupon}
+                >
+                  Apply Coupon
+                </button>
+              </div>
+              {couponErrors && (
+                <div style={{ display: "block" }} className='invalid-feedback'>
+                  {couponErrorMessage}
+                </div>
+              )}
+            </div>
+            <div className='my-4 border-t border-gray-300'></div>
+            {activeCoupon ? (
+              <div>
+                <div className='w-full flex justify-between px-4'>
+                  <span className='text-lg font-semibold whitespace-nowrap overflow-hidden mr-2'>
+                    Total
+                  </span>
+                  <span className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
+                    Rs: {grandTotal}
+                  </span>
+                </div>
+                <div className='w-full flex justify-between px-4'>
+                  <span className='text-lg font-semibold whitespace-nowrap overflow-hidden mr-2'>
+                    Coupon Added
+                  </span>
+                  <span className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
+                    - {activeCoupon}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
             <div className='w-full flex justify-between px-4'>
               <span className='text-lg font-semibold whitespace-nowrap overflow-hidden mr-2'>
                 Grand Total
               </span>
               <span className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
-                Rs: {grandTotal}
+                Rs: {grandTotal - activeCoupon}
               </span>
             </div>
           </div>
