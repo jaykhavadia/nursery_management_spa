@@ -238,7 +238,7 @@ const GardenRegistration = () => {
       setUserData(user);
       setFormData((prevData) => ({
         ...prevData,
-        userId: user.user?._id,
+        userId: user?.user?._id,
       }));
       localStorage.setItem("currentUser", JSON.stringify(user));
     } catch (error) {

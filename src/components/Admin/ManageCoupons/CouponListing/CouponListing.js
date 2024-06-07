@@ -3,12 +3,12 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../../Footer/Footer";
 import { AuthContext } from "../../../../context/AuthContext";
-import {
-  getProductDetails,
-  ME,
-} from "../../../../service/api_service";
+import { getProductDetails, ME } from "../../../../service/api_service";
 import Sidebar from "../../../Sidebar/Sidebar";
-import './CouponListing.css';
+import Dropdown from "react-dropdown";
+import "./CouponListing.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 const CouponListing = () => {
   const navigate = useNavigate();
@@ -17,6 +17,54 @@ const CouponListing = () => {
   const [productList, setProductList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedList, setSelectedList] = useState();
+
+  const [sampleCoupon, setCoupon] = useState([
+    {
+      id: 1,
+      title: "Summer Sale",
+      type: "Percentage",
+      value: 20,
+      starting_date: "2024-06-01",
+      ending_date: "2024-06-30",
+      status: "Active",
+    },
+    {
+      id: 2,
+      title: "Holiday Discount",
+      type: "Fixed Amount",
+      value: 50,
+      starting_date: "2024-12-01",
+      ending_date: "2024-12-31",
+      status: "Active",
+    },
+    {
+      id: 3,
+      title: "Black Friday Special",
+      type: "Percentage",
+      value: 30,
+      starting_date: "2024-11-25",
+      ending_date: "2024-11-29",
+      status: "Expire",
+    },
+    {
+      id: 4,
+      title: "Back to School",
+      type: "Percentage",
+      value: 15,
+      starting_date: "2024-08-15",
+      ending_date: "2024-09-15",
+      status: "Active",
+    },
+    {
+      id: 5,
+      title: "New Year Offer",
+      type: "Fixed Amount",
+      value: 100,
+      starting_date: "2024-01-01",
+      ending_date: "2024-01-31",
+      status: "Expire",
+    },
+  ]);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -31,7 +79,7 @@ const CouponListing = () => {
         Logout();
         return;
       }
-      await checkAdmin("/admin/manage-products");
+      await checkAdmin("/admin/manage-coupons");
       // await setProductData();
       const productData = await getProductDetails();
       console.log("productData", productData);
@@ -58,8 +106,32 @@ const CouponListing = () => {
     }
   };
 
-  const editProduct = (product) => {
-    navigate(`/admin/edit-product/${product._id}`);
+  const editCoupon = (coupon) => {
+    navigate(`/admin/edit-coupon/${coupon._id}`);
+  };
+
+  const selected = async (event, data) => {
+    console.log("event", event, data);
+    // await updateMaintenance({ status: event.value }, data._id);
+
+    // const maintenanceData = await getAllGardenMaintenance();
+    // setMaintenanceList(maintenanceData);
+    setCoupon((prevCoupons) =>
+      prevCoupons.map((coupon) =>
+        coupon.id === data.id ? { ...coupon, status: event.value } : coupon
+      )
+    );
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast.success(`${text} Copied to clipboard!`);
+      })
+      .catch((err) => {
+        toast.error("Failed to copy: ", err);
+      });
   };
 
   return (
@@ -71,14 +143,14 @@ const CouponListing = () => {
       >
         <div className='container text-center py-5'>
           <h1 className='display-3 text-white mb-4 animated slideInDown'>
-            Products Listing
+            Coupons Listing
           </h1>
           <nav aria-label='breadcrumb animated slideInDown'>
             <ol className='breadcrumb justify-content-center mb-0'>
               <li className='breadcrumb-item'>Home</li>
               <li className='breadcrumb-item'>Pages</li>
               <li className='breadcrumb-item' aria-current='page'>
-                garden / Products / list
+                garden / Coupons / list
               </li>
             </ol>
           </nav>
@@ -91,38 +163,92 @@ const CouponListing = () => {
                     <div className='flex justify-end mr-5 '>
                       <button
                         className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center'
-                        onClick={() => navigate("/admin/add-products")}
+                        onClick={() => navigate("/admin/add-coupon")}
                       >
-                        Add Products
+                        Add Coupon
                       </button>
                     </div>
                     <table className='table table-hover'>
                       <thead>
                         <tr>
                           <th scope='col'>#</th>
-                          <th scope='col'>Product Title</th>
-                          <th scope='col' className='price-column' >Category</th>
-                          <th scope='col' className='price-column' >Price</th>
+                          <th scope='col'>Coupon Title</th>
+                          <th scope='col' className='price-column'>
+                            CODE
+                          </th>
+                          <th scope='col' className='price-column'>
+                            Value
+                          </th>
+                          <th scope='col' className='price-column'>
+                            Starting Date
+                          </th>
+                          <th scope='col' className='price-column'>
+                            Ending Date
+                          </th>
+                          <th scope='col' className=''>
+                            Status
+                          </th>
                           <th scope='col'>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {productList?.length ? (
-                          productList?.map((productData, index) => (
+                        {sampleCoupon?.length ? (
+                          sampleCoupon?.map((couponData, index) => (
                             <tr key={index}>
                               <th scope='row'>{index + 1}</th>
-                              <td>{productData.title}</td>
-                              <td className='price-column' >{productData.category.name}</td>
+                              <td>{couponData.title}</td>
+                              <td
+                                className='cursor-pointer price-column  hover:text-green-600 hover:text-bold active:text-yellow-500'
+                                onClick={() => {
+                                  copyToClipboard(
+                                    `${couponData.title
+                                      .slice(0, 3)
+                                      .toUpperCase()}${couponData.value}`
+                                  );
+                                }}
+                              >
+                                {couponData.title.slice(0, 3).toUpperCase()}
+                                {couponData.value}
+                                <FontAwesomeIcon
+                                  className='ml-2'
+                                  icon='fa-regular fa-copy'
+                                />
+                              </td>
                               <td className='price-column'>
                                 <span className='py-2 px-4'>
-                                  {productData.price}
+                                  {couponData.type !== "Percentage"
+                                    ? "Rs."
+                                    : ""}
+                                  {couponData.value}
+                                  {couponData.type === "Percentage" ? "%" : ""}
                                 </span>
+                              </td>
+                              <td className='price-column'>
+                                <span className='py-2 px-4'>
+                                  {couponData.starting_date}
+                                </span>
+                              </td>
+                              <td className='price-column'>
+                                <span className='py-2 px-4'>
+                                  {couponData.ending_date}
+                                </span>
+                              </td>
+                              <td className=''>
+                                <div className='flex justify-center'>
+                                  <Dropdown
+                                    className='w-[90px]'
+                                    options={["Expire", "Active"]}
+                                    onChange={(e) => selected(e, couponData)}
+                                    value={couponData.status}
+                                    placeholder={couponData.status}
+                                  />
+                                </div>
                               </td>
                               <td>
                                 <button
                                   className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded inline-flex items-center mr-2'
                                   onClick={() => {
-                                    setSelectedList(productData);
+                                    setSelectedList(couponData);
                                     setIsOpen(true);
                                   }}
                                 >
@@ -131,7 +257,7 @@ const CouponListing = () => {
                                 <button
                                   className='bg-yellow-500 hover:bg-yellow-700 text-gray-800 font-bold py-1 px-2 rounded inline-flex items-center mr-2'
                                   onClick={() => {
-                                    editProduct(productData);
+                                    editCoupon(couponData);
                                   }}
                                 >
                                   Update
@@ -170,16 +296,46 @@ const CouponListing = () => {
                   <h2 className='text-xl mb-4'>Maintenance Data</h2>
                   <div className='flex flex-col justify-start items-start'>
                     <span>
-                      <strong>Title:</strong> {selectedList.title}
+                      <strong className='mr-2'>Title:</strong>{" "}
+                      {selectedList.title}
                     </span>
                     <span>
-                      <strong>Description:</strong> {selectedList.description}
+                      <strong className='mr-2'>CODE:</strong>
+                      <span
+                        className='cursor-pointer hover:text-green-600 hover:text-bold active:text-yellow-500'
+                        onClick={() =>
+                          copyToClipboard(
+                            `${selectedList.title.slice(0, 3).toUpperCase()}${
+                              selectedList.value
+                            }`
+                          )
+                        }
+                      >
+                        {selectedList.title.slice(0, 3).toUpperCase()}
+                        {selectedList.value}
+                        <FontAwesomeIcon
+                          className='ml-2'
+                          icon='fa-regular fa-copy'
+                        />
+                      </span>
                     </span>
                     <span>
-                      <strong>Price:</strong> {selectedList.price}
+                      <strong className='mr-2'>Value:</strong>{" "}
+                      {selectedList.type !== "Percentage" ? "Rs." : ""}
+                      {selectedList.value}
+                      {selectedList.type === "Percentage" ? "%" : ""}
                     </span>
                     <span>
-                      <strong>Category:</strong> {selectedList.category.name}
+                      <strong className='mr-2'>Start Date:</strong>{" "}
+                      {selectedList.starting_date}
+                    </span>
+                    <span>
+                      <strong className='mr-2'>End Date:</strong>{" "}
+                      {selectedList.ending_date}
+                    </span>
+                    <span>
+                      <strong className='mr-2'>Status:</strong>{" "}
+                      {selectedList.status}
                     </span>
                   </div>
 

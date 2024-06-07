@@ -1,30 +1,12 @@
 import toast from "react-hot-toast";
-
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faExclamationCircle,
-  faPaperclip,
-} from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../../../../context/AuthContext";
-import {
-  addProduct,
-  createCategory,
-  getAllMaintenance,
-  getCategory,
-  getGardenDetails,
-  getProductDetailsById,
-  ME,
-  registerGarden,
-  updateGarden,
-  updateProduct,
-} from "../../../../service/api_service";
-import Navbar from "../../../Navbar/Navbar";
+import { ME, updateProduct } from "../../../../service/api_service";
 import Footer from "../../../Footer/Footer";
-import defaultImage from "../../../../assets/img/defaultImage.png";
-import { City, State } from "country-state-city";
 import Sidebar from "../../../Sidebar/Sidebar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AddCoupon = () => {
   const { id } = useParams();
@@ -33,13 +15,15 @@ const AddCoupon = () => {
   const [zoom, setZoom] = useState("scale-0");
   const [userData, setUserData] = useState();
   const [errors, setErrors] = useState({});
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const [formData, setFormData] = useState({
     title: "",
     type: "",
     value: "",
-    startTime:'',
-    EndTime:''
+    endingDate: "",
+    startingDate: "",
   });
   const [isDataAvailable, setIsDataAvailable] = useState(false);
 
@@ -78,24 +62,14 @@ const AddCoupon = () => {
     if (formData?.title && !isFirstCharCapitalized(formData?.title)) {
       errors.title = "first letter should be capital";
     }
-    if (!formData.description) {
-      errors.description = errorMessage;
+    if (!formData.value) {
+      errors.value = errorMessage;
     }
-    if (!formData.price) {
-      errors.price = errorMessage;
+    if (formData.value < 0) {
+      errors.value = "must be between 0";
     }
-    if (formData.price < 0) {
-      errors.price = "must be between 0";
-    }
-    if (!formData.category) {
-      errors.category = errorMessage;
-    }
-    if (formData?.category?.length < 3) {
-      errors.category = "must have more the 3 character";
-    }
-
-    if (!formData.image) {
-      errors.image = errorMessage;
+    if (!formData.type) {
+      errors.type = errorMessage;
     }
 
     setErrors(errors);
@@ -122,17 +96,20 @@ const AddCoupon = () => {
         await me();
       }
 
+      formData.startingDate = startDate;
+      formData.endingDate = endDate;
       try {
+        console.log("form Data", formData);
         let result;
         console.log("formData", formData);
-          // result = await addCoupon(newState);
-          if (result) {
-            toast.success("Coupon added Successful!");
-            // resetFields();
-            // navigate("/admin/manage-coupons");
-          }
-          return;
-          // result = await addProduct(formData);
+        // result = await addCoupon(newState);
+        if (result) {
+          toast.success("Coupon added Successful!");
+          // resetFields();
+          // navigate("/admin/manage-coupons");
+        }
+        return;
+        // result = await addProduct(formData);
         // if (result) {
         //   toast.success("Product added Successful!");
         //   resetFields();
@@ -154,17 +131,18 @@ const AddCoupon = () => {
     }
     const isValid = validateForm();
     if (isValid) {
-
+      formData.startingDate = startDate;
+      formData.endingDate = endDate;
       try {
         delete formData.userId;
-        console.log('form Data', formData);
-        const result = await updateProduct(formData, id); // Call getSomeData function from the API service
-        if (result) {
-          toast.success(result.message);
-          resetFields();
-          navigate('/admin/manage-products');
-          // await setGardenData();
-        }
+        console.log("form Data", formData);
+        // const result = await updateProduct(formData, id); // Call getSomeData function from the API service
+        // if (result) {
+        // toast.success(result.message);
+        // resetFields();
+        // navigate("/admin/manage-products");
+        // await setGardenData();
+        // }
       } catch (error) {
         console.error("Error while Login:", error);
         toast.error(error.message);
@@ -177,8 +155,8 @@ const AddCoupon = () => {
       title: "",
       type: "",
       value: "",
-      startTime:'',
-      EndTime:''
+      startTime: "",
+      EndTime: "",
     });
     setErrors();
   };
@@ -240,9 +218,9 @@ const AddCoupon = () => {
           return;
         }
         if (id) {
-          await checkAdmin(`/admin/edit-product/${id}`);
+          await checkAdmin(`/admin/edit-coupon/${id}`);
         } else {
-          await checkAdmin("/admin/add-products");
+          await checkAdmin("/admin/add-coupon");
         }
         await me();
         if (id) {
@@ -270,14 +248,14 @@ const AddCoupon = () => {
       >
         <div className='container text-center py-5'>
           <h1 className='display-3 text-white mb-4 animated slideInDown'>
-            Add Product
+            Add Coupon
           </h1>
           <nav aria-label='breadcrumb animated slideInDown'>
             <ol className='breadcrumb justify-content-center mb-0'>
               <li className='breadcrumb-item'>Home</li>
               <li className='breadcrumb-item'>Pages</li>
               <li className='breadcrumb-item' aria-current='page'>
-                admin / add-product
+                admin / add-coupon
               </li>
             </ol>
           </nav>
@@ -318,85 +296,93 @@ const AddCoupon = () => {
                       )}
                     </div>
 
-                    <div>
-                      <div className='flex justify-start'>
-                        <label className='block text-sm font-medium leading-6 text-gray-900'>
-                          Description
-                        </label>
-                      </div>
-                      <textarea
-                        placeholder='Enter your product description'
-                        id='description'
-                        style={{ height: "90px" }}
-                        value={formData?.description}
-                        className={`form-control ${
-                          errors?.description && "is-invalid"
-                        }`}
-                        onChange={handleChange}
-                        required
-                      ></textarea>
-                      {errors?.description && (
-                        <div className='invalid-feedback'>
-                          Your product description {errors?.description}
-                        </div>
-                      )}
-                    </div>
-
                     <div className='flex flex-col sm:flex-row justify-between'>
-                      <div className='mr-4'>
+                      <div className='mr-4 sm:w-56 w-full'>
                         <div className='flex justify-start'>
                           <label className='block text-sm font-medium leading-6 text-gray-900'>
-                            Price
+                            value
                           </label>
                         </div>
                         <input
-                          id='price'
-                          name='price'
+                          id='value'
+                          name='value'
                           type='number'
-                          placeholder='Enter Product Price'
-                          value={formData?.price}
+                          placeholder='Enter value'
+                          value={formData?.value}
                           onChange={handleChange}
                           className={`form-control ${
-                            errors?.price && "is-invalid"
+                            errors?.value && "is-invalid"
                           }`}
                           min={1}
                         />
-                        {errors?.price && (
+                        {errors?.value && (
                           <div className='invalid-feedback'>
-                            Your Coupon Value {errors?.price}
+                            Your Coupon Value {errors?.value}
                           </div>
                         )}
                       </div>
 
-                      {/* <div className=''>
+                      <div className='sm:w-56 w-full'>
                         <div className='flex justify-start'>
                           <label className='block text-sm font-medium leading-6 text-gray-900'>
-                            Category
+                            Type
                           </label>
                         </div>
                         <select
-                          id='state'
-                          name='state'
-                          value={selectedCategory?._id}
-                          onChange={handleCategoryChange}
+                          id='type'
+                          name='type'
+                          value={formData.type}
+                          onChange={handleChange}
                           className={`form-control ${
-                            errors?.category && "is-invalid"
+                            errors?.type && "is-invalid"
                           }`}
                         >
-                          <option value=''>Select Category</option>
-                          {categoryList.map((category, index) => (
-                            <option key={index} value={category?._id}>
-                              {category.name}
-                            </option>
-                          ))}
-                          <option value='other'>other</option>
+                          <option value=''>Select Type</option>
+                          <option value='Percentage'>Percentage</option>
+                          <option value='Fixed Amount'>Fixed Amount</option>
                         </select>
-                        {errors?.category && (
+                        {errors?.type && (
                           <div className='invalid-feedback'>
-                            Your product category {errors?.category}
+                            Your Coupon type {errors?.type}
                           </div>
                         )}
-                      </div> */}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className='mt-4 w-full flex flex-col sm:flex-row justify-between items-center'>
+                        <div className='relative sm:w-44 w-full '>
+                          <DatePicker
+                            selected={startDate}
+                            onChange={(date) => {
+                              setStartDate(date);
+                              if (date > endDate) {
+                                setEndDate(date);
+                              }
+                            }}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
+                            dateFormat='dd/MM/yyyy'
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                            placeholderText='Select start date'
+                          />
+                        </div>
+                        <span className='mx-4 text-gray-500'>to</span>
+                        <div className='sm:w-44 w-full'>
+                          <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                            dateFormat='dd/MM/yyyy'
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                            placeholderText='Select end date'
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     {isDataAvailable ? (

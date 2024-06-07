@@ -73,6 +73,12 @@ const Sidebar = () => {
                 >
                   Manage Products
                 </a>
+                <a
+                  href={(token && isAdmin) ? "/admin/manage-coupons" : "/login"}
+                  className='dropdown-item'
+                >
+                  Manage Coupons
+                </a>
               </div>
             </div>
             {token && (
