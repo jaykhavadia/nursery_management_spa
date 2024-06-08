@@ -210,13 +210,15 @@ const Address = (props) => {
         localStorage.clear();
         navigate("/login");
       }
-      setFormData(response.address);
-      setIsDataAvailable(true);
-      const stateObj = indianStates.find(
-        (state) => state.name === response.address.state
-      );
-      setSelectedState(stateObj);
-      setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+      if(response && response.address){
+        setFormData(response.address);
+        setIsDataAvailable(true);
+        const stateObj = indianStates.find(
+          (state) => state.name === response.address.state
+        );
+        setSelectedState(stateObj);
+        setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+      }
     } catch (error) {
       console.log('No Address found', error);
       setIsDataAvailable(false);

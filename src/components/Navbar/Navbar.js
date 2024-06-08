@@ -85,7 +85,7 @@ const Navbar = () => {
                 className='nav-link dropdown-toggle'
                 data-bs-toggle='dropdown'
               >
-                products
+                Products
               </div>
               <div className='dropdown-menu bg-light m-0'>
                 <a href={"/products"} className='dropdown-item'>
