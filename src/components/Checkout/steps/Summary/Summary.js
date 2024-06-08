@@ -29,6 +29,18 @@ const Summary = (prams) => {
         toast.error(response?.message);
         localStorage.clear();
         navigate("/login");
+        return;
+      }
+      if (response.couponDetail.status === "Expire") {
+        toast.error("Coupon Expired!");
+        return;
+      }
+      if (
+        response.couponDetail.type === "Fixed Amount" &&
+        response.couponDetail.value > grandTotal
+      ) {
+        toast.error("Add more Products");
+        return;
       }
       if (response?.message === "Coupon Applied Successfully!") {
         localStorage.setItem("coupon", JSON.stringify(response.couponDetail));
@@ -36,6 +48,7 @@ const Summary = (prams) => {
       }
     } catch (error) {
       console.log("[summary] [checkCoupon] Error :", error);
+      toast.error(error?.message);
     }
   };
 
