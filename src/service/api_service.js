@@ -95,6 +95,18 @@ export const createAddress = async (payload) => {
   }
 };
 
+export const createCoupon = async (payload) => {
+  try {
+    const apiURL = `${BASE_URL}/coupon/create`;
+    const response = await axios.post(apiURL, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error createAddress:", error);
+    throw error.response.data;
+  }
+};
+
 export const addProduct = async (payload) => {
   try {
     const apiURL = `${BASE_URL}/product/create`;
@@ -171,6 +183,17 @@ export const getAddressDetails = async () => {
     throw error.response.data;
   }
 };
+export const getAllCoupon = async () => {
+  try {
+    const apiURL = `${BASE_URL}/coupon`;
+    const response = await axios.get(apiURL);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error getAllCoupon:", error);
+    throw error.response.data;
+  }
+};
 export const getGardenDetails = async () => {
   try {
     const apiURL = `${BASE_URL}/garden/details`;
@@ -198,6 +221,17 @@ export const getProductDetails = async () => {
 export const getProductDetailsById = async (id) => {
   try {
     const apiURL = `${BASE_URL}/product/${id}`;
+    const response = await axios.get(apiURL);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error getGardenDetails:", error);
+    throw error.response.data;
+  }
+};
+export const getCouponByCODE = async (CODE) => {
+  try {
+    const apiURL = `${BASE_URL}/coupon/${CODE}`;
     const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {
@@ -263,6 +297,17 @@ export const updateMaintenance = async (payload, maintenanceId) => {
   } catch (error) {
     // Handle errors
     console.error("Error updateMaintenance:", error);
+    throw error.response.data;
+  }
+};
+export const updateCoupon = async (payload, couponId) => {
+  try {
+    const apiURL = `${BASE_URL}/coupon/update/${couponId}`;
+    const response = await axios.put(apiURL, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error update coupon:", error);
     throw error.response.data;
   }
 };

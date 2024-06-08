@@ -20,12 +20,11 @@ const Sidebar = () => {
   return (
     <div className="sticky top-0 z-10 p-0 " >
       <nav className='navbar navbar-expand-lg bg-white navbar-light p-0'>
-        <a
-          href='/home'
+        <span
           className='navbar-brand d-flex align-items-center px-4 px-lg-5'
         >
           <h1 className='m-0'>Gardener</h1>
-        </a>
+        </span>
         <button
           type='button'
           className='navbar-toggler me-4'

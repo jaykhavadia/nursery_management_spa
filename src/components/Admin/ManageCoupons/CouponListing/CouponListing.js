@@ -3,68 +3,26 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../../Footer/Footer";
 import { AuthContext } from "../../../../context/AuthContext";
-import { getProductDetails, ME } from "../../../../service/api_service";
+import {
+  getAllCoupon,
+  ME,
+  updateCoupon,
+} from "../../../../service/api_service";
 import Sidebar from "../../../Sidebar/Sidebar";
 import Dropdown from "react-dropdown";
 import "./CouponListing.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import ConfirmationModal from "../../../common/confirmationModal";
 
 const CouponListing = () => {
   const navigate = useNavigate();
   const { checkAdmin, Logout } = useContext(AuthContext);
   // const [maintenanceList, setMaintenanceList] = useState([]);
-  const [productList, setProductList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedList, setSelectedList] = useState();
 
-  const [sampleCoupon, setCoupon] = useState([
-    {
-      id: 1,
-      title: "Summer Sale",
-      type: "Percentage",
-      value: 20,
-      starting_date: "2024-06-01",
-      ending_date: "2024-06-30",
-      status: "Active",
-    },
-    {
-      id: 2,
-      title: "Holiday Discount",
-      type: "Fixed Amount",
-      value: 50,
-      starting_date: "2024-12-01",
-      ending_date: "2024-12-31",
-      status: "Active",
-    },
-    {
-      id: 3,
-      title: "Black Friday Special",
-      type: "Percentage",
-      value: 30,
-      starting_date: "2024-11-25",
-      ending_date: "2024-11-29",
-      status: "Expire",
-    },
-    {
-      id: 4,
-      title: "Back to School",
-      type: "Percentage",
-      value: 15,
-      starting_date: "2024-08-15",
-      ending_date: "2024-09-15",
-      status: "Active",
-    },
-    {
-      id: 5,
-      title: "New Year Offer",
-      type: "Fixed Amount",
-      value: 100,
-      starting_date: "2024-01-01",
-      ending_date: "2024-01-31",
-      status: "Expire",
-    },
-  ]);
+  const [sampleCoupon, setCoupon] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -72,7 +30,7 @@ const CouponListing = () => {
       navigate("/login");
       return;
     }
-    async function getProductListing() {
+    async function getCouponListing() {
       const isAdmin = await me();
       if (!isAdmin) {
         toast.error("You are not a admin");
@@ -80,12 +38,15 @@ const CouponListing = () => {
         return;
       }
       await checkAdmin("/admin/manage-coupons");
-      // await setProductData();
-      const productData = await getProductDetails();
-      console.log("productData", productData);
-      setProductList(productData);
+      try {
+        const couponData = await getAllCoupon();
+        console.log("CouponData", couponData);
+        setCoupon(couponData.allCoupons);
+      } catch (error) {
+        console.log("error getCouponListing", error);
+      }
     }
-    getProductListing();
+    getCouponListing();
 
     setTimeout(() => {
       //   setZoom("scale-100");
@@ -96,7 +57,6 @@ const CouponListing = () => {
     try {
       const user = await ME();
       localStorage.setItem("currentUser", JSON.stringify(user));
-      console.log("user =>>", user.user);
       return user?.user?.isAdmin || false;
     } catch (error) {
       if (error.message === "jwt expired") {
@@ -107,21 +67,27 @@ const CouponListing = () => {
   };
 
   const editCoupon = (coupon) => {
-    navigate(`/admin/edit-coupon/${coupon._id}`);
+    navigate(`/admin/edit-coupon/${coupon.title}`);
   };
 
-  const selected = async (event, data) => {
-    console.log("event", event, data);
-    // await updateMaintenance({ status: event.value }, data._id);
-
-    // const maintenanceData = await getAllGardenMaintenance();
-    // setMaintenanceList(maintenanceData);
-    setCoupon((prevCoupons) =>
-      prevCoupons.map((coupon) =>
-        coupon.id === data.id ? { ...coupon, status: event.value } : coupon
-      )
-    );
-  };
+  // const selected = async (event, data) => {
+  //   try {
+  //     console.log("event", event, data);
+  //     const results = await updateCoupon(
+  //       { ...data, status: event.value },
+  //       data._id
+  //     );
+  //     if (results) {
+  //       toast.success(results.message);
+  //       try {
+  //         const couponData = await getAllCoupon();
+  //         setCoupon(couponData.allCoupons);
+  //       } catch (error) {
+  //         console.log("Error in getting coupon [select]", error);
+  //       }
+  //     }
+  //   } catch (error) {}
+  // };
 
   const copyToClipboard = (text) => {
     navigator.clipboard
@@ -132,6 +98,51 @@ const CouponListing = () => {
       .catch((err) => {
         toast.error("Failed to copy: ", err);
       });
+  };
+
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const [showModal, setShowModal] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState(null);
+  const [currentData, setCurrentData] = useState(null);
+
+  const selected = async (event, data) => {
+    setCurrentEvent(event);
+    setCurrentData(data);
+    setShowModal(true);
+  };
+
+  const handleConfirm = async () => {
+    try {
+      console.log("event", currentEvent, currentData);
+      const results = await updateCoupon(
+        { ...currentData, status: currentEvent.value },
+        currentData._id
+      );
+      if (results) {
+        toast.success(results.message || "Coupon Updated");
+        try {
+          const couponData = await getAllCoupon();
+          setCoupon(couponData.allCoupons);
+        } catch (error) {
+          console.log("Error in getting coupon [select]", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error in updating coupon", error);
+    } finally {
+      setShowModal(false);
+    }
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
   };
 
   return (
@@ -157,7 +168,7 @@ const CouponListing = () => {
           {/* ----------------- Form ----------------------- */}
           <div>
             <div className='flex min-h-full flex-col justify-center px-6 pt-12 lg:px-8'>
-              <div className='sm:mx-auto sm:w-full p-6  bg-gray-100 border border-gray-100 rounded-lg shadow dark:bg-gray-100 dark:border-gray-200'>
+              <div className='sm:mx-auto sm:w-full sm:p-6 py-3 px-2  bg-gray-100 border border-gray-100 rounded-lg shadow dark:bg-gray-100 dark:border-gray-200'>
                 <div className='sm:mx-auto sm:w-full '>
                   <div className='space-y-6'>
                     <div className='flex justify-end mr-5 '>
@@ -171,11 +182,8 @@ const CouponListing = () => {
                     <table className='table table-hover'>
                       <thead>
                         <tr>
-                          <th scope='col'>#</th>
-                          <th scope='col'>Coupon Title</th>
-                          <th scope='col' className='price-column'>
-                            CODE
-                          </th>
+                          <th scope='col' className='price-column' >#</th>
+                          <th scope='col'>Coupon CODE</th>
                           <th scope='col' className='price-column'>
                             Value
                           </th>
@@ -195,20 +203,16 @@ const CouponListing = () => {
                         {sampleCoupon?.length ? (
                           sampleCoupon?.map((couponData, index) => (
                             <tr key={index}>
-                              <th scope='row'>{index + 1}</th>
-                              <td>{couponData.title}</td>
+                              <th className="price-column" scope='row'>{index + 1}</th>
                               <td
-                                className='cursor-pointer price-column  hover:text-green-600 hover:text-bold active:text-yellow-500'
+                                className='cursor-pointer  hover:text-green-600 hover:text-bold active:text-yellow-500'
                                 onClick={() => {
                                   copyToClipboard(
-                                    `${couponData.title
-                                      .slice(0, 3)
-                                      .toUpperCase()}${couponData.value}`
+                                    couponData.title.toUpperCase()
                                   );
                                 }}
                               >
-                                {couponData.title.slice(0, 3).toUpperCase()}
-                                {couponData.value}
+                                {couponData.title.toUpperCase()}
                                 <FontAwesomeIcon
                                   className='ml-2'
                                   icon='fa-regular fa-copy'
@@ -225,12 +229,12 @@ const CouponListing = () => {
                               </td>
                               <td className='price-column'>
                                 <span className='py-2 px-4'>
-                                  {couponData.starting_date}
+                                  {formatDate(couponData.startingDate)}
                                 </span>
                               </td>
                               <td className='price-column'>
                                 <span className='py-2 px-4'>
-                                  {couponData.ending_date}
+                                  {formatDate(couponData.endingDate)}
                                 </span>
                               </td>
                               <td className=''>
@@ -266,7 +270,7 @@ const CouponListing = () => {
                                 {/* <button
               className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded inline-flex items-center'
               onClick={() => {
-                setSelectedList(productData);
+                setSelectedList(CouponData);
                 setIsOpen(true);
               }}
             >
@@ -277,7 +281,7 @@ const CouponListing = () => {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan='5'>No Data Found</td>
+                            <td colSpan='8'>No Coupon Found</td>
                           </tr>
                         )}
                       </tbody>
@@ -296,23 +300,14 @@ const CouponListing = () => {
                   <h2 className='text-xl mb-4'>Maintenance Data</h2>
                   <div className='flex flex-col justify-start items-start'>
                     <span>
-                      <strong className='mr-2'>Title:</strong>{" "}
-                      {selectedList.title}
-                    </span>
-                    <span>
-                      <strong className='mr-2'>CODE:</strong>
+                      <strong className='mr-2'>Coupon CODE:</strong>
                       <span
                         className='cursor-pointer hover:text-green-600 hover:text-bold active:text-yellow-500'
                         onClick={() =>
-                          copyToClipboard(
-                            `${selectedList.title.slice(0, 3).toUpperCase()}${
-                              selectedList.value
-                            }`
-                          )
+                          copyToClipboard(selectedList.title.toUpperCase())
                         }
                       >
-                        {selectedList.title.slice(0, 3).toUpperCase()}
-                        {selectedList.value}
+                        {selectedList.title.toUpperCase()}
                         <FontAwesomeIcon
                           className='ml-2'
                           icon='fa-regular fa-copy'
@@ -327,11 +322,11 @@ const CouponListing = () => {
                     </span>
                     <span>
                       <strong className='mr-2'>Start Date:</strong>{" "}
-                      {selectedList.starting_date}
+                      {formatDate(selectedList.startingDate)}
                     </span>
                     <span>
                       <strong className='mr-2'>End Date:</strong>{" "}
-                      {selectedList.ending_date}
+                      {formatDate(selectedList.endingDate)}
                     </span>
                     <span>
                       <strong className='mr-2'>Status:</strong>{" "}
@@ -352,6 +347,12 @@ const CouponListing = () => {
         </div>
       </div>
       <Footer />
+      <ConfirmationModal
+        show={showModal}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        field={"coupon"}
+      />
     </div>
   );
 };

@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { getCouponByCODE } from "../../../../service/api_service";
 
 const Summary = (prams) => {
   const { cartData, removeFromCart, addToCart, grandTotal, cartSize } = prams;
@@ -7,21 +10,32 @@ const Summary = (prams) => {
   const [couponErrorMessage, setCouponErrorMessage] = useState();
   const [coupon, setCoupon] = useState();
   const [activeCoupon, setActiveCoupon] = useState(0);
+  const navigate = useNavigate();
 
   const handleCouponChange = (e) => {
-    setCoupon(e.target.value);
+    setCoupon(e.target.value.toUpperCase());
     setCouponErrorMessage();
     setCouponErrors(false);
   };
 
-  const checkCoupon = (e) => {
-    // check coupon
-    console.log("Checking coupon", coupon);
-    if (coupon === "test") {
-      setActiveCoupon(10);
-    } else {
-      setCouponErrors(true);
-      setCouponErrorMessage("Invalid Token");
+  const checkCoupon = async (e) => {
+    try {
+      console.log("Checking coupon", coupon);
+      const response = await getCouponByCODE(coupon);
+      if (response === null) {
+        return;
+      }
+      if (response?.message === "Invalid token") {
+        toast.error(response?.message);
+        localStorage.clear();
+        navigate("/login");
+      }
+      if (response?.message === "Coupon Applied Successfully!") {
+        localStorage.setItem("coupon", JSON.stringify(response.couponDetail));
+        setActiveCoupon(response.couponDetail);
+      }
+    } catch (error) {
+      console.log("[summary] [checkCoupon] Error :", error);
     }
   };
 
@@ -176,7 +190,8 @@ const Summary = (prams) => {
                     Coupon Added
                   </span>
                   <span className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
-                    - {activeCoupon}
+                    - {activeCoupon.value}
+                    {activeCoupon.type === "Percentage" ? "%" : ""}
                   </span>
                 </div>
               </div>
@@ -188,7 +203,12 @@ const Summary = (prams) => {
                 Grand Total
               </span>
               <span className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
-                Rs: {grandTotal - activeCoupon}
+                Rs:{" "}
+                {activeCoupon
+                  ? activeCoupon.type === "Percentage"
+                    ? grandTotal - (activeCoupon.value / 100) * grandTotal
+                    : grandTotal - activeCoupon.value
+                  : grandTotal}
               </span>
             </div>
           </div>

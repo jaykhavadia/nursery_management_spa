@@ -92,7 +92,7 @@ root.render(
           <Route path='/admin/edit-product/:id' element={<AddProducts />} />
           <Route path='/admin/manage-coupons' element={<CouponListing />} />
           <Route path='/admin/add-coupon' element={<AddCoupon />} />
-          <Route path='/admin/edit-coupons/:id' element={<AddCoupon />} />
+          <Route path='/admin/edit-coupon/:id' element={<AddCoupon />} />
 
           <Route path='/products' element={<Products />} />
           <Route path='/products/:id' element={<ProductDetail />} />

@@ -2,7 +2,13 @@ import toast from "react-hot-toast";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../../context/AuthContext";
-import { ME, updateProduct } from "../../../../service/api_service";
+import {
+  createCoupon,
+  getCouponByCODE,
+  ME,
+  updateCoupon,
+  updateProduct,
+} from "../../../../service/api_service";
 import Footer from "../../../Footer/Footer";
 import Sidebar from "../../../Sidebar/Sidebar";
 import DatePicker from "react-datepicker";
@@ -17,6 +23,7 @@ const AddCoupon = () => {
   const [errors, setErrors] = useState({});
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [couponId, setCouponId] = useState();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -31,7 +38,7 @@ const AddCoupon = () => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [id]: value,
+      [id]: id === "title" ? value.toUpperCase() : value,
     }));
 
     // Reset error message for the field
@@ -41,35 +48,33 @@ const AddCoupon = () => {
     }));
   };
 
-  const isFirstCharCapitalized = (word) => {
-    console.log("im in ", word);
-    if (!word || typeof word !== "string") {
-      return false; // Ensure the input is a valid string
-    }
-    const firstChar = word.charAt(0); // Get the first character
-    return firstChar === firstChar.toUpperCase(); // Check if it is uppercase
-  };
-
   const validateForm = () => {
     const errorMessage = "is required";
     const errors = {};
     if (!formData.title) {
       errors.title = errorMessage;
     }
-    if (formData?.title?.length < 3) {
-      errors.title = "must have more the 3 character";
+    if (formData?.title?.length < 3 || formData?.title?.length > 10) {
+      errors.title = "must be of 3 - 10 character";
     }
-    if (formData?.title && !isFirstCharCapitalized(formData?.title)) {
-      errors.title = "first letter should be capital";
+    if (formData?.title.includes(" ")) {
+      errors.title = "should not contain spaces";
     }
     if (!formData.value) {
       errors.value = errorMessage;
     }
     if (formData.value < 0) {
-      errors.value = "must be between 0";
+      errors.value = "should be more then 1";
     }
     if (!formData.type) {
       errors.type = errorMessage;
+    }
+    if (formData.type === "Percentage" && formData.value > 100) {
+      errors.value = "should be less then 100%";
+      setFormData((prevData) => ({
+        ...prevData,
+        value: "",
+      }));
     }
 
     setErrors(errors);
@@ -82,7 +87,7 @@ const AddCoupon = () => {
     return true;
   };
 
-  const createProduct = async () => {
+  const submitForm = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
       toast.error("Token Expired");
@@ -102,11 +107,11 @@ const AddCoupon = () => {
         console.log("form Data", formData);
         let result;
         console.log("formData", formData);
-        // result = await addCoupon(newState);
+        result = await createCoupon(formData);
         if (result) {
-          toast.success("Coupon added Successful!");
-          // resetFields();
-          // navigate("/admin/manage-coupons");
+          toast.success(result.message || "Coupon added Successful!");
+          resetFields();
+          navigate("/admin/manage-coupons");
         }
         return;
         // result = await addProduct(formData);
@@ -122,7 +127,7 @@ const AddCoupon = () => {
     }
   };
 
-  const handleUpdatedProduct = async () => {
+  const handleUpdatedCoupon = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
       toast.error("Token Expired");
@@ -136,13 +141,12 @@ const AddCoupon = () => {
       try {
         delete formData.userId;
         console.log("form Data", formData);
-        // const result = await updateProduct(formData, id); // Call getSomeData function from the API service
-        // if (result) {
-        // toast.success(result.message);
-        // resetFields();
-        // navigate("/admin/manage-products");
-        // await setGardenData();
-        // }
+        const result = await updateCoupon(formData, couponId); // Call getSomeData function from the API service
+        if (result) {
+          toast.success(result.message);
+          resetFields();
+          navigate("/admin/manage-coupons");
+        }
       } catch (error) {
         console.error("Error while Login:", error);
         toast.error(error.message);
@@ -180,26 +184,26 @@ const AddCoupon = () => {
   };
 
   const setCouponData = async () => {
-    // const response = await getProductDetailsById(id);
+    const response = await getCouponByCODE(id);
 
-    // if (response === null) {
-    //   return;
-    // }
-    // if (response?.message === "Invalid token") {
-    //   toast.error(response?.message);
-    //   localStorage.clear();
-    //   navigate("/login");
-    // }
-    // console.log("resonse", response);
-    // const transformedObject = {
-    //   title: response.title || "",
-    //   category: response.category?._id || "",
-    //   description: response.description || "",
-    //   price: response.price || "",
-    //   image: response.image || "",
-    //   userId: "",
-    // };
-    // setFormData(transformedObject);
+    if (response === null) {
+      return;
+    }
+    if (response?.message === "Invalid token") {
+      toast.error(response?.message);
+      localStorage.clear();
+      navigate("/login");
+    }
+    console.log("resonse", response);
+    const transformData = {
+      title: response.couponDetail.title,
+      type: response.couponDetail.type,
+      value: response.couponDetail.value,
+      startingDate: new Date(response.couponDetail.startingDate).toISOString(), // or format as needed
+      endingDate: new Date(response.couponDetail.endingDate).toISOString(), // or format as needed
+    };
+    setCouponId(response.couponDetail._id);
+    setFormData(transformData);
     setIsDataAvailable(true);
   };
 
@@ -224,7 +228,7 @@ const AddCoupon = () => {
         }
         await me();
         if (id) {
-          // await setCouponData();
+          await setCouponData();
         }
       } catch (error) {
         console.error("getProductData", error);
@@ -268,7 +272,7 @@ const AddCoupon = () => {
                     <div>
                       <div className='flex justify-start'>
                         <label className='block text-sm font-medium leading-6 text-gray-900'>
-                          Title
+                          Coupon CODE
                         </label>
                       </div>
                       <div className='mt-2'>
@@ -277,7 +281,7 @@ const AddCoupon = () => {
                           name='title'
                           type='text'
                           autoComplete='title'
-                          placeholder='Enter your Title'
+                          placeholder='Enter your CODE'
                           required
                           value={formData?.title}
                           className={`form-control ${
@@ -291,7 +295,7 @@ const AddCoupon = () => {
                           style={{ display: "block" }}
                           className='invalid-feedback'
                         >
-                          Your title {errors?.title}
+                          Your Coupon CODE {errors?.title}
                         </div>
                       )}
                     </div>
@@ -388,14 +392,14 @@ const AddCoupon = () => {
                     {isDataAvailable ? (
                       <button
                         className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                        onClick={handleUpdatedProduct}
+                        onClick={handleUpdatedCoupon}
                       >
                         Update your Coupon
                       </button>
                     ) : (
                       <button
                         className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                        onClick={createProduct}
+                        onClick={submitForm}
                       >
                         Add Coupon
                       </button>
