@@ -43,6 +43,8 @@ const Summary = (prams) => {
         return;
       }
       if (response?.message === "Coupon Applied Successfully!") {
+        toast.success( response?.message || "Coupon Added!");
+
         localStorage.setItem("coupon", JSON.stringify(response.couponDetail));
         setActiveCoupon({
           ...response.couponDetail,
