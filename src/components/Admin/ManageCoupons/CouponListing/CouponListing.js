@@ -133,11 +133,11 @@ const CouponListing = () => {
   };
 
   const handleConfirm = async () => {
-    if (field === "Coupon") {
+    if (field === "coupon") {
       try {
         console.log("event", currentEvent, currentData);
         const results = await updateCoupon(
-          { ...currentData, status: currentEvent.value },
+          { ...currentData, status: currentEvent.value === "Activated" ? 'Active' : "Expire" },
           currentData._id
         );
         if (results) {
@@ -154,7 +154,7 @@ const CouponListing = () => {
       } finally {
         setShowModal(false);
       }
-    } else {
+    } else if (field === 'delete') {
       try {
         console.log("event", currentEvent, currentData);
         const results = await deleteCoupon(currentData._id);
@@ -279,9 +279,9 @@ const CouponListing = () => {
                                 <div className='flex justify-center'>
                                   <Dropdown
                                     className='w-[90px]'
-                                    options={["Expire", "Active"]}
+                                    options={["Deactivated", "Activated"]}
                                     onChange={(e) => selected(e, couponData)}
-                                    value={couponData.status}
+                                    value={couponData.status === 'Active' ? "Activated": "Deactivated"}
                                     placeholder={couponData.status}
                                   />
                                 </div>
