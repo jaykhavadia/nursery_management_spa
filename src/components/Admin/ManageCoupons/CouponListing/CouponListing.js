@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../../../Footer/Footer";
 import { AuthContext } from "../../../../context/AuthContext";
 import {
+  deleteCoupon,
   getAllCoupon,
   ME,
   updateCoupon,
+  updateDelete,
 } from "../../../../service/api_service";
 import Sidebar from "../../../Sidebar/Sidebar";
 import Dropdown from "react-dropdown";
@@ -109,35 +111,67 @@ const CouponListing = () => {
   };
 
   const [showModal, setShowModal] = useState(false);
+  const [field, setField] = useState("");
+  const [text, setText] = useState("");
   const [currentEvent, setCurrentEvent] = useState(null);
   const [currentData, setCurrentData] = useState(null);
 
   const selected = async (event, data) => {
     setCurrentEvent(event);
     setCurrentData(data);
+    setText("Are you sure you want to update this Coupon ?");
+    setField("coupon");
+    setShowModal(true);
+  };
+
+  const handleDelete = async (event, data) => {
+    setCurrentEvent(event);
+    setCurrentData(data);
+    setText("Are you sure you want to delete this Coupon ?");
+    setField("delete");
     setShowModal(true);
   };
 
   const handleConfirm = async () => {
-    try {
-      console.log("event", currentEvent, currentData);
-      const results = await updateCoupon(
-        { ...currentData, status: currentEvent.value },
-        currentData._id
-      );
-      if (results) {
-        toast.success(results.message || "Coupon Updated");
-        try {
-          const couponData = await getAllCoupon();
-          setCoupon(couponData.allCoupons);
-        } catch (error) {
-          console.log("Error in getting coupon [select]", error);
+    if (field === "Coupon") {
+      try {
+        console.log("event", currentEvent, currentData);
+        const results = await updateCoupon(
+          { ...currentData, status: currentEvent.value },
+          currentData._id
+        );
+        if (results) {
+          toast.success(results.message || "Coupon Updated");
+          try {
+            const couponData = await getAllCoupon();
+            setCoupon(couponData.allCoupons);
+          } catch (error) {
+            console.log("Error in getting coupon [handleConfirm]", error);
+          }
         }
+      } catch (error) {
+        console.error("Error in updating coupon", error);
+      } finally {
+        setShowModal(false);
       }
-    } catch (error) {
-      console.error("Error in updating coupon", error);
-    } finally {
-      setShowModal(false);
+    } else {
+      try {
+        console.log("event", currentEvent, currentData);
+        const results = await deleteCoupon(currentData._id);
+        if (results) {
+          toast.success(results.message || "Coupon Deleted");
+          try {
+            const couponData = await getAllCoupon();
+            setCoupon(couponData.allCoupons);
+          } catch (error) {
+            console.log("Error in getting coupon [handleConfirm]", error);
+          }
+        }
+      } catch (error) {
+        console.error("Error in deleting coupon", error);
+      } finally {
+        setShowModal(false);
+      }
     }
   };
 
@@ -182,7 +216,9 @@ const CouponListing = () => {
                     <table className='table table-hover'>
                       <thead>
                         <tr>
-                          <th scope='col' className='price-column' >#</th>
+                          <th scope='col' className='price-column'>
+                            #
+                          </th>
                           <th scope='col'>Coupon CODE</th>
                           <th scope='col' className='price-column'>
                             Value
@@ -203,7 +239,9 @@ const CouponListing = () => {
                         {sampleCoupon?.length ? (
                           sampleCoupon?.map((couponData, index) => (
                             <tr key={index}>
-                              <th className="price-column" scope='row'>{index + 1}</th>
+                              <th className='price-column' scope='row'>
+                                {index + 1}
+                              </th>
                               <td
                                 className='cursor-pointer  hover:text-green-600 hover:text-bold active:text-yellow-500'
                                 onClick={() => {
@@ -267,15 +305,14 @@ const CouponListing = () => {
                                   Update
                                 </button>
                                 {/* Uncomment if Delete functionality is needed */}
-                                {/* <button
-              className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded inline-flex items-center'
-              onClick={() => {
-                setSelectedList(CouponData);
-                setIsOpen(true);
-              }}
-            >
-              Delete
-            </button> */}
+                                <button
+                                  className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded inline-flex items-center'
+                                  onClick={(e) => {
+                                    handleDelete(e, couponData);
+                                  }}
+                                >
+                                  Delete
+                                </button>
                               </td>
                             </tr>
                           ))
@@ -298,7 +335,7 @@ const CouponListing = () => {
                 <div className='fixed inset-0 bg-black opacity-50'></div>
                 <div className='bg-white p-8 rounded-lg shadow-lg z-10'>
                   <h2 className='text-xl mb-4'>Maintenance Data</h2>
-                  <div className='flex flex-col justify-start items-start'>
+                  <div className='flex flex-col justify-start items-start mb-3'>
                     <span>
                       <strong className='mr-2'>Coupon CODE:</strong>
                       <span
@@ -332,6 +369,14 @@ const CouponListing = () => {
                       <strong className='mr-2'>Status:</strong>{" "}
                       {selectedList.status}
                     </span>
+                    <span>
+                      <strong className='mr-2'>Max Discount Price:</strong>{" "}
+                      {selectedList.maximumDiscountPrice}
+                    </span>
+                    <span>
+                      <strong className='mr-2'>Min Purchasing Price:</strong>{" "}
+                      {selectedList.minimumPurchasingPrice}
+                    </span>
                   </div>
 
                   <button
@@ -351,7 +396,7 @@ const CouponListing = () => {
         show={showModal}
         onClose={handleClose}
         onConfirm={handleConfirm}
-        field={"coupon"}
+        text={text}
       />
     </div>
   );

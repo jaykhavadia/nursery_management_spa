@@ -31,6 +31,8 @@ const AddCoupon = () => {
     value: "",
     endingDate: "",
     startingDate: "",
+    maximumDiscountPrice: "",
+    minimumPurchasingPrice: "",
   });
   const [isDataAvailable, setIsDataAvailable] = useState(false);
 
@@ -69,12 +71,21 @@ const AddCoupon = () => {
     if (!formData.type) {
       errors.type = errorMessage;
     }
+    if (!formData.minimumPurchasingPrice) {
+      errors.minimumPurchasingPrice = errorMessage;
+    }
+    if (!formData.maximumDiscountPrice && formData.type === "Percentage") {
+      errors.maximumDiscountPrice = errorMessage;
+    }
     if (formData.type === "Percentage" && formData.value > 100) {
       errors.value = "should be less then 100%";
       setFormData((prevData) => ({
         ...prevData,
         value: "",
       }));
+    }
+    if ((formData.type === 'fixedAmount') && formData.minimumPurchasingPrice < formData.value) {
+      errors.value = 'should be more then Minimum Purchasing Price';
     }
 
     setErrors(errors);
@@ -201,6 +212,8 @@ const AddCoupon = () => {
       value: response.couponDetail.value,
       startingDate: new Date(response.couponDetail.startingDate).toISOString(), // or format as needed
       endingDate: new Date(response.couponDetail.endingDate).toISOString(), // or format as needed
+      maximumDiscountPrice: response.couponDetail.maximumDiscountPrice,
+      minimumPurchasingPrice: response.couponDetail.minimumPurchasingPrice,
     };
     setCouponId(response.couponDetail._id);
     setFormData(transformData);
@@ -343,7 +356,7 @@ const AddCoupon = () => {
                         >
                           <option value=''>Select Type</option>
                           <option value='Percentage'>Percentage</option>
-                          <option value='Fixed Amount'>Fixed Amount</option>
+                          <option value='fixedAmount'>Fixed Amount</option>
                         </select>
                         {errors?.type && (
                           <div className='invalid-feedback'>
@@ -352,6 +365,74 @@ const AddCoupon = () => {
                         )}
                       </div>
                     </div>
+                    {formData.type !== "" && (
+                      <div
+                        className={
+                          formData.type === "Percentage"
+                            ? "flex flex-col sm:flex-row justify-between"
+                            : ""
+                        }
+                      >
+                        <div
+                          className={
+                            formData.type === "Percentage"
+                              ? "sm:w-56 w-full"
+                              : "w-full"
+                          }
+                        >
+                          <div className='flex justify-start'>
+                            <label className='block text-sm font-medium leading-6 text-gray-900'>
+                              Minimum Purchasing Price
+                            </label>
+                          </div>
+                          <input
+                            id='minimumPurchasingPrice'
+                            name='minimumPurchasingPrice'
+                            type='number'
+                            placeholder='Enter Minimum Purchasing Price'
+                            value={formData?.minimumPurchasingPrice}
+                            onChange={handleChange}
+                            className={`form-control ${
+                              errors?.minimumPurchasingPrice && "is-invalid"
+                            }`}
+                            min={1}
+                          />
+                          {errors?.minimumPurchasingPrice && (
+                            <div className='invalid-feedback'>
+                              Your Coupon minimum purchasing price{" "}
+                              {errors?.minimumPurchasingPrice}
+                            </div>
+                          )}
+                        </div>
+                        {formData.type === "Percentage" && (
+                          <div className='sm:w-56 w-full'>
+                            <div className='flex justify-start'>
+                              <label className='block text-sm font-medium leading-6 text-gray-900'>
+                                Maximum Discount Price
+                              </label>
+                            </div>
+                            <input
+                              id='maximumDiscountPrice'
+                              name='maximumDiscountPrice'
+                              type='number'
+                              placeholder='Enter Maximum Discount Price'
+                              value={formData?.maximumDiscountPrice}
+                              onChange={handleChange}
+                              className={`form-control ${
+                                errors?.maximumDiscountPrice && "is-invalid"
+                              }`}
+                              min={1}
+                            />
+                            {errors?.maximumDiscountPrice && (
+                              <div className='invalid-feedback'>
+                                Your Coupon Maximum Discount Price{" "}
+                                {errors?.maximumDiscountPrice}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     <div>
                       <div className='mt-4 w-full flex flex-col sm:flex-row justify-between items-center'>

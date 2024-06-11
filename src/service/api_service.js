@@ -229,9 +229,14 @@ export const getProductDetailsById = async (id) => {
     throw error.response.data;
   }
 };
-export const getCouponByCODE = async (CODE) => {
+export const getCouponByCODE = async (CODE, grandTotal) => {
   try {
-    const apiURL = `${BASE_URL}/coupon/${CODE}`;
+    let apiURL = "";
+    if (grandTotal) {
+      apiURL = `${BASE_URL}/coupon/${CODE}/${grandTotal}`;
+    } else {
+      apiURL = `${BASE_URL}/coupon/${CODE}`;
+    }
     const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {
@@ -304,6 +309,17 @@ export const updateCoupon = async (payload, couponId) => {
   try {
     const apiURL = `${BASE_URL}/coupon/update/${couponId}`;
     const response = await axios.put(apiURL, payload);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error update coupon:", error);
+    throw error.response.data;
+  }
+};
+export const deleteCoupon = async (couponId) => {
+  try {
+    const apiURL = `${BASE_URL}/coupon/remove/${couponId}`;
+    const response = await axios.delete(apiURL);
     return response.data;
   } catch (error) {
     // Handle errors

@@ -21,7 +21,7 @@ const Summary = (prams) => {
   const checkCoupon = async (e) => {
     try {
       console.log("Checking coupon", coupon);
-      const response = await getCouponByCODE(coupon);
+      const response = await getCouponByCODE(coupon, grandTotal);
       if (response === null) {
         return;
       }
@@ -36,15 +36,18 @@ const Summary = (prams) => {
         return;
       }
       if (
-        response.couponDetail.type === "Fixed Amount" &&
-        response.couponDetail.value > grandTotal
+        response.couponDetail.type === "fixedAmount" &&
+        response.totalDiscountedPrice > grandTotal
       ) {
         toast.error("Add more Products");
         return;
       }
       if (response?.message === "Coupon Applied Successfully!") {
         localStorage.setItem("coupon", JSON.stringify(response.couponDetail));
-        setActiveCoupon(response.couponDetail);
+        setActiveCoupon({
+          ...response.couponDetail,
+          totalDiscountedPrice: response.totalDiscountedPrice,
+        });
       }
     } catch (error) {
       console.log("[summary] [checkCoupon] Error :", error);
@@ -203,8 +206,7 @@ const Summary = (prams) => {
                     Coupon Added
                   </span>
                   <span className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
-                    - {activeCoupon.value}
-                    {activeCoupon.type === "Percentage" ? "%" : ""}
+                    - Rs. {activeCoupon.totalDiscountedPrice}
                   </span>
                 </div>
               </div>
@@ -218,9 +220,7 @@ const Summary = (prams) => {
               <span className='text-lg font-semibold whitespace-nowrap overflow-hidden'>
                 Rs:{" "}
                 {activeCoupon
-                  ? activeCoupon.type === "Percentage"
-                    ? grandTotal - (activeCoupon.value / 100) * grandTotal
-                    : grandTotal - activeCoupon.value
+                  ? grandTotal - activeCoupon.totalDiscountedPrice
                   : grandTotal}
               </span>
             </div>

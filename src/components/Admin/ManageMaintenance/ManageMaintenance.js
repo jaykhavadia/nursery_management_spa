@@ -43,7 +43,7 @@ const ManageMaintenance = () => {
       if (error.message === "jwt expired") {
         Logout();
       }
-      throw new Error(error);
+      console.error('[me] Error:', error);
     }
   };
 
