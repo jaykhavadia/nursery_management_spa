@@ -95,7 +95,7 @@ const Summary = (prams) => {
                       <div className='flex items-center'>
                         <button
                           className='px-2 py-1 bg-gray-300 text-gray-700 rounded-l-md hover:bg-gray-400 transition duration-300'
-                          onClick={() => removeFromCart(product)}
+                          onClick={() => {removeFromCart(product); clearCoupon()}}
                         >
                           -
                         </button>
@@ -104,7 +104,7 @@ const Summary = (prams) => {
                         </span>
                         <button
                           className='px-2 py-1 bg-gray-300 text-gray-700 rounded-r-md hover:bg-gray-400 transition duration-300'
-                          onClick={() => addToCart(product)}
+                          onClick={() => {addToCart(product); clearCoupon()}}
                         >
                           +
                         </button>
