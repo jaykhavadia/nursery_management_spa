@@ -79,10 +79,10 @@ const GardenRegistration = () => {
       }));
       setCities(City.getCitiesOfState("IN", stateObj.isoCode)); // Pass stateObj instead of state
     } else {
-      setSelectedState(''); // Store the whole state object
+      setSelectedState(""); // Store the whole state object
       setFormData((prevData) => ({
         ...prevData,
-        state: '',
+        state: "",
       }));
       setCities();
     }
@@ -242,7 +242,11 @@ const GardenRegistration = () => {
       }));
       localStorage.setItem("currentUser", JSON.stringify(user));
     } catch (error) {
-      if (error.message === "jwt expired") {
+      console.error("ME Error", error);
+      if (
+        error.message === "jwt expired" ||
+        error.message === "Network Error"
+      ) {
         Logout();
       }
       throw new Error(error);
@@ -282,7 +286,12 @@ const GardenRegistration = () => {
         await setGardenData();
       } catch (error) {
         console.error("get Garden Data", error);
-        throw error;
+        if (
+          error.message === "jwt expired" ||
+          error.message === "Network Error"
+        ) {
+          Logout();
+        }
       }
     }
     getGardenData();

@@ -71,6 +71,7 @@ const Login = (props) => {
       }
       toast.error(result.message);
     } catch (error) {
+      toast.error(error.message || error.error || 'Something went wrong');
       // Handle errors
       console.error("Error while Login:", error);
     }

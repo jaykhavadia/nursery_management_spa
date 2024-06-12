@@ -218,6 +218,7 @@ const Address = (props) => {
         );
         setSelectedState(stateObj);
         setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+        setAddressValidity(true);
       }
     } catch (error) {
       console.log('No Address found', error);
