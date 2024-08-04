@@ -52,9 +52,12 @@ const Navbar = () => {
             {/* <a href='/about' className='nav-item nav-link'>
             About
           </a> */}
-            {/* <a href='/login' className='nav-item nav-link'>
-            Services
-          </a> */}
+            <a
+              href={token ? "/garden/registration" : "/login"}
+              className='nav-item nav-link'
+            >
+              Garden Registration
+            </a>
             {/* <a href='/projects' className='nav-item nav-link'>
             Projects
           </a> */}
@@ -67,16 +70,22 @@ const Navbar = () => {
               </div>
               <div className='dropdown-menu bg-light m-0'>
                 <a
-                  href={token ? "/garden/registration" : "/login"}
-                  className='dropdown-item'
-                >
-                  Garden Registration
-                </a>
-                <a
                   href={token ? "/garden/maintenance/list" : "/login"}
                   className='dropdown-item'
                 >
                   Garden Maintenance
+                </a>
+                <a className='dropdown-item' href='/service/landscaping'>
+                  Landscaping
+                </a>
+                <a className='dropdown-item' href='/service/pruning-plants'>
+                  Pruning plants
+                </a>
+                <a className='dropdown-item' href='/service/urban-gardening'>
+                  Urban Gardening
+                </a>
+                <a className='dropdown-item' href='/service/green-technology'>
+                  Green Technology
                 </a>
               </div>
             </div>
@@ -103,7 +112,7 @@ const Navbar = () => {
               Contact
             </a>
             {token && (
-              <a onClick={Logout} className='nav-item nav-link'>
+              <a onClick={Logout} className='nav-item nav-link cursor-pointer'>
                 Logout
               </a>
             )}
