@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../../context/AuthContext";
 import { getProductDetailsById } from "../../service/api_service";
+import sampleData from "./SampleData";
 
 const Service = () => {
   const { id } = useParams();
@@ -25,9 +26,9 @@ const Service = () => {
 
   const setServiceData = async () => {
     try {
-      console.log('ID', id);
+      console.log("ID", id);
       const response = await getServiceById(id);
-  
+
       if (response === null) {
         return;
       }
@@ -37,18 +38,20 @@ const Service = () => {
         navigate("/login");
       }
       console.log("resonse ->>", response);
-  
+
       setService(response);
     } catch (error) {
-      console.log('[setServiceData] Error:', error);
+      console.log("[setServiceData] Error:", error);
       throw error;
     }
   };
 
   const getServiceById = (key) => {
-
-
-  }
+    if(key.includes('-')){
+      return sampleData[key.split('-').join('_')];
+    }
+    return sampleData[key];
+  };
 
   return (
     <div>
@@ -59,24 +62,24 @@ const Service = () => {
       >
         <div className='container text-center py-5'>
           <h1 className='display-3 text-white mb-4 animated slideInDown'>
-            Service Page
+            Service
           </h1>
           <nav aria-label='breadcrumb animated slideInDown'>
             <ol className='breadcrumb justify-content-center mb-0'>
               <li className='breadcrumb-item'>
-                <span >Home</span>
+                <span>Home</span>
               </li>
               <li className='breadcrumb-item'>
-                <span >Pages</span>
+                <span>Pages</span>
               </li>
               <li className='breadcrumb-item'>
-                <span >Service</span>
+                <span>Service</span>
               </li>
               <li
                 className='breadcrumb-item active text-white'
                 aria-current='page'
               >
-                {id}
+                {service?.title}
               </li>
             </ol>
           </nav>
@@ -86,60 +89,34 @@ const Service = () => {
       <div className='container-xxl'>
         <div className='container px-4 sm:px-6 lg:px-8 pb-5'>
           <div className=''>
-            <div className='flex flex-col sm:flex-row border border-gray-200 rounded-md overflow-hidden shadow-sm p-4'>
-              {/* <div className='w-60' > */}
-              {/* <img
-                className='w-60 h-60 object-cover'
-                src={sample_data?.image}
-                alt={sample_data?.title}
-              /> */}
-              {/* </div> */}
-              {/* <div className='p-4'>
-                <div className='text-lg font-semibold whitespace-nowrap overflow-hidden mb-2'>
-                  {sample_data?.title}
-                </div>
-                <div className='text-gray-600 mb-2'>
-                  {sample_data?.category?.name}
-                </div>
-                <div className='text-md '>{sample_data?.description}</div>
-                <div className='items-center mt-2'>
-                  <p className='text-xl font-semibold'>
-                    Rs. {sample_data?.price}
-                  </p>
+            <div className='flex flex-col sm:flex-row border border-gray-200 rounded-md shadow-sm p-4'>
+              <div className='min-w-80'>
+                <img
+                  className='object-cover'
+                  src={service?.image}
+                  alt={service?.title}
+                />
+              </div>
+              <div className='p-4'>
+                <div className='flex mb-3 items-center ' >
+                  <div className=' mr-3 '>
+                    <img
+                      className='object-cover rounded border-gray-200'
+                      src={service?.logo}
+                      alt={service?.title}
+                    />
+                  </div>
                   <div>
-                    {sample_data?.itemCount === 0 ? (
-                      <button
-                        className='px-3 py-1 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition duration-300'
-                        onClick={() => addToCart()}
-                      >
-                        <FontAwesomeIcon
-                          icon={faCartShopping}
-                          className='mr-2'
-                        />
-                        Add to Cart
-                      </button>
-                    ) : (
-                      <div className='flex items-center'>
-                        <button
-                          className='px-2 py-1 bg-gray-300 text-gray-700 rounded-l-md hover:bg-gray-400 transition duration-300'
-                          onClick={() => removeFromCart()}
-                        >
-                          -
-                        </button>
-                        <span className='px-3 py-1 bg-gray-200'>
-                          {sample_data?.itemCount}
-                        </span>
-                        <button
-                          className='px-2 py-1 bg-gray-300 text-gray-700 rounded-r-md hover:bg-gray-400 transition duration-300'
-                          onClick={() => addToCart()}
-                        >
-                          +
-                        </button>
-                      </div>
-                    )}
+                    <div className='text-xl font-semibold whitespace-nowrap overflow-hidden'>
+                      {service?.title}
+                    </div>
+                    <div className='text-gray-600'>
+                      {service?.category}
+                    </div>
                   </div>
                 </div>
-              </div> */}
+                <div className='text-md '>{service?.description}</div>
+              </div>
             </div>
           </div>
         </div>

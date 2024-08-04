@@ -75,8 +75,8 @@ const Navbar = () => {
                 >
                   Garden Maintenance
                 </a>
-                <a className='dropdown-item' href='/service/landscaping'>
-                  Landscaping
+                <a className='dropdown-item' href=''>
+                  Landscaping/service/landscaping
                 </a>
                 <a className='dropdown-item' href='/service/pruning-plants'>
                   Pruning plants
