@@ -9,8 +9,8 @@ export const ME = async () => {
     return response.data;
   } catch (error) {
     // Handle errors
-    console.error("Error ME:", error);
-    throw error;
+    console.error("Error ME:", error.response);
+    throw error.response.data;
   }
 };
 export const login = async (payload) => {

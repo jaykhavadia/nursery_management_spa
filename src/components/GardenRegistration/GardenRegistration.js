@@ -25,6 +25,7 @@ const GardenRegistration = () => {
   const [Cities, setCities] = useState([]);
   const [image, setImage] = useState("");
   const [selectedState, setSelectedState] = useState("");
+  const [addGarden, setAddGarden] = useState(false);
   const [indianStates, setIndianStates] = useState(
     State.getStatesOfCountry("IN")
   );
@@ -45,6 +46,7 @@ const GardenRegistration = () => {
     image: "",
     userId: "",
   });
+  const [gardenData, setGardenResponse] = useState();
   const [isDataAvailable, setIsDataAvailable] = useState(false);
 
   const handleChange = (e) => {
@@ -179,6 +181,7 @@ const GardenRegistration = () => {
           toast.success("Garden registered Successful!");
           resetFields();
           await setGardenData();
+          setAddGarden(false);
           setLoading(false);
         }
       } catch (error) {
@@ -187,6 +190,7 @@ const GardenRegistration = () => {
         toast.error(error.message);
       }
     }
+    setLoading(false);
   };
 
   const handleUpdatedRegistration = async () => {
@@ -210,6 +214,7 @@ const GardenRegistration = () => {
           toast.success("Garden data updated Successful!");
           resetFields();
           await setGardenData();
+          setAddGarden(false);
           setLoading(false);
         }
       } catch (error) {
@@ -256,9 +261,32 @@ const GardenRegistration = () => {
         error.message === "jwt expired" ||
         error.message === "Network Error"
       ) {
+        toast.error(error.message);
         Logout();
       }
       throw new Error(error);
+    }
+  };
+
+  const setGardenFormData = async (gardenData) => {
+    console.log('Clicked Garden', gardenData);
+    
+    setLoading(true);
+    try {
+      console.log("Adding Data", gardenData);
+      setIsDataAvailable(true);
+      const stateObj = indianStates.find(
+        (state) => state.name === gardenData.state
+      );
+      setFormData(gardenData);
+      setSelectedState(stateObj);
+      setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+      setAddGarden(true);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error("Error in  setGardenData", error);
+      throw error;
     }
   };
 
@@ -275,13 +303,7 @@ const GardenRegistration = () => {
         localStorage.clear();
         navigate("/login");
       }
-      setFormData(response);
-      setIsDataAvailable(true);
-      const stateObj = indianStates.find(
-        (state) => state.name === response.state
-      );
-      setSelectedState(stateObj);
-      setCities(City.getCitiesOfState("IN", stateObj?.isoCode));
+      setGardenResponse(response);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -344,8 +366,48 @@ const GardenRegistration = () => {
                 </li>
               </ol>
             </nav>
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-5 ${
+                addGarden ? "hidden" : ""
+              }`}
+            >
+              {gardenData?.map((garden) => (
+                <div
+                  key={garden._id}
+                  className='relative p-4 rounded-lg shadow-lg overflow-hidden sm:mt-4 bg-white w-60 cursor-pointer'
+                  style={{
+                    backgroundImage: `url(${garden.image})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                  onClick={() => setGardenFormData(garden)}
+                >
+                  <div className='absolute inset-0 bg-black opacity-50'></div>
+                  <div className='relative z-10 text-white'>
+                    <h3 className='text-xl font-semibold'>{garden.name}</h3>
+                    <p className='text-sm'>
+                      {garden.city}, {garden.state}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              <div className="relative" >
+                <div
+                  className='flex flex-col justify-center items-center p-4 sm:mt-4 rounded-lg shadow-lg overflow-hidden bg-white w-40 h-[90%] cursor-pointer '
+                  onClick={() => {
+                    setAddGarden(true);
+                    resetFields();
+                  }}
+                >
+                  <h3 className='text-5xl font-semibold'>
+                    <FontAwesomeIcon icon='fa-solid fa-circle-plus' />
+                  </h3>
+                  <span>Add</span>
+                </div>
+              </div>
+            </div>
             {/* ----------------- Form ----------------------- */}
-            <div>
+            <div className={addGarden ? "" : "hidden"}>
               <div className='flex min-h-full flex-col justify-center px-6 pt-12 lg:px-8'>
                 <div className='sm:mx-auto sm:w-full p-6 sm:max-w-xl bg-gray-100 border border-gray-100 rounded-lg shadow dark:bg-gray-100 dark:border-gray-200'>
                   <div className='sm:mx-auto sm:w-full sm:max-w-xl'>
