@@ -44,7 +44,6 @@ const GardenRegistration = () => {
     plantDetails: "",
     waterSupplyMethod: "",
     image: "",
-    userId: "",
   });
   const [gardenData, setGardenResponse] = useState();
   const [isDataAvailable, setIsDataAvailable] = useState(false);
@@ -171,9 +170,6 @@ const GardenRegistration = () => {
     const isValid = validateForm();
     if (isValid) {
       // Perform form submission
-      if (!formData.userId) {
-        await me();
-      }
 
       try {
         const result = await registerGarden(formData); // Call getSomeData function from the API service
@@ -239,7 +235,6 @@ const GardenRegistration = () => {
       plantDetails: "",
       waterSupplyMethod: "",
       image: "",
-      userId: "",
     });
     setImage("");
     setSelectedState("");
@@ -250,10 +245,6 @@ const GardenRegistration = () => {
     try {
       const user = await ME();
       setUserData(user);
-      setFormData((prevData) => ({
-        ...prevData,
-        userId: user?.user?._id,
-      }));
       localStorage.setItem("currentUser", JSON.stringify(user));
     } catch (error) {
       console.error("ME Error", error);
@@ -269,8 +260,8 @@ const GardenRegistration = () => {
   };
 
   const setGardenFormData = async (gardenData) => {
-    console.log('Clicked Garden', gardenData);
-    
+    console.log("Clicked Garden", gardenData);
+
     setLoading(true);
     try {
       console.log("Adding Data", gardenData);
@@ -366,17 +357,18 @@ const GardenRegistration = () => {
                 </li>
               </ol>
             </nav>
+            
             <div
               className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-5 ${
-                addGarden ? "hidden" : ""
+                addGarden ? "hidden" : "items-center justify-items-center"
               }`}
             >
               {gardenData?.map((garden) => (
                 <div
                   key={garden._id}
-                  className='relative p-4 rounded-lg shadow-lg overflow-hidden sm:mt-4 bg-white w-60 cursor-pointer'
+                  className='relative p-4 rounded-lg shadow-lg overflow-hidden mt-4 bg-white w-60 cursor-pointer'
                   style={{
-                    backgroundImage: `url(${garden.image})`,
+                    backgroundImage: `url(https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
@@ -384,16 +376,18 @@ const GardenRegistration = () => {
                 >
                   <div className='absolute inset-0 bg-black opacity-50'></div>
                   <div className='relative z-10 text-white'>
-                    <h3 className='text-xl font-semibold'>{garden.name}</h3>
+                    <h3 className='text-white text-xl font-semibold'>
+                      {garden.name}
+                    </h3>
                     <p className='text-sm'>
                       {garden.city}, {garden.state}
                     </p>
                   </div>
                 </div>
               ))}
-              <div className="relative" >
+              <div className='relative'>
                 <div
-                  className='flex flex-col justify-center items-center p-4 sm:mt-4 rounded-lg shadow-lg overflow-hidden bg-white w-40 h-[90%] cursor-pointer '
+                  className='flex flex-col justify-center items-center p-4 mt-4 rounded-lg shadow-lg overflow-hidden bg-white w-40 h-[90%] cursor-pointer '
                   onClick={() => {
                     setAddGarden(true);
                     resetFields();

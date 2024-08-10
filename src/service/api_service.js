@@ -270,9 +270,9 @@ export const createCategory = async (payload) => {
   }
 };
 
-export const getAllMaintenance = async () => {
+export const getAllMaintenance = async (gardenId = '') => {
   try {
-    const apiURL = `${BASE_URL}/garden/maintenance`;
+    const apiURL = `${BASE_URL}/garden/maintenance${gardenId.length ? '/'+gardenId : ''}`;
     const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {
