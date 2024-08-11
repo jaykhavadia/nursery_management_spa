@@ -75,8 +75,8 @@ const Navbar = () => {
                 >
                   Garden Maintenance
                 </a>
-                <a className='dropdown-item' href=''>
-                  Landscaping/service/landscaping
+                <a className='dropdown-item' href='/service/landscaping'>
+                  Landscaping
                 </a>
                 <a className='dropdown-item' href='/service/pruning-plants'>
                   Pruning plants
@@ -86,6 +86,12 @@ const Navbar = () => {
                 </a>
                 <a className='dropdown-item' href='/service/green-technology'>
                   Green Technology
+                </a>
+                <a
+                  className='dropdown-item'
+                  href='/service/irrigation-drainage'
+                >
+                  Irrigation & Drainage
                 </a>
               </div>
             </div>

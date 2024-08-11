@@ -19,7 +19,6 @@ const GardenMaintenanceList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedList, setSelectedList] = useState();
-  const [selectedId, setSelectedId] = useState("");
 
   const setGardenData = async () => {
     try {
@@ -33,12 +32,12 @@ const GardenMaintenanceList = () => {
             />
           ),
         });
-        setSelectedId(response[0]._id);
         navigate("/garden/registration");
       }
       console.log("response", response);
 
       setGardenList(response);
+      return response;
     } catch (error) {
       setLoading(false);
       console.error("Error setGardenData", error);
@@ -61,9 +60,8 @@ const GardenMaintenanceList = () => {
       await checkAdmin();
       if (!isAdmin) {
         setLoading(true);
-        await setGardenData();
-        const maintenanceData = await getAllMaintenance();
-        setMaintenanceList(maintenanceData);
+        const gardeList = await setGardenData();
+        await handleChange({ value: gardeList[0]._id });
         setLoading(false);
       }
     }
@@ -125,16 +123,20 @@ const GardenMaintenanceList = () => {
                             className='sm:w-40'
                             options={options}
                             onChange={handleChange}
-                            placeholder={"All"}
+                            value={gardenList[0]?._id}
                           />
                         </div>
                         <div className='mr-5 sm:w-auto'>
                           <button
-                            disabled={!(maintenanceList?.length === 0 ||
-                              (maintenanceList[maintenanceList.length - 1]
-                                .status !== "pending" &&
-                                maintenanceList[maintenanceList.length - 1]
-                                  .status !== "Pending"))}
+                            disabled={
+                              !(
+                                maintenanceList?.length === 0 ||
+                                (maintenanceList[maintenanceList.length - 1]
+                                  .status !== "pending" &&
+                                  maintenanceList[maintenanceList.length - 1]
+                                    .status !== "Pending")
+                              )
+                            }
                             className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 sm:px-4 px-2 rounded inline-flex items-center'
                             onClick={() => navigate("/garden/maintenance")}
                           >
@@ -145,10 +147,16 @@ const GardenMaintenanceList = () => {
                       <table className='table table-hover'>
                         <thead>
                           <tr>
-                            <th scope='col' className='price-column'>#</th>
+                            <th scope='col' className='price-column'>
+                              #
+                            </th>
                             <th scope='col'>Maintenance Name</th>
-                            <th scope='col' className='price-column'>Date</th>
-                            <th scope='col' className='price-column'>Status</th>
+                            <th scope='col' className='price-column'>
+                              Date
+                            </th>
+                            <th scope='col' className='price-column'>
+                              Status
+                            </th>
                             <th scope='col'>Action</th>
                           </tr>
                         </thead>
@@ -156,9 +164,11 @@ const GardenMaintenanceList = () => {
                           {maintenanceList?.length ? (
                             maintenanceList?.map((maintenanceData, index) => (
                               <tr key={index}>
-                                <th scope='row' className='price-column'>{index + 1}</th>
+                                <th scope='row' className='price-column'>
+                                  {index + 1}
+                                </th>
                                 <td>{maintenanceData.maintenanceName}</td>
-                                <td className='price-column' >
+                                <td className='price-column'>
                                   <Moment
                                     className='py-2 px-4'
                                     format='DD/MM/YYYY'
