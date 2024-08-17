@@ -9,11 +9,17 @@ const Navbar = () => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  
   const token = localStorage.getItem("accessToken");
+  
   const Logout = () => {
     toast.success("Logout Successful!");
     localStorage.clear();
     navigate("/home");
+  };
+
+  const Login = () => {
+    navigate("/login");
   };
 
   return (
@@ -117,9 +123,13 @@ const Navbar = () => {
             <a href='/contact' className='nav-item nav-link'>
               Contact
             </a>
-            {token && (
+            {token ? (
               <a onClick={Logout} className='nav-item nav-link cursor-pointer'>
                 Logout
+              </a>
+            ): (
+              <a onClick={Login} className='nav-item nav-link cursor-pointer'>
+                Login
               </a>
             )}
           </div>
