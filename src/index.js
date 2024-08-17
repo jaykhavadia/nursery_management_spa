@@ -38,6 +38,7 @@ import AddProducts from "./components/Admin/ManageProducts/AddProducts/AddProduc
 import CouponListing from "./components/Admin/ManageCoupons/CouponListing/CouponListing";
 import AddCoupon from "./components/Admin/ManageCoupons/AddCoupon/AddCoupon";
 import Service from "./components/Service/Service";
+import QuoteModal from "./components/common/QuoteModal/QuoteModal";
 
 let token = localStorage.getItem("accessToken");
 axios.interceptors.request.use(
@@ -60,6 +61,9 @@ root.render(
   <BrowserRouter>
     <AuthContextProvider>
       <div>
+        <div>
+          <QuoteModal/>
+        </div>
         <Routes>
           <Route
             path='*'

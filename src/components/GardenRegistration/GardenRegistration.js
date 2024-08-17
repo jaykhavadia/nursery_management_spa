@@ -16,6 +16,7 @@ import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { State, City } from "country-state-city";
 import { Navigate, useNavigate } from "react-router-dom";
 import Loader from "../common/Loader/Loader";
+import QuoteModal from "../common/QuoteModal/QuoteModal";
 
 const GardenRegistration = () => {
   const navigate = useNavigate();
@@ -248,13 +249,8 @@ const GardenRegistration = () => {
       localStorage.setItem("currentUser", JSON.stringify(user));
     } catch (error) {
       console.error("ME Error", error);
-      if (
-        error.message === "jwt expired" ||
-        error.message === "Network Error"
-      ) {
-        toast.error(error.message);
-        Logout();
-      }
+      toast.error(error.message);
+      Logout();
       throw new Error(error);
     }
   };
@@ -357,7 +353,6 @@ const GardenRegistration = () => {
                 </li>
               </ol>
             </nav>
-            
             <div
               className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-5 ${
                 addGarden ? "hidden" : "items-center justify-items-center"

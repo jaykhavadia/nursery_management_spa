@@ -480,7 +480,10 @@ const Home = () => {
                       Erat ipsum justo amet duo et elitr dolor, est duo duo eos
                       lorem sed diam stet diam sed stet.
                     </p>
-                    <a className='btn btn-sm' href='/service/irrigation-drainage'>
+                    <a
+                      className='btn btn-sm'
+                      href='/service/irrigation-drainage'
+                    >
                       <i className='fa fa-plus text-primary me-2'></i>Read More
                     </a>
                   </div>
@@ -503,7 +506,10 @@ const Home = () => {
                       Erat ipsum justo amet duo et elitr dolor, est duo duo eos
                       lorem sed diam stet diam sed stet.
                     </p>
-                    <a className='btn btn-sm' href={token ? "/garden/maintenance/list" : "/login"}>
+                    <a
+                      className='btn btn-sm'
+                      href={token ? "/garden/maintenance/list" : "/login"}
+                    >
                       <i className='fa fa-plus text-primary me-2'></i>Read More
                     </a>
                   </div>
@@ -560,7 +566,7 @@ const Home = () => {
         </div>
       </ScrollAnimation>
 
-      <div
+      {/* <div
         className='container-fluid quote my-5 py-5'
         data-parallax='scroll'
         data-image-src={img2}
@@ -646,7 +652,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <ScrollAnimation animateIn='animate__fadeInDown'>
         <div className='container-xxl py-5'>

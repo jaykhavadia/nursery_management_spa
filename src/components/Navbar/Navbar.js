@@ -123,12 +123,12 @@ const Navbar = () => {
               </a>
             )}
           </div>
-          <a
+          {/* <a
             href=''
             className='btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block'
           >
             Get A Quote<i className='fa fa-arrow-right ms-3'></i>
-          </a>
+          </a> */}
         </div>
       </nav>
     </div>
