@@ -39,6 +39,7 @@ import CouponListing from "./components/Admin/ManageCoupons/CouponListing/Coupon
 import AddCoupon from "./components/Admin/ManageCoupons/AddCoupon/AddCoupon";
 import Service from "./components/Service/Service";
 import QuoteModal from "./components/common/QuoteModal/QuoteModal";
+import ManageQuote from "./components/Admin/ManageQuote/ManageQuote";
 
 let token = localStorage.getItem("accessToken");
 axios.interceptors.request.use(
@@ -92,6 +93,7 @@ root.render(
           <Route path='garden/maintenance' element={<GardenMaintenance />} />
 
           <Route path='/admin/manage-maintenance' element={<ManageMaintenance />} />
+          <Route path='/admin/manage-quote' element={<ManageQuote />} />
           <Route path='/admin/manage-products' element={<ProductsList />} />
           <Route path='/admin/add-products' element={<AddProducts />} />
           <Route path='/admin/edit-product/:id' element={<AddProducts />} />

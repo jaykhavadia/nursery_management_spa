@@ -145,6 +145,39 @@ export const getAllGardenMaintenance = async () => {
     throw error.response.data;
   }
 };
+export const getAllGardenQuote = async () => {
+  try {
+    const apiURL = `${BASE_URL}/quote/all`;
+    const response = await axios.get(apiURL);
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error getAllGardenQuote:", error);
+    throw error.response.data;
+  }
+};
+export const createQuote = async (payload) => {
+  try {
+    const apiURL = `${BASE_URL}/quote/create`;
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append all fields from payload to the FormData object
+    for (const key in payload) {
+      formData.append(key, payload[key]);
+    }
+    const response = await axios.post(apiURL, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    // Handle errors
+    console.error("Error createQuote:", error);
+    throw error.response.data;
+  }
+};
 export const updateAddress = async (payload) => {
   try {
     const apiURL = `${BASE_URL}/address`;
@@ -270,9 +303,11 @@ export const createCategory = async (payload) => {
   }
 };
 
-export const getAllMaintenance = async (gardenId = '') => {
+export const getAllMaintenance = async (gardenId = "") => {
   try {
-    const apiURL = `${BASE_URL}/garden/maintenance${gardenId.length ? '/'+gardenId : ''}`;
+    const apiURL = `${BASE_URL}/garden/maintenance${
+      gardenId.length ? "/" + gardenId : ""
+    }`;
     const response = await axios.get(apiURL);
     return response.data;
   } catch (error) {

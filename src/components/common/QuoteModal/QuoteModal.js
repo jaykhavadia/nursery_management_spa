@@ -1,4 +1,7 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
+import { createQuote } from "../../../service/api_service";
 
 const QuoteModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,7 +16,12 @@ const QuoteModal = () => {
     image: null, // New state for image
   });
   const [formErrors, setFormErrors] = useState({});
-  
+
+  const location = useLocation();
+
+  // Check if the current route is '/admin'
+  const isAdmin = location.pathname.startsWith('/admin');
+
   const allServiceOptions = [
     "Garden Maintenance",
     "Landscaping",
@@ -22,7 +30,7 @@ const QuoteModal = () => {
     "Green Technology",
     "Irrigation & Drainage",
   ];
-  
+
   const resetForm = () => {
     setFormValues({
       name: "",
@@ -36,8 +44,8 @@ const QuoteModal = () => {
     });
 
     setAvailableOptions(allServiceOptions);
-  }
-  
+  };
+
   const [availableOptions, setAvailableOptions] = useState(allServiceOptions);
 
   const toggleModal = () => {
@@ -123,18 +131,30 @@ const QuoteModal = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
       console.log("Form submitted successfully:", formValues);
+      try {
+        const response = await createQuote(formValues);
+        if (response) {
+          toast.success("Quote Request Sent!");
+        }
+      } catch (error) {
+        console.error(" [QuoteModal] [handleSubmit] Error:", error);
+        toast.error(error.message);
+      }
       toggleModal();
     }
   };
 
   return (
-    <>
+    <div className={`${isAdmin ? 'hidden' : '' }`} >
       {/* Floating Button */}
       <button
-        onClick={() => {toggleModal(); resetForm(); }}
+        onClick={() => {
+          toggleModal();
+          resetForm();
+        }}
         className='fixed bottom-16 right-10 z-50 bg-green-700 text-white p-4 rounded-full shadow-lg hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800'
       >
         GET QUOTE
@@ -326,10 +346,22 @@ const QuoteModal = () => {
                       />
                       <label>Upload Image</label>
                       {formValues.image && (
-                        <p className='text-gray-500'>
-                          {formValues.image.name}
-                        </p>
+                        <p className='text-gray-500'>{formValues.image.name}</p>
                       )}
+                    </div>
+                  </div>
+                  {/* Other fields */}
+                  <div className='col-12'>
+                    <div className='form-floating'>
+                      <textarea
+                        className='form-control bg-light border-0'
+                        placeholder='Leave a message here'
+                        id='message'
+                        style={{ height: "100px" }}
+                        value={formValues.message}
+                        onChange={handleInputChange}
+                      ></textarea>
+                      <label>Message</label>
                     </div>
                   </div>
                 </div>
@@ -349,7 +381,7 @@ const QuoteModal = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
